@@ -1,0 +1,31 @@
+import type { Metadata } from "next";
+import { Section } from "@/components/ui/Section";
+import { PageHero } from "@/components/marketing/PageHero";
+import { HostCard } from "@/components/content/HostCard";
+import { getAllHosts } from "@/lib/content";
+
+export const metadata: Metadata = {
+  title: "Hosts",
+  description: "Meet the hosts and regular guests of the Ophthalmology Business Podcast.",
+};
+
+export default function HostsPage() {
+  const hosts = getAllHosts();
+  return (
+    <>
+      <PageHero
+        eyebrow="The people behind the show"
+        title="Hosts & regular contributors"
+        lede="Practice operators, physicians, and industry experts — people who have personally made the decisions these conversations examine."
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Podcast", href: "/podcast" }, { label: "Hosts" }]}
+      />
+      <Section spacing="default">
+        <div className="grid gap-6 md:grid-cols-2">
+          {hosts.map((h) => (
+            <HostCard key={h.slug} host={h} />
+          ))}
+        </div>
+      </Section>
+    </>
+  );
+}

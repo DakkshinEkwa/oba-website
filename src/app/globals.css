@@ -1,0 +1,266 @@
+@import "tailwindcss";
+
+/* ============================================================
+   OBA Design System — Qoves-inspired
+   Clinical white canvas · navy/charcoal ink · deep-teal accent
+   ============================================================ */
+
+@theme {
+  /* ---- Fonts (wired from next/font in layout.tsx) ---- */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  /* ---- Surfaces (cool, near-monochrome) ---- */
+  --color-canvas: #ffffff;
+  --color-canvas-subtle: #f4f6f7;
+  --color-canvas-ink: #16232c;
+
+  /* ---- Ink (text) scale — cool charcoal ---- */
+  --color-ink-900: #16232c;
+  --color-ink-800: #22323d;
+  --color-ink-700: #31434f;
+  --color-ink-600: #465a66;
+  --color-ink-500: #5f7481;
+  --color-ink-400: #82949f;
+  --color-ink-300: #a4b3bc;
+  --color-ink-200: #c9d3d9;
+
+  /* ---- Hairlines / borders ---- */
+  --color-line: #e5e9eb;
+  --color-line-strong: #d2d9dd;
+
+  /* ---- Accent: muted steel (Qoves-style, desaturated) ---- */
+  --color-accent-50: #eff3f5;
+  --color-accent-100: #dfe7ea;
+  --color-accent-200: #c4d1d8;
+  --color-accent-300: #a4b6c0;
+  --color-accent-400: #7d93a1;
+  --color-accent-500: #557080;
+  --color-accent-600: #3d5361;
+  --color-accent-700: #324450;
+  --color-accent-800: #263540;
+  --color-accent-900: #1a2833;
+
+  /* ---- Feedback (muted) ---- */
+  --color-success: #0f7a4f;
+  --color-error: #c23b47;
+  --color-warning: #b8791f;
+
+  /* ---- Radius ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-pill: 999px;
+
+  /* ---- Shadows (restrained — borders do most of the work) ---- */
+  --shadow-xs: 0 1px 2px 0 rgb(11 18 32 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(11 18 32 / 0.06), 0 1px 2px -1px rgb(11 18 32 / 0.05);
+  --shadow-md: 0 6px 20px -6px rgb(11 18 32 / 0.12);
+  --shadow-lg: 0 20px 48px -12px rgb(11 18 32 / 0.18);
+
+  /* ---- Layout ---- */
+  --container-wide: 1240px;
+  --container-default: 1160px;
+  --container-narrow: 760px;
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ---- Typographic scale (fluid) ---- */
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.1;
+  --text-eyebrow--letter-spacing: 0.12em;
+  --text-eyebrow--font-weight: 600;
+
+  --text-display: clamp(2.75rem, 1.6rem + 4.6vw, 4.5rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.02em;
+
+  --text-h1: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+  --text-h1--line-height: 1.08;
+  --text-h1--letter-spacing: -0.02em;
+
+  --text-h2: clamp(1.75rem, 1.35rem + 1.6vw, 2.5rem);
+  --text-h2--line-height: 1.14;
+  --text-h2--letter-spacing: -0.015em;
+
+  --text-h3: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.01em;
+
+  --text-lede: clamp(1.125rem, 1.05rem + 0.4vw, 1.35rem);
+  --text-lede--line-height: 1.55;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.65;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.55;
+}
+
+/* ============================================================
+   Base layer
+   ============================================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink-700);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    color: var(--color-ink-900);
+    text-wrap: balance;
+  }
+
+  /* Qoves signature: the trailing part of a headline renders dimmed */
+  .title-dim {
+    color: var(--color-ink-300);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-100);
+    color: var(--color-accent-900);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-600);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Consistent focus ring removal for mouse users handled by :focus-visible above */
+}
+
+/* ============================================================
+   Reusable animation utilities
+   ============================================================ */
+/* ============================================================
+   Prose — long-form MDX / rich-text content
+   ============================================================ */
+@layer components {
+  .prose {
+    color: var(--color-ink-600);
+    font-size: var(--text-body-lg);
+    line-height: 1.75;
+    max-width: 70ch;
+  }
+  .prose > * + * {
+    margin-top: 1.15em;
+  }
+  .prose h2 {
+    font-size: var(--text-h3);
+    line-height: 1.2;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    color: var(--color-ink-900);
+  }
+  .prose h3 {
+    font-size: 1.375rem;
+    margin-top: 1.6em;
+    margin-bottom: 0.4em;
+    color: var(--color-ink-900);
+  }
+  .prose a {
+    color: var(--color-accent-600);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  .prose a:hover {
+    color: var(--color-accent-700);
+  }
+  .prose strong {
+    color: var(--color-ink-900);
+    font-weight: 600;
+  }
+  .prose ul,
+  .prose ol {
+    padding-left: 1.4em;
+  }
+  .prose ul {
+    list-style: disc;
+  }
+  .prose ol {
+    list-style: decimal;
+  }
+  .prose li {
+    margin-top: 0.4em;
+  }
+  .prose li::marker {
+    color: var(--color-ink-300);
+  }
+  .prose blockquote {
+    border-left: 3px solid var(--color-accent-500);
+    padding-left: 1.1em;
+    font-style: italic;
+    color: var(--color-ink-700);
+  }
+  .prose img {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-line);
+  }
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--color-canvas-subtle);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-sm);
+  }
+  .prose hr {
+    border: none;
+    border-top: 1px solid var(--color-line);
+    margin: 2.5em 0;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-fade-up {
+  animation: fade-up 0.6s var(--ease-out) both;
+}
