@@ -41,7 +41,7 @@ export default function ResourcesPage() {
             <Link
               key={l.title}
               href={l.href}
-              className="group flex items-start gap-4 rounded-lg border border-line p-6 transition-all hover:border-ink-300"
+              className="group flex items-start gap-4 rounded-lg border border-line p-6 transition-colors hover:border-ink-300"
             >
               <div className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-accent-50 text-accent-600">
                 <l.icon className="size-5" aria-hidden />

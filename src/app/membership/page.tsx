@@ -48,7 +48,7 @@ export default function MembershipPage() {
       />
 
       <Section spacing="default">
-        <div className="mx-auto max-w-lg rounded-2xl border border-line bg-canvas p-8">
+        <div className="mx-auto max-w-lg rounded-xl border border-line bg-canvas p-8">
           <p className="font-mono text-eyebrow uppercase text-accent-600">Free membership</p>
           <div className="mt-3 flex items-baseline gap-1">
             <span className="text-display font-light tracking-tight text-ink-900">$0</span>

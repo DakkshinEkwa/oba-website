@@ -28,7 +28,7 @@ Ground-up rebuild of obacademy.org (Ophthalmology Business Academy): **Next.js A
 
 **Component layers** (`src/components/`): `ui/` design-system primitives → `layout/` (SiteHeader/SiteFooter/MobileNav) → `marketing/` (Hero, CTASection, PageHero) → `content/` (EpisodeCard, LibsynPlayer, Markdown) → `forms/`. Podcast audio plays via the direct Libsyn MP3 URL through the lazy custom `LibsynPlayer`.
 
-**Design system:** all tokens are in `src/app/globals.css` under `@theme` — Qoves-inspired near-monochrome (white canvas, cool-charcoal ink scale, muted steel accent, hairline borders, no shadows or saturated color). Fonts: Inter, IBM Plex Mono (eyebrow labels). Visual reference at `/styleguide` (noindex). `cn()` in `src/lib/utils.ts` configures tailwind-merge to recognize the custom `text-*` type-scale utilities — use it for class merging.
+**Design system:** all tokens are in `src/app/globals.css` under `@theme` — Qoves-inspired near-monochrome (white canvas, cool-charcoal ink scale, muted steel accent, hairline borders, no saturated color; restrained shadows reserved for floating/overlay surfaces only — cards use borders). Fonts: Inter, IBM Plex Mono (eyebrow labels). Visual reference at `/styleguide` (noindex). `cn()` in `src/lib/utils.ts` configures tailwind-merge to recognize the custom `text-*` type-scale utilities — use it for class merging.
 
 **SEO/redirects:** legacy WordPress URLs are 301-redirected in `next.config.ts`; `sitemap.ts`/`robots.ts` are in `src/app/`.
 

@@ -84,29 +84,15 @@ export default function HomePage() {
   return (
     <>
       {/* ---------------- Hero: full-bleed dark cinematic (Qoves-style) ---------------- */}
-      <section className="relative -mt-24 flex min-h-[92svh] flex-col overflow-hidden bg-ink-900">
+      <section className="relative -mt-(--header-offset) flex min-h-[92svh] flex-col overflow-hidden bg-ink-900">
         {/* Cinematic slate backdrop */}
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(115% 90% at 78% 30%, #5b7484 0%, #3e5361 34%, #263743 62%, #16232c 100%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-45"
-          style={{
-            background:
-              "radial-gradient(60% 55% at 72% 42%, rgba(214,228,235,0.5) 0%, rgba(214,228,235,0) 70%)",
-          }}
-        />
+        <div aria-hidden className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
+        <div aria-hidden className="absolute inset-0 opacity-45" style={{ background: "var(--gradient-hero-glow)" }} />
 
         <Container size="wide" className="relative flex flex-1 flex-col justify-center pb-16 pt-40 sm:pt-44">
           <div className="max-w-2xl">
             <p className="text-body text-white/60">The Ophthalmology Business Academy</p>
-            <h1 className="mt-6 text-[clamp(2.1rem,1.5rem+2.1vw,3.15rem)] font-light leading-[1.08] tracking-[-0.02em] text-white">
+            <h1 className="mt-6 text-h1 font-light tracking-tight text-white">
               <span className="whitespace-nowrap">Where practice strategy</span>
               <br />
               <span className="text-white/45">meets execution.</span>

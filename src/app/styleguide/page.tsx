@@ -165,7 +165,7 @@ function Swatch({ className, label, light }: { className: string; label: string;
     <div
       className={`flex size-16 items-end rounded-md border border-line p-1.5 ${className}`}
     >
-      <span className={`font-mono text-[0.6rem] ${light ? "text-ink-700" : "text-white"}`}>
+      <span className={`font-mono text-micro ${light ? "text-ink-700" : "text-white"}`}>
         {label}
       </span>
     </div>
