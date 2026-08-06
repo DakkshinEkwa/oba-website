@@ -32,8 +32,14 @@ export function LibsynPlayer({
 
   function toggle() {
     const el = audioRef.current;
-    if (!el || error) return;
+    if (!el) return;
     if (el.paused) {
+      // After a failed load the element stays errored; reload resets it so
+      // "Retry playback" actually works.
+      if (error) {
+        setError(undefined);
+        el.load();
+      }
       setBuffering(true);
       el.play().catch(() => {
         setPlaying(false);
@@ -138,6 +144,7 @@ export function LibsynPlayer({
         onPause={() => setPlaying(false)}
         onEnded={() => {
           setPlaying(false);
+          setCurrent(0);
           setProgress(0);
         }}
         onError={() => {
