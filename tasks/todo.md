@@ -17,8 +17,8 @@ Merge order: F → A → B → C → D → E → H. All committed to `main`.
 - [x] A4: NewsletterForm (aria-describedby, role="alert", pending)
 - [x] A5: styleguide Field demos `htmlFor`/`id`
 
-## PR B — Navigation accessibility ✔
-- [x] B1: Radix DropdownMenu NavDropdown (keyboard, aria-expanded, Escape, click-outside)
+## PR B — Navigation accessibility ✔ (dropdown intentionally reverted)
+- [x] B1: ~~Radix DropdownMenu NavDropdown~~ — intentionally reverted to the legacy CSS hover menu (keyboard-inaccessible dropdown finding re-opened / deferred)
 - [x] B2: `aria-current="page"` on active nav links
 - [x] B3: Skip link `pointer-events-auto`
 - [x] B4: MobileNav icon/aria-label swap, focus ring, ≥44px submenu
@@ -54,4 +54,5 @@ Merge order: F → A → B → C → D → E → H. All committed to `main`.
 - [x] `npx tsc --noEmit` per PR
 - [x] `npm run lint` per PR
 - [x] `npm run build` per PR
-- [ ] Browser pass (dropdown keyboard nav, form SR announcements, audio player states) — pending tooling
+- [ ] Browser pass (form SR announcements, audio player states) — pending tooling
+- [ ] Nav dropdown keyboard access — intentionally deferred (kept the CSS hover menu)

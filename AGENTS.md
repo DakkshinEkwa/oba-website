@@ -1,0 +1,41 @@
+# AGENTS.md
+
+OpenCode guidance for the obacademy.org rebuild. Detailed companion file: `CLAUDE.md`.
+
+## Commands
+
+- Dev: `npm run dev` (http://localhost:3000)
+- Build (SSG): `npm run build` — also validates content frontmatter against zod, so schema errors fail here
+- Lint: `npm run lint` (eslint-config-next, includes react-hooks rules — they catch real bugs)
+- Typecheck: `npx tsc --noEmit`
+- **No test suite exists.** Verify changes with `lint` + `tsc` + `build`.
+
+Gotchas:
+- `tsconfig.json` does not set `noUnusedLocals`, so `npx tsc --noEmit` misses unused imports/vars. Run `npx tsc --noUnusedLocals --noUnusedParameters --noEmit` to catch dead code.
+- Content scrapers are one-off dev tools that hit the live site (raw HTML cached in `scripts/scrape/.cache/`):
+  `npx tsx scripts/scrape/episodes.ts` → `src/content/episodes/*.mdx` + `public/images/episodes`
+  `npx tsx scripts/scrape/blog.ts` → `src/content/blog/*.mdx` + `public/images/blog`
+
+## Architecture
+
+- Next.js App Router + TypeScript + Tailwind CSS v4, **fully static (SSG)**. No database, no API routes.
+- **Content is local files** in `src/content/` (episodes/*.mdx, blog/*.mdx, hosts.json, events.json). Frontmatter is zod-validated (`src/lib/schemas.ts`); loaders in `src/lib/content/` are memoized. Add/edit content there — invalid frontmatter fails the build.
+- **Site-wide config lives in `src/lib/site.ts`**: metadata, `primaryNav`, and the primary CTA. Change nav/CTA there, not in components.
+- Component layers (`src/components/`): `ui/` design-system primitives → `layout/` (header/footer/nav) → `marketing/` (hero, CTASection, PageHero) → `content/` (cards, LibsynPlayer, Markdown) → `forms/`. `home/` holds homepage sections (split out of `src/app/page.tsx`).
+- Design tokens live in `src/app/globals.css` under `@theme`. Use `cn()` (`src/lib/utils.ts`) for class merging — it's configured so the custom `text-*` type utilities don't collide with `text-<color>` utilities.
+- SEO: legacy WordPress URLs 301-redirected in `next.config.ts`; `sitemap.ts`/`robots.ts` in `src/app/`.
+
+## Conventions & constraints
+
+- **Copy must follow `docs/messaging-strategy.md`.** OBA is positioned as a professional platform for experienced ophthalmology leaders, not a lead-gen funnel; speaker/partner conversions are the primary CTAs. Only verifiable claims are allowed (75+ episodes, six named hosts, since 2022, 100% ophthalmology) — never add "thousands of practices" or "weekly content" claims, and describe empty sections honestly. Read that doc before writing or changing any site copy.
+- **Shadows are elevation-only** (floating/overlay surfaces: scrolled nav, dialogs, dropdowns). Cards use hairline borders — no decorative card shadows, no raw hex outside `@theme`.
+- Forms (contact, newsletter, analyze) and auth pages (`/login`, `/register`, `/forgot-password`) are **styled UI shells**: they validate client-side (vanilla React state) and show pending/success states, but submission is stubbed with `// TODO`. Don't wire backends unless asked.
+- Webinars and events render honest empty states until real content exists (`src/content/webinars/*.mdx`, `src/content/events.json`).
+- `LibsynPlayer` plays direct Libsyn MP3s — keep `preload="none"` and its buffering/error/no-audio states.
+- Tailwind v4 token-var syntax uses parens, e.g. `pt-(--header-offset)` (the token pages use to clear the floating header).
+
+## Audit status
+
+`docs/ui-audit.md` catalogs accessibility/design findings; most remediation is committed (see `tasks/todo.md`). Two open items:
+- **Nav dropdown keyboard access is intentionally deferred** — `SiteHeader` uses the legacy CSS hover-only menu (`group-hover`); submenus are not keyboard-reachable and the trigger has no `aria-expanded`. Don't "fix" this without confirming it's wanted.
+- A browser pass of form screen-reader announcements and audio player states is still pending.
