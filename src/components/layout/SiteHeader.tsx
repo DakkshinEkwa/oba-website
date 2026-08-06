@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { Logo } from "./Logo";
 import { MobileNav } from "./MobileNav";
@@ -41,7 +42,7 @@ export function SiteHeader() {
     >
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-ink-900 focus:px-4 focus:py-2 focus:text-white"
+        className="pointer-events-auto sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-ink-900 focus:px-4 focus:py-2 focus:text-white"
       >
         Skip to content
       </a>
@@ -65,6 +66,7 @@ export function SiteHeader() {
               <Link
                 key={item.label}
                 href={item.href}
+                aria-current={active ? "page" : undefined}
                 className={cn("rounded-md px-3 py-2 text-small transition-colors", navLinkTone(onDark, active))}
               >
                 {item.label}
@@ -113,34 +115,61 @@ function NavDropdown({
   active: boolean;
   onDark: boolean;
 }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <div className="group relative">
-      <Link
-        href={item.href}
-        className={cn(
-          "inline-flex items-center gap-1 rounded-md px-3 py-2 text-small transition-colors",
-          navLinkTone(onDark, active),
-        )}
-      >
-        {item.label}
-        <ChevronDown className="size-3.5 transition-transform group-hover:rotate-180" aria-hidden />
-      </Link>
-      <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-        <div className="w-72 rounded-xl border border-line bg-canvas/95 p-2 shadow-lg backdrop-blur-xl">
-          {item.children!.map((child) => (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <DropdownMenu.Root open={open} onOpenChange={setOpen}>
+        <DropdownMenu.Trigger asChild>
+          <button
+            type="button"
+            aria-current={active ? "page" : undefined}
+            className={cn(
+              "inline-flex items-center gap-1 rounded-md px-3 py-2 text-small transition-colors",
+              navLinkTone(onDark, active),
+            )}
+          >
+            {item.label}
+            <ChevronDown
+              className={cn("size-3.5 transition-transform", open && "rotate-180")}
+              aria-hidden
+            />
+          </button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content
+          sideOffset={12}
+          align="start"
+          className="z-50 min-w-72 rounded-xl border border-line bg-canvas/95 p-2 shadow-lg backdrop-blur-xl"
+        >
+          <DropdownMenu.Item asChild>
             <Link
-              key={child.label}
-              href={child.href}
-              className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-ink-900/8"
+              href={item.href}
+              aria-current={active ? "page" : undefined}
+              className="block rounded-lg px-3 py-2.5 outline-none transition-colors hover:bg-ink-900/8 data-[highlighted]:bg-ink-900/8"
             >
-              <span className="block text-small font-medium text-ink-900">{child.label}</span>
-              {child.description ? (
-                <span className="mt-0.5 block text-small text-ink-400">{child.description}</span>
-              ) : null}
+              <span className="block text-small font-medium text-ink-900">{item.label}</span>
+              <span className="mt-0.5 block text-small text-ink-400">Overview</span>
             </Link>
+          </DropdownMenu.Item>
+          {item.children!.map((child) => (
+            <DropdownMenu.Item asChild key={child.label}>
+              <Link
+                href={child.href}
+                className="block rounded-lg px-3 py-2.5 outline-none transition-colors hover:bg-ink-900/8 data-[highlighted]:bg-ink-900/8"
+              >
+                <span className="block text-small font-medium text-ink-900">{child.label}</span>
+                {child.description ? (
+                  <span className="mt-0.5 block text-small text-ink-400">{child.description}</span>
+                ) : null}
+              </Link>
+            </DropdownMenu.Item>
           ))}
-        </div>
-      </div>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
     </div>
   );
 }
