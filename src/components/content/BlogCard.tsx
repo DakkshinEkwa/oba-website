@@ -7,8 +7,13 @@ import { formatDate } from "@/lib/utils";
 export function BlogCard({ post }: { post: BlogPost }) {
   const href = `/blog/${post.slug}`;
   return (
-    <article className="group flex flex-col overflow-hidden rounded-lg border border-line bg-canvas transition-colors duration-200 hover:border-ink-300">
-      <Link href={href} className="relative block aspect-[16/9] overflow-hidden bg-canvas-subtle">
+    <article className="group relative flex flex-col overflow-hidden rounded-lg border border-line bg-canvas transition-colors duration-200 hover:border-ink-300">
+      <Link
+        href={href}
+        aria-hidden
+        tabIndex={-1}
+        className="relative block aspect-[16/9] overflow-hidden bg-canvas-subtle"
+      >
         {post.coverImage ? (
           <Image
             src={post.coverImage}
@@ -34,7 +39,10 @@ export function BlogCard({ post }: { post: BlogPost }) {
           ) : null}
         </div>
         <h3 className="mt-2 text-body-lg font-medium leading-snug">
-          <Link href={href} className="transition-colors group-hover:text-accent-700">
+          <Link
+            href={href}
+            className="transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-accent-700"
+          >
             {post.title}
           </Link>
         </h3>
