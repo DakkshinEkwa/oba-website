@@ -36,6 +36,8 @@ export function FeaturedEpisode({ featured }: { featured?: Episode }) {
           {featured.image ? (
             <Link
               href={`/podcast/episodes/${featured.slug}`}
+              aria-hidden
+              tabIndex={-1}
               className="relative block aspect-video overflow-hidden rounded-lg border border-line"
             >
               <Image
