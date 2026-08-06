@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { MailCheck } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Field, Input } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
+import { SuccessPanel } from "./SuccessPanel";
 
 export function ForgotPasswordForm() {
   const [error, setError] = useState<string>();
-  const [done, setDone] = useState(false);
+  const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -17,27 +18,29 @@ export function ForgotPasswordForm() {
       return;
     }
     setError(undefined);
-    setDone(true); // TODO: wire to auth provider.
+    setStatus("submitting"); // TODO: wire to auth provider.
+    window.setTimeout(() => setStatus("done"), 500);
   }
 
-  if (done) {
+  if (status === "done") {
     return (
-      <div className="flex flex-col items-center rounded-xl border border-accent-100 bg-accent-50 px-6 py-10 text-center">
-        <MailCheck className="size-9 text-accent-600" aria-hidden />
-        <p className="mt-3 text-body text-ink-600">
-          If an account exists for that email, a reset link is on its way.
-        </p>
-      </div>
+      <SuccessPanel
+        title="Reset link sent"
+        body="If an account exists for that email, a reset link is on its way."
+      />
     );
   }
 
+  const submitting = status === "submitting";
+
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-4">
+    <form onSubmit={onSubmit} noValidate aria-busy={submitting} className="grid gap-4">
       <Field label="Email" htmlFor="email" required error={error}>
-        <Input id="email" name="email" type="email" aria-invalid={!!error} autoComplete="email" />
+        <Input id="email" name="email" type="email" autoComplete="email" />
       </Field>
-      <Button type="submit" variant="primary" size="lg" className="w-full">
-        Send reset link
+      <Button type="submit" variant="primary" size="lg" className="w-full" disabled={submitting}>
+        {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+        {submitting ? "Sending…" : "Send reset link"}
       </Button>
     </form>
   );

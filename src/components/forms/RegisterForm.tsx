@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Field, Input, Select } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
+import { SuccessPanel } from "./SuccessPanel";
 import { cn } from "@/lib/utils";
 
 const professions = [
@@ -31,7 +32,7 @@ function strength(pw: string): { score: number; label: string; cls: string } {
 export function RegisterForm() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [done, setDone] = useState(false);
+  const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
   const st = strength(password);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -46,34 +47,34 @@ export function RegisterForm() {
     setErrors(next);
     if (Object.keys(next).length === 0) {
       // TODO: wire to auth provider (Auth.js / Clerk / Supabase).
-      setDone(true);
+      setStatus("submitting");
+      window.setTimeout(() => setStatus("done"), 500);
     }
   }
 
-  if (done) {
+  if (status === "done") {
     return (
-      <div className="flex flex-col items-center rounded-xl border border-accent-100 bg-accent-50 px-6 py-10 text-center">
-        <CheckCircle2 className="size-9 text-accent-600" aria-hidden />
-        <h3 className="mt-3 text-h3 font-normal text-ink-900">Account created</h3>
-        <p className="mt-1 text-body text-ink-600">
-          Welcome to OB Academy. (Demo — no account is actually created yet.)
-        </p>
-      </div>
+      <SuccessPanel
+        title="Account created"
+        body="Welcome to OB Academy. (Demo — no account is actually created yet.)"
+      />
     );
   }
 
+  const submitting = status === "submitting";
+
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-4">
+    <form onSubmit={onSubmit} noValidate aria-busy={submitting} className="grid gap-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="First name" htmlFor="firstName" required error={errors.firstName}>
-          <Input id="firstName" name="firstName" aria-invalid={!!errors.firstName} autoComplete="given-name" />
+          <Input id="firstName" name="firstName" autoComplete="given-name" />
         </Field>
         <Field label="Last name" htmlFor="lastName" required error={errors.lastName}>
-          <Input id="lastName" name="lastName" aria-invalid={!!errors.lastName} autoComplete="family-name" />
+          <Input id="lastName" name="lastName" autoComplete="family-name" />
         </Field>
       </div>
       <Field label="Work email" htmlFor="email" required error={errors.email}>
-        <Input id="email" name="email" type="email" aria-invalid={!!errors.email} autoComplete="email" />
+        <Input id="email" name="email" type="email" autoComplete="email" />
       </Field>
       <Field label="Password" htmlFor="password" required error={errors.password}>
         <Input
@@ -81,7 +82,6 @@ export function RegisterForm() {
           name="password"
           type="password"
           autoComplete="new-password"
-          aria-invalid={!!errors.password}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -96,7 +96,7 @@ export function RegisterForm() {
               />
             ))}
           </div>
-          <span className="w-16 text-right text-small text-ink-400">{st.label}</span>
+          <span className="w-16 text-right text-small text-ink-500">{st.label}</span>
         </div>
       ) : null}
       <Field label="I am a…" htmlFor="profession" hint="Optional — helps us tailor content to you.">
@@ -109,10 +109,11 @@ export function RegisterForm() {
           ))}
         </Select>
       </Field>
-      <Button type="submit" variant="primary" size="lg" className="mt-2 w-full">
-        Create free account
+      <Button type="submit" variant="primary" size="lg" className="mt-2 w-full" disabled={submitting}>
+        {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+        {submitting ? "Creating account…" : "Create free account"}
       </Button>
-      <p className="text-center text-small text-ink-400">
+      <p className="text-center text-small text-ink-500">
         By creating an account you agree to our terms and privacy policy.
       </p>
     </form>

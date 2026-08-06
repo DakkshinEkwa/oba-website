@@ -1,3 +1,4 @@
+import { Children, cloneElement, isValidElement, useId } from "react";
 import { cn } from "@/lib/utils";
 
 const controlBase =
@@ -37,12 +38,29 @@ export function Select({ className, ...props }: React.ComponentProps<"select">) 
   );
 }
 
-export function FieldError({ children }: { children?: React.ReactNode }) {
+export function FieldError({
+  id,
+  children,
+}: {
+  id?: string;
+  children?: React.ReactNode;
+}) {
   if (!children) return null;
-  return <p className="text-small text-error">{children}</p>;
+  return (
+    <p id={id} role="alert" className="text-small text-error">
+      {children}
+    </p>
+  );
 }
 
-/** Label + control + error wrapper. */
+type ControlProps = {
+  id?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean;
+  required?: boolean;
+};
+
+/** Label + control + error wrapper. Wires ids, error/hint announcements, and required semantics onto the child control. */
 export function Field({
   label,
   htmlFor,
@@ -60,14 +78,31 @@ export function Field({
   children: React.ReactNode;
   className?: string;
 }) {
+  const autoId = useId();
+  const controlId = htmlFor ?? autoId;
+  const hintId = hint ? `${controlId}-hint` : undefined;
+  const errorId = error ? `${controlId}-error` : undefined;
+  const describedBy = [errorId, hintId].filter(Boolean).join(" ") || undefined;
+
+  const control = Children.map(children, (child) => {
+    if (!isValidElement(child)) return child;
+    const element = child as React.ReactElement<ControlProps>;
+    return cloneElement(element, {
+      id: element.props.id ?? controlId,
+      "aria-describedby": element.props["aria-describedby"] ?? describedBy,
+      "aria-invalid": element.props["aria-invalid"] ?? Boolean(error),
+      required: required || undefined,
+    });
+  });
+
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <Label htmlFor={htmlFor} required={required}>
+      <Label htmlFor={controlId} required={required}>
         {label}
       </Label>
-      {hint ? <p className="text-small text-ink-400">{hint}</p> : null}
-      {children}
-      <FieldError>{error}</FieldError>
+      {hint ? <p id={hintId} className="text-small text-ink-500">{hint}</p> : null}
+      {control}
+      <FieldError id={errorId}>{error}</FieldError>
     </div>
   );
 }
