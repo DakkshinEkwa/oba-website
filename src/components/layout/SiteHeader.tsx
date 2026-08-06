@@ -35,7 +35,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "pointer-events-none fixed inset-x-0 top-0 z-50 transition-[padding] duration-300 ease-out",
+        "pointer-events-none fixed inset-x-0 top-0 z-50 transition-[padding] duration-500 ease-out",
         scrolled ? "px-3 pt-3 sm:px-5 sm:pt-4" : "pt-4 sm:pt-5",
       )}
     >
@@ -47,7 +47,7 @@ export function SiteHeader() {
       </a>
       <div
         className={cn(
-          "pointer-events-auto mx-auto flex h-16 items-center justify-between gap-6 border transition-all duration-300 ease-out",
+          "pointer-events-auto mx-auto flex h-16 items-center justify-between gap-6 border transition-all duration-500 ease-out",
           scrolled
             ? "max-w-[var(--container-wide)] rounded-xl border-white/10 bg-ink-800/70 px-3 pl-5 shadow-lg backdrop-blur-xl sm:px-3.5 sm:pl-6"
             : "max-w-[110rem] rounded-none border-transparent bg-transparent px-5 pl-6 sm:px-6 sm:pl-8 lg:px-8 lg:pl-10",
@@ -100,8 +100,8 @@ export function SiteHeader() {
 }
 
 function navLinkTone(onDark: boolean, active: boolean) {
-  if (onDark) return active ? "text-white" : "text-white/65 hover:text-white";
-  return active ? "text-ink-900" : "text-ink-500 hover:text-ink-900";
+  if (onDark) return active ? "bg-white/10 text-white" : "text-white/65 hover:bg-white/10 hover:text-white";
+  return active ? "bg-ink-900/5 text-ink-900" : "text-ink-500 hover:bg-ink-900/8 hover:text-ink-900";
 }
 
 function NavDropdown({
@@ -131,7 +131,7 @@ function NavDropdown({
             <Link
               key={child.label}
               href={child.href}
-              className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-canvas-subtle"
+              className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-ink-900/8"
             >
               <span className="block text-small font-medium text-ink-900">{child.label}</span>
               {child.description ? (

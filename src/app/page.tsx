@@ -8,7 +8,10 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { EpisodeCard } from "@/components/content/EpisodeCard";
 import { BlogCard } from "@/components/content/BlogCard";
 import { CTASection } from "@/components/marketing/CTASection";
-import { getAllEpisodes, getFeaturedEpisode, getAllBlogPosts } from "@/lib/content";
+import { HeroHostStack } from "@/components/marketing/HeroHostStack";
+import { EpisodeTicker } from "@/components/marketing/EpisodeTicker";
+import { AnimatedStat } from "@/components/marketing/AnimatedStat";
+import { getAllEpisodes, getFeaturedEpisode, getAllBlogPosts, getAllHosts } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
 
 const problemAreas = [
@@ -72,9 +75,11 @@ const engagements = [
 
 export default function HomePage() {
   const featured = getFeaturedEpisode();
-  const latest = getAllEpisodes().slice(0, 3);
+  const allEpisodes = getAllEpisodes();
+  const latest = allEpisodes.slice(0, 3);
   const posts = getAllBlogPosts().slice(0, 3);
-  const episodeCount = getAllEpisodes().length;
+  const episodeCount = allEpisodes.length;
+  const hosts = getAllHosts();
 
   return (
     <>
@@ -101,22 +106,25 @@ export default function HomePage() {
         <Container size="wide" className="relative flex flex-1 flex-col justify-center pb-16 pt-40 sm:pt-44">
           <div className="max-w-2xl">
             <p className="text-body text-white/60">The Ophthalmology Business Academy</p>
-            <h1 className="mt-6 text-h1 font-light tracking-tight text-white">
+            <h1 className="mt-6 text-[clamp(2.1rem,1.5rem+2.1vw,3.15rem)] font-light leading-[1.08] tracking-[-0.02em] text-white">
               <span className="whitespace-nowrap">Where practice strategy</span>
               <br />
               <span className="text-white/45">meets execution.</span>
             </h1>
-            <p className="mt-7 max-w-md text-body-lg text-white/65">
+            <p className="mt-6 max-w-md text-body-lg text-white/65">
               Personalized business education for ophthalmologists — strategies, expert
               interviews, and training built on what actually grows practices.
             </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button href="/podcast/episodes" variant="onDark" size="lg">
                 Browse Episodes
               </Button>
-              <Button href="/speak" variant="frosted" size="lg">
+              <Button href="/speak" variant="frosted" size="lg" className="rounded-lg">
                 Contribute
               </Button>
+            </div>
+            <div className="mt-10">
+              <HeroHostStack hosts={hosts} />
             </div>
           </div>
         </Container>
@@ -137,6 +145,9 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
+
+      {/* ---------------- Episode ticker ---------------- */}
+      <EpisodeTicker episodes={allEpisodes} />
 
       {/* ---------------- Featured episode strip ---------------- */}
       {featured ? (
@@ -193,7 +204,9 @@ export default function HomePage() {
               { n: "100%", l: "Ophthalmology-specific" },
             ].map((s, i) => (
               <div key={i} className="px-6 py-10">
-                <dt className="text-h1 font-light tracking-tight text-ink-900">{s.n}</dt>
+                <dt className="text-h1 font-light tracking-tight text-ink-900">
+                  <AnimatedStat value={s.n} />
+                </dt>
                 <dd className="mt-1 text-small text-ink-400">{s.l}</dd>
               </div>
             ))}
