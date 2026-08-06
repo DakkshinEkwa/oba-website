@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { EpisodeCard } from "@/components/content/EpisodeCard";
 import { HostCard } from "@/components/content/HostCard";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { IconCard } from "@/components/ui/IconCard";
 import { CTASection } from "@/components/marketing/CTASection";
 import { getAllEpisodes, getAllHosts } from "@/lib/content";
 
@@ -50,13 +51,7 @@ export default function PodcastPage() {
             { icon: Headphones, title: "Decision-focused", body: "Each conversation digs into a real choice: what was decided, what it cost, and what the trade-offs were." },
             { icon: Users, title: "Non-promotional", body: "No episode is a sales pitch. Guests are invited for their experience, not their sponsorship." },
           ].map((f) => (
-            <div key={f.title} className="rounded-lg border border-line p-7">
-              <div className="inline-flex size-12 items-center justify-center rounded-lg bg-accent-50 text-accent-600">
-                <f.icon className="size-6" aria-hidden />
-              </div>
-              <h3 className="mt-5 text-h3 font-normal">{f.title}</h3>
-              <p className="mt-2 text-body text-ink-500">{f.body}</p>
-            </div>
+            <IconCard key={f.title} icon={f.icon} title={f.title} body={f.body} chip="lg" />
           ))}
         </div>
       </Section>

@@ -14,6 +14,8 @@ import {
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { PageHero } from "@/components/marketing/PageHero";
 import { Button } from "@/components/ui/Button";
+import { IconCard } from "@/components/ui/IconCard";
+import { ChecklistItem } from "@/components/ui/ChecklistItem";
 import { ContactForm } from "@/components/forms/ContactForm";
 
 export const metadata: Metadata = {
@@ -121,13 +123,7 @@ export default function SpeakPage() {
         />
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {expertiseGroups.map((g) => (
-            <div key={g.title} className="rounded-lg border border-line bg-canvas p-7">
-              <div className="inline-flex size-11 items-center justify-center rounded-lg bg-accent-50 text-accent-600">
-                <g.icon className="size-5" aria-hidden />
-              </div>
-              <h3 className="mt-4 text-h3 font-normal">{g.title}</h3>
-              <p className="mt-2 text-body text-ink-500">{g.body}</p>
-            </div>
+            <IconCard key={g.title} icon={g.icon} title={g.title} body={g.body} />
           ))}
         </div>
       </Section>
@@ -158,10 +154,9 @@ export default function SpeakPage() {
         />
         <ul className="mt-10 space-y-4">
           {standards.map((s) => (
-            <li key={s} className="flex items-start gap-3 rounded-lg border border-line bg-canvas p-5 text-body text-ink-600">
-              <ShieldCheck className="mt-0.5 size-5 shrink-0 text-accent-600" aria-hidden />
+            <ChecklistItem key={s} icon={ShieldCheck}>
               {s}
-            </li>
+            </ChecklistItem>
           ))}
         </ul>
       </Section>

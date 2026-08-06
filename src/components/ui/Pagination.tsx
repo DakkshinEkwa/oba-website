@@ -74,10 +74,20 @@ function PageLink({
     className,
   );
   if (!href) {
+    const isCurrent = Boolean(active);
     return (
-      <span className={classes} {...props}>
-        {children}
-      </span>
+      <>
+        <span
+          className={classes}
+          aria-hidden={!isCurrent}
+          aria-current={isCurrent ? "page" : undefined}
+        >
+          {children}
+        </span>
+        {!isCurrent && props["aria-label"] ? (
+          <span className="sr-only">{props["aria-label"]}</span>
+        ) : null}
+      </>
     );
   }
   return (

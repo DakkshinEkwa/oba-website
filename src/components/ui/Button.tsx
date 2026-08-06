@@ -48,5 +48,6 @@ export function Button(props: ButtonAsButton | ButtonAsLink) {
   if ("href" in rest && rest.href !== undefined) {
     return <Link className={classes} {...(rest as ButtonAsLink)} />;
   }
-  return <button className={classes} {...(rest as ButtonAsButton)} />;
+  const { type, ...buttonRest } = rest as ButtonAsButton;
+  return <button type={type ?? "button"} className={classes} {...buttonRest} />;
 }
