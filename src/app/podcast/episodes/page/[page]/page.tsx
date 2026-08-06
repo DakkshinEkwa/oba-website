@@ -15,7 +15,11 @@ export async function generateMetadata({
   params: Promise<{ page: string }>;
 }): Promise<Metadata> {
   const { page } = await params;
-  return { title: `Podcast Episodes — Page ${page}` };
+  return {
+    title: `Podcast Episodes — Page ${page}`,
+    description:
+      "Every episode of the Ophthalmology Business Podcast — practice growth, marketing, operations, and leadership for eye care.",
+  };
 }
 
 export default async function EpisodesPaginatedPage({

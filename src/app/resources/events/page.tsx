@@ -27,6 +27,7 @@ export default function EventsPage() {
       <Section spacing="default">
         {events.length === 0 ? (
           <EmptyState
+            level="h2"
             icon={CalendarDays}
             title="No events are currently scheduled"
             body="Newsletter subscribers hear about new panels first. In the meantime, the conversation library is open."
