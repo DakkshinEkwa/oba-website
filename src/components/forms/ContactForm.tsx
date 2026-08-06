@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Field, Input, Textarea, Select } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
+import { SuccessPanel } from "./SuccessPanel";
 
 type Variant = "contact" | "analyze" | "speaker" | "partnership";
 
@@ -44,7 +45,7 @@ const messageField: Record<Variant, { label: string; placeholder: string }> = {
 
 /** Stubbed lead/contact form — validates client-side, shows success, no backend yet. */
 export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
-  const [status, setStatus] = useState<"idle" | "done">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -61,32 +62,34 @@ export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
     setErrors(next);
     if (Object.keys(next).length === 0) {
       // TODO: POST to CRM/ESP endpoint.
-      setStatus("done");
+      setStatus("submitting");
+      window.setTimeout(() => setStatus("done"), 500);
     }
   }
 
   if (status === "done") {
     return (
-      <div className="flex flex-col items-center rounded-xl border border-accent-100 bg-accent-50 px-6 py-12 text-center">
-        <CheckCircle2 className="size-10 text-accent-600" aria-hidden />
-        <h3 className="mt-4 text-h3 font-normal text-ink-900">
-          {variant === "speaker" || variant === "partnership"
+      <SuccessPanel
+        title={
+          variant === "speaker" || variant === "partnership"
             ? "Thanks — we'll follow up"
-            : "Thanks — we'll be in touch"}
-        </h3>
-        <p className="mt-2 max-w-sm text-body text-ink-600">{successCopy[variant]}</p>
-      </div>
+            : "Thanks — we'll be in touch"
+        }
+        body={successCopy[variant]}
+      />
     );
   }
 
+  const submitting = status === "submitting";
+
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-5">
+    <form onSubmit={onSubmit} noValidate aria-busy={submitting} className="grid gap-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Full name" htmlFor="name" required error={errors.name}>
-          <Input id="name" name="name" aria-invalid={!!errors.name} placeholder="Jane Doe" />
+          <Input id="name" name="name" placeholder="Jane Doe" />
         </Field>
         <Field label="Email" htmlFor="email" required error={errors.email}>
-          <Input id="email" name="email" type="email" aria-invalid={!!errors.email} placeholder="you@practice.com" />
+          <Input id="email" name="email" type="email" placeholder="you@practice.com" />
         </Field>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
@@ -101,7 +104,7 @@ export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
         )}
         {variant === "analyze" ? (
           <Field label="Practice website" htmlFor="website" required error={errors.website}>
-            <Input id="website" name="website" aria-invalid={!!errors.website} placeholder="https://…" />
+            <Input id="website" name="website" placeholder="https://…" />
           </Field>
         ) : variant === "speaker" ? (
           <Field label="Area of expertise" htmlFor="role">
@@ -156,13 +159,13 @@ export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
         <Textarea
           id="message"
           name="message"
-          aria-invalid={!!errors.message}
           placeholder={messageField[variant].placeholder}
         />
       </Field>
       <div>
-        <Button type="submit" variant="primary" size="lg">
-          {submitLabel[variant]}
+        <Button type="submit" variant="primary" size="lg" disabled={submitting}>
+          {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+          {submitting ? "Sending…" : submitLabel[variant]}
         </Button>
       </div>
     </form>

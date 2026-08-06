@@ -113,11 +113,11 @@ export default function StyleguidePage() {
           </Card>
           <Card>
             <CardBody className="space-y-4">
-              <Field label="Full name" required>
-                <Input placeholder="Jane Doe" />
+              <Field label="Full name" htmlFor="sg-name" required>
+                <Input id="sg-name" placeholder="Jane Doe" />
               </Field>
-              <Field label="Specialty">
-                <Select defaultValue="">
+              <Field label="Specialty" htmlFor="sg-specialty">
+                <Select id="sg-specialty" defaultValue="">
                   <option value="" disabled>
                     Select…
                   </option>
@@ -126,8 +126,8 @@ export default function StyleguidePage() {
                   <option>Glaucoma</option>
                 </Select>
               </Field>
-              <Field label="Message">
-                <Textarea placeholder="How can we help?" />
+              <Field label="Message" htmlFor="sg-message">
+                <Textarea id="sg-message" placeholder="How can we help?" />
               </Field>
             </CardBody>
           </Card>

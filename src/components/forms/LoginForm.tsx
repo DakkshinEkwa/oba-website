@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Field, Input } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
+import { SuccessPanel } from "./SuccessPanel";
 
 export function LoginForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [done, setDone] = useState(false);
+  const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -18,41 +19,39 @@ export function LoginForm() {
       next.email = "Enter a valid email.";
     if (!String(form.get("password") || "")) next.password = "Enter your password.";
     setErrors(next);
-    if (Object.keys(next).length === 0) setDone(true); // TODO: wire to auth provider.
+    if (Object.keys(next).length === 0) {
+      setStatus("submitting"); // TODO: wire to auth provider.
+      window.setTimeout(() => setStatus("done"), 500);
+    }
   }
 
-  if (done) {
+  if (status === "done") {
     return (
-      <div className="flex flex-col items-center rounded-xl border border-accent-100 bg-accent-50 px-6 py-10 text-center">
-        <CheckCircle2 className="size-9 text-accent-600" aria-hidden />
-        <p className="mt-3 text-body text-ink-600">
-          Signed in (demo — authentication isn&apos;t wired up yet).
-        </p>
-      </div>
+      <SuccessPanel
+        title="Signed in"
+        body="Signed in (demo — authentication isn't wired up yet)."
+      />
     );
   }
 
+  const submitting = status === "submitting";
+
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-4">
+    <form onSubmit={onSubmit} noValidate aria-busy={submitting} className="grid gap-4">
       <Field label="Email" htmlFor="email" required error={errors.email}>
-        <Input id="email" name="email" type="email" aria-invalid={!!errors.email} autoComplete="email" />
+        <Input id="email" name="email" type="email" autoComplete="email" />
       </Field>
       <Field label="Password" htmlFor="password" required error={errors.password}>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          aria-invalid={!!errors.password}
-          autoComplete="current-password"
-        />
+        <Input id="password" name="password" type="password" autoComplete="current-password" />
       </Field>
       <div className="flex justify-end">
         <Link href="/forgot-password" className="text-small text-accent-600 hover:text-accent-700">
           Forgot password?
         </Link>
       </div>
-      <Button type="submit" variant="primary" size="lg" className="w-full">
-        Log in
+      <Button type="submit" variant="primary" size="lg" className="w-full" disabled={submitting}>
+        {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+        {submitting ? "Signing in…" : "Log in"}
       </Button>
     </form>
   );
