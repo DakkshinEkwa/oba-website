@@ -24,7 +24,7 @@ export function AuthShell({
 }) {
   return (
     <Container className="py-14 sm:py-20">
-      <div className="mx-auto grid max-w-4xl overflow-hidden rounded-2xl border border-line lg:grid-cols-2">
+      <div className="mx-auto grid max-w-4xl overflow-hidden rounded-xl border border-line lg:grid-cols-2">
         <div className="bg-canvas p-8 sm:p-10">
           <h1 className="text-h2 font-light tracking-tight text-ink-900">{title}</h1>
           {subtitle ? <p className="mt-2 text-body text-ink-500">{subtitle}</p> : null}

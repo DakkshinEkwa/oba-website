@@ -47,7 +47,7 @@ export function SiteHeader() {
       </a>
       <div
         className={cn(
-          "pointer-events-auto mx-auto flex h-16 items-center justify-between gap-6 border transition-all duration-500 ease-out",
+          "pointer-events-auto mx-auto flex h-16 items-center justify-between gap-6 border transition-[padding,max-width,border-radius,background-color,border-color] duration-500 ease-out",
           scrolled
             ? "max-w-[var(--container-wide)] rounded-xl border-white/10 bg-ink-800/70 px-3 pl-5 shadow-lg backdrop-blur-xl sm:px-3.5 sm:pl-6"
             : "max-w-[110rem] rounded-none border-transparent bg-transparent px-5 pl-6 sm:px-6 sm:pl-8 lg:px-8 lg:pl-10",

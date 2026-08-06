@@ -37,7 +37,7 @@ export function HeroHostStack({ hosts }: { hosts: Host[] }) {
             whileHover={{ y: -4, scale: 1.08, zIndex: 20 }}
             className="-ml-3 shrink-0 first:ml-0"
           >
-            <div className="size-11 overflow-hidden rounded-full bg-ink-700 shadow-lg ring-1 ring-white/15 sm:size-12">
+            <div className="size-11 overflow-hidden rounded-full bg-ink-700 ring-1 ring-white/15 sm:size-12">
               <Image
                 src={host.avatar!}
                 alt={host.name}

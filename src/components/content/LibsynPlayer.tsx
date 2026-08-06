@@ -79,7 +79,7 @@ export function LibsynPlayer({
                 background: `linear-gradient(to right, var(--color-accent-500) ${progress}%, var(--color-line-strong) ${progress}%)`,
               }}
             />
-            <span className="w-24 shrink-0 text-right font-mono text-[0.7rem] text-ink-400">
+            <span className="w-24 shrink-0 text-right font-mono text-micro text-ink-400">
               {fmt(current)} / {fmt(duration)}
             </span>
           </div>

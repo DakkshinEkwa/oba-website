@@ -7,7 +7,7 @@ import { formatDate } from "@/lib/utils";
 export function EpisodeCard({ episode }: { episode: Episode }) {
   const href = `/podcast/episodes/${episode.slug}`;
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl border border-line bg-canvas shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-ink-300 hover:shadow-md">
+    <article className="group flex flex-col overflow-hidden rounded-xl border border-line bg-canvas transition-colors duration-200 hover:border-ink-300">
       <Link href={href} className="relative block aspect-video overflow-hidden bg-canvas-subtle">
         {episode.image ? (
           <Image

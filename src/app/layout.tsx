@@ -72,8 +72,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
         <SiteHeader />
-        {/* Fixed floating nav: pages clear it via pt-24; full-bleed heroes pull under with -mt-24 */}
-        <main id="main" className="flex-1 pt-24">
+        {/* Fixed floating nav: pages clear it via --header-offset; full-bleed heroes pull under with -mt-(--header-offset) */}
+        <main id="main" className="flex-1 pt-(--header-offset)">
           {children}
         </main>
         <SiteFooter />
