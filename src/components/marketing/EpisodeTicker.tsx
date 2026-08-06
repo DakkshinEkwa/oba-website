@@ -12,7 +12,7 @@ export function EpisodeTicker({ episodes }: { episodes: Episode[] }) {
 
   return (
     <div className="group overflow-hidden border-y border-line bg-canvas">
-      <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused]">
+      <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]">
         <TickerRow episodes={episodes} />
         <TickerRow episodes={episodes} ariaHidden />
       </div>
