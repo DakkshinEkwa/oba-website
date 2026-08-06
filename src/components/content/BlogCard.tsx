@@ -33,12 +33,12 @@ export function BlogCard({ post }: { post: BlogPost }) {
             </>
           ) : null}
         </div>
-        <h3 className="mt-2 text-h3 font-normal leading-snug">
+        <h3 className="mt-2 text-body-lg font-medium leading-snug">
           <Link href={href} className="transition-colors group-hover:text-accent-700">
             {post.title}
           </Link>
         </h3>
-        <p className="mt-2 line-clamp-3 text-body text-ink-500">{post.excerpt}</p>
+        <p className="mt-2 line-clamp-2 text-body text-ink-500">{post.excerpt}</p>
       </div>
     </article>
   );
