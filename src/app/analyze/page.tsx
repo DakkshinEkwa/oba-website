@@ -3,6 +3,7 @@ import { Search, LineChart, Target, ShieldCheck } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { IconCard } from "@/components/ui/IconCard";
 import { FaqAccordion } from "@/components/ui/Accordion";
 import { ContactForm } from "@/components/forms/ContactForm";
 
@@ -85,16 +86,13 @@ export default function AnalyzePage() {
         <SectionHeader eyebrow="How it works" title="Three simple steps" align="center" />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {steps.map((s, i) => (
-            <div key={s.title} className="rounded-lg border border-line p-7">
-              <div className="flex items-center gap-3">
-                <div className="inline-flex size-11 items-center justify-center rounded-lg bg-accent-50 text-accent-600">
-                  <s.icon className="size-5" aria-hidden />
-                </div>
-                <span className="font-mono text-eyebrow uppercase text-ink-300">0{i + 1}</span>
-              </div>
-              <h3 className="mt-5 text-h3 font-normal">{s.title}</h3>
-              <p className="mt-2 text-body text-ink-500">{s.body}</p>
-            </div>
+            <IconCard
+              key={s.title}
+              icon={s.icon}
+              title={s.title}
+              body={s.body}
+              meta={<span className="font-mono text-eyebrow uppercase text-ink-300">0{i + 1}</span>}
+            />
           ))}
         </div>
       </Section>

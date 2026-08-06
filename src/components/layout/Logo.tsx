@@ -28,7 +28,8 @@ export function Logo({ tone = "dark", className }: { tone?: "dark" | "light"; cl
     >
       <Image
         src={tone === "light" ? "/images/oba-logo-white.png" : "/images/oba-logo.png"}
-        alt="Ophthalmology Business Academy"
+        alt=""
+        aria-hidden
         width={2278}
         height={634}
         priority

@@ -67,7 +67,7 @@ export function SiteHeader() {
                 key={item.label}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={cn("rounded-md px-3 py-2 text-small transition-colors", navLinkTone(onDark, active))}
+                className={cn("inline-flex min-h-11 items-center rounded-md px-3 py-2 text-small transition-colors", navLinkTone(onDark, active))}
               >
                 {item.label}
               </Link>
@@ -80,15 +80,15 @@ export function SiteHeader() {
             href="/login"
             size="sm"
             className={cn(
-              "bg-transparent",
+              "h-11",
               onDark
-                ? "text-white/75 hover:bg-white/10 hover:text-white"
+                ? "bg-transparent text-white/75 hover:bg-white/10 hover:text-white"
                 : "text-ink-500 hover:bg-ink-900/5 hover:text-ink-900",
             )}
           >
             Log In
           </Button>
-          <Button href={siteConfig.primaryCta.href} variant={onDark ? "onDark" : "primary"} size="sm">
+          <Button href={siteConfig.primaryCta.href} variant={onDark ? "onDark" : "primary"} size="sm" className="h-11">
             {siteConfig.primaryCta.label}
           </Button>
         </div>
@@ -129,7 +129,7 @@ function NavDropdown({
             type="button"
             aria-current={active ? "page" : undefined}
             className={cn(
-              "inline-flex items-center gap-1 rounded-md px-3 py-2 text-small transition-colors",
+              "inline-flex min-h-11 items-center gap-1 rounded-md px-3 py-2 text-small transition-colors",
               navLinkTone(onDark, active),
             )}
           >

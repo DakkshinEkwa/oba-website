@@ -65,7 +65,7 @@ export function MobileNav({ tone = "light" }: { tone?: "light" | "dark" }) {
                             href={child.href}
                             aria-current={childActive ? "page" : undefined}
                             onClick={() => setOpen(false)}
-                            className="block rounded-md px-3 py-2 text-body text-ink-500 hover:bg-canvas-subtle hover:text-ink-900"
+                            className="flex min-h-11 items-center rounded-md px-3 py-2 text-body text-ink-500 hover:bg-canvas-subtle hover:text-ink-900"
                           >
                             {child.label}
                           </Link>

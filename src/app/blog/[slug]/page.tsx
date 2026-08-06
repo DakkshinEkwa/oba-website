@@ -55,6 +55,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   return (
     <>
+      {/* JSON-LD rendered in the body is Next.js's documented pattern for structured data. */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Section spacing="tight" containerSize="narrow">
         <Breadcrumbs
