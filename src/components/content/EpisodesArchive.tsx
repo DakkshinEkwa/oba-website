@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
+import { Headphones } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { PageHero } from "@/components/marketing/PageHero";
 import { EpisodeCard } from "@/components/content/EpisodeCard";
 import { Pagination } from "@/components/ui/Pagination";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { getAllEpisodes } from "@/lib/content";
 import { paginate } from "@/lib/utils";
 
@@ -26,19 +28,30 @@ export function EpisodesArchive({ page }: { page: number }) {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Podcast", href: "/podcast" }, { label: "Episodes" }]}
       />
       <Section spacing="default">
-        <div className="mb-8 flex items-center justify-between">
-          <p className="text-small text-ink-400">
-            {result.total} episodes · Page {result.page} of {result.totalPages}
-          </p>
-        </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {result.items.map((ep) => (
-            <EpisodeCard key={ep.slug} episode={ep} />
-          ))}
-        </div>
-        <div className="mt-14">
-          <Pagination page={result.page} totalPages={result.totalPages} hrefFor={episodeHref} />
-        </div>
+        <h2 className="sr-only">Episode archive</h2>
+        {result.total === 0 ? (
+          <EmptyState
+            icon={Headphones}
+            title="No episodes yet"
+            body="The conversation library is being built — the first episodes are on the way."
+          />
+        ) : (
+          <>
+            <div className="mb-8 flex items-center justify-between">
+              <p className="text-small text-ink-500">
+                {result.total} episodes · Page {result.page} of {result.totalPages}
+              </p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {result.items.map((ep) => (
+                <EpisodeCard key={ep.slug} episode={ep} />
+              ))}
+            </div>
+            <div className="mt-14">
+              <Pagination page={result.page} totalPages={result.totalPages} hrefFor={episodeHref} />
+            </div>
+          </>
+        )}
       </Section>
     </>
   );

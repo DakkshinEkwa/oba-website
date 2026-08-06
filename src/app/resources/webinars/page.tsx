@@ -6,7 +6,7 @@ import { PageHero } from "@/components/marketing/PageHero";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Card, CardBody } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { getAllWebinars } from "@/lib/content";
+import { getAllWebinars, getAllEpisodes } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 
 export default function WebinarsPage() {
   const webinars = getAllWebinars();
+  const episodeCount = getAllEpisodes().length;
   return (
     <>
       <PageHero
@@ -27,9 +28,10 @@ export default function WebinarsPage() {
       <Section spacing="default">
         {webinars.length === 0 ? (
           <EmptyState
+            level="h2"
             icon={Video}
             title="The webinar archive is empty for now"
-            body="The podcast library is the best place to start — 75+ recorded conversations on the same problems webinars will examine."
+            body={`The podcast library is the best place to start — ${episodeCount}+ recorded conversations on the same problems webinars will examine.`}
             action={{ label: "Browse Episodes", href: "/podcast/episodes" }}
           />
         ) : (

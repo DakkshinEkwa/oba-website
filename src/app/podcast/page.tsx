@@ -5,6 +5,7 @@ import { PageHero } from "@/components/marketing/PageHero";
 import { Button } from "@/components/ui/Button";
 import { EpisodeCard } from "@/components/content/EpisodeCard";
 import { HostCard } from "@/components/content/HostCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { CTASection } from "@/components/marketing/CTASection";
 import { getAllEpisodes, getAllHosts } from "@/lib/content";
 
@@ -38,7 +39,12 @@ export default function PodcastPage() {
       </PageHero>
 
       <Section spacing="default">
-        <div className="grid gap-6 md:grid-cols-3">
+        <SectionHeader
+          eyebrow="About the show"
+          title="Three commitments, every episode"
+          lede="The show is built on the same standards in every conversation."
+        />
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
           {[
             { icon: Mic, title: "Experience-led", body: "Hosted by operators and physicians who run real practices — and guests who have personally faced the problem being discussed." },
             { icon: Headphones, title: "Decision-focused", body: "Each conversation digs into a real choice: what was decided, what it cost, and what the trade-offs were." },
@@ -62,11 +68,21 @@ export default function PodcastPage() {
             All episodes <ArrowRight className="size-4" aria-hidden />
           </Button>
         </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {latest.map((ep) => (
-            <EpisodeCard key={ep.slug} episode={ep} />
-          ))}
-        </div>
+        {latest.length === 0 ? (
+          <div className="mt-10">
+            <EmptyState
+              icon={Headphones}
+              title="No episodes yet"
+              body="The conversation library is being built — the first episodes are on the way."
+            />
+          </div>
+        ) : (
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {latest.map((ep) => (
+              <EpisodeCard key={ep.slug} episode={ep} />
+            ))}
+          </div>
+        )}
       </Section>
 
       {hosts.length > 0 ? (

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { EpisodeCard } from "@/components/content/EpisodeCard";
 import { BlogCard } from "@/components/content/BlogCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { CTASection } from "@/components/marketing/CTASection";
 import { HeroHostStack } from "@/components/marketing/HeroHostStack";
 import { EpisodeTicker } from "@/components/marketing/EpisodeTicker";
@@ -272,11 +273,21 @@ export default function HomePage() {
             All episodes <ArrowRight className="size-4" aria-hidden />
           </Button>
         </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {latest.map((ep) => (
-            <EpisodeCard key={ep.slug} episode={ep} />
-          ))}
-        </div>
+        {latest.length === 0 ? (
+          <div className="mt-10">
+            <EmptyState
+              icon={Headphones}
+              title="No episodes yet"
+              body="The conversation library is being built — the first episodes are on the way."
+            />
+          </div>
+        ) : (
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {latest.map((ep) => (
+              <EpisodeCard key={ep.slug} episode={ep} />
+            ))}
+          </div>
+        )}
       </Section>
 
       {/* ---------------- From the blog ---------------- */}

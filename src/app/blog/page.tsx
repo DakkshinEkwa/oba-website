@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { Section } from "@/components/ui/Section";
+import { FileText } from "lucide-react";
+import { Section, SectionHeader } from "@/components/ui/Section";
 import { PageHero } from "@/components/marketing/PageHero";
 import { BlogCard } from "@/components/content/BlogCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { getAllBlogPosts } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -21,11 +23,22 @@ export default function BlogPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]}
       />
       <Section spacing="default">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
-            <BlogCard key={post.slug} post={post} />
-          ))}
-        </div>
+        <SectionHeader eyebrow="Articles" title="All articles" />
+        {posts.length === 0 ? (
+          <div className="mt-10">
+            <EmptyState
+              icon={FileText}
+              title="No articles published yet"
+              body="New articles on practice growth, operations, and leadership are on the way."
+            />
+          </div>
+        ) : (
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => (
+              <BlogCard key={post.slug} post={post} />
+            ))}
+          </div>
+        )}
       </Section>
     </>
   );

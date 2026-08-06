@@ -5,6 +5,7 @@ import { Section, SectionHeader } from "@/components/ui/Section";
 import { PageHero } from "@/components/marketing/PageHero";
 import { EpisodeCard } from "@/components/content/EpisodeCard";
 import { BlogCard } from "@/components/content/BlogCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { CTASection } from "@/components/marketing/CTASection";
 import { getAllEpisodes, getAllBlogPosts } from "@/lib/content";
 
@@ -36,7 +37,8 @@ export default function ResourcesPage() {
       />
 
       <Section spacing="default">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <SectionHeader eyebrow="Explore" title="Browse the hub" />
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {hubLinks.map((l) => (
             <Link
               key={l.title}
@@ -60,11 +62,21 @@ export default function ResourcesPage() {
 
       <Section tone="subtle" spacing="default">
         <SectionHeader eyebrow="From the podcast" title="Latest episodes" />
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {episodes.map((ep) => (
-            <EpisodeCard key={ep.slug} episode={ep} />
-          ))}
-        </div>
+        {episodes.length === 0 ? (
+          <div className="mt-10">
+            <EmptyState
+              icon={Headphones}
+              title="No episodes yet"
+              body="The conversation library is being built — the first episodes are on the way."
+            />
+          </div>
+        ) : (
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {episodes.map((ep) => (
+              <EpisodeCard key={ep.slug} episode={ep} />
+            ))}
+          </div>
+        )}
       </Section>
 
       {posts.length > 0 ? (

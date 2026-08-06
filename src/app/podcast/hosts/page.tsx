@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Users } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { PageHero } from "@/components/marketing/PageHero";
 import { HostCard } from "@/components/content/HostCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { getAllHosts } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -20,11 +22,20 @@ export default function HostsPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Podcast", href: "/podcast" }, { label: "Hosts" }]}
       />
       <Section spacing="default">
-        <div className="grid gap-6 md:grid-cols-2">
-          {hosts.map((h) => (
-            <HostCard key={h.slug} host={h} />
-          ))}
-        </div>
+        <h2 className="sr-only">All hosts</h2>
+        {hosts.length === 0 ? (
+          <EmptyState
+            icon={Users}
+            title="Host profiles are on the way"
+            body="Meet the people behind the show once their profiles are published."
+          />
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2">
+            {hosts.map((h) => (
+              <HostCard key={h.slug} host={h} />
+            ))}
+          </div>
+        )}
       </Section>
     </>
   );
