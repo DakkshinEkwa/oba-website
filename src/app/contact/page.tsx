@@ -33,18 +33,19 @@ export default function ContactPage() {
   return (
     <>
       <PageHero
+        tone="subtle"
         eyebrow="We'd love to hear from you"
         title="Get in touch"
         lede="Questions about the academy, the podcast, an episode, or anything else — send a note and we'll get back to you."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]}
       />
-      <Section spacing="default">
+      <Section tone="subtle" spacing="default">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           <div>
             <h2 className="text-h3 font-normal">Looking for something specific?</h2>
             <ul className="mt-6 space-y-4">
               {intents.map((i) => (
-                <li key={i.href} className="rounded-lg border border-line p-5">
+                <li key={i.href} className="rounded-lg border border-line bg-canvas p-5">
                   <div className="flex items-start gap-3">
                     <i.icon className="mt-0.5 size-5 text-accent-600" aria-hidden />
                     <div>

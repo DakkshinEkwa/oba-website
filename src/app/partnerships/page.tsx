@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ScanEye, Cpu, Workflow, Pill, Briefcase, MonitorSmartphone, ShieldCheck, Handshake } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
-import { PageHero } from "@/components/marketing/PageHero";
+import { DarkHero } from "@/components/marketing/DarkHero";
 import { Button } from "@/components/ui/Button";
 import { IconCard } from "@/components/ui/IconCard";
 import { ChecklistItem } from "@/components/ui/ChecklistItem";
@@ -50,21 +50,22 @@ const possibilities = [
 export default function PartnershipsPage() {
   return (
     <>
-      <PageHero
-        eyebrow="Partnerships"
-        title="Support the conversation — without controlling it"
-        lede="OBA gives organizations serving ophthalmology a way to back credible professional education. Not by buying attention, but by helping important conversations happen."
+      <DarkHero
+        size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Partnerships" }]}
+        eyebrow="Partnerships"
+        eyebrowDot
+        title="Support the conversation —"
+        titleDim="without controlling it"
+        lede="OBA gives organizations serving ophthalmology a way to back credible professional education. Not by buying attention, but by helping important conversations happen."
       >
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Button href="#enquiry" variant="primary">
-            <Handshake className="size-4" aria-hidden /> Start a partnership conversation
-          </Button>
-          <Button href="/podcast/episodes" variant="outline">
-            See the conversations we convene
-          </Button>
-        </div>
-      </PageHero>
+        <Button href="#enquiry" variant="onDark" size="lg">
+          <Handshake className="size-4" aria-hidden /> Start a partnership conversation
+        </Button>
+        <Button href="/podcast/episodes" variant="frosted" size="lg">
+          See the conversations we convene
+        </Button>
+      </DarkHero>
 
       <Section spacing="default" containerSize="narrow">
         <div className="text-body-lg text-ink-600">

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Headphones, FileText, Video, CalendarDays, Mail, ArrowUpRight } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
-import { PageHero } from "@/components/marketing/PageHero";
+import { DarkHero } from "@/components/marketing/DarkHero";
 import { EpisodeCard } from "@/components/content/EpisodeCard";
 import { BlogCard } from "@/components/content/BlogCard";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -29,11 +29,14 @@ export default function ResourcesPage() {
 
   return (
     <>
-      <PageHero
-        eyebrow="Expert Insights Hub"
-        title="Every OBA resource, in one place"
-        lede="Conversations, articles, webinars, and events — organized for ophthalmologists and the people who run their practices."
+      <DarkHero
+        size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources" }]}
+        eyebrow="Expert Insights Hub"
+        eyebrowDot
+        title="Every OBA resource,"
+        titleDim="in one place"
+        lede="Conversations, articles, webinars, and events — organized for ophthalmologists and the people who run their practices."
       />
 
       <Section spacing="default">

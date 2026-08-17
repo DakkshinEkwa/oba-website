@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
-import { PageHero } from "@/components/marketing/PageHero";
+import { DarkHero } from "@/components/marketing/DarkHero";
 import { Button } from "@/components/ui/Button";
 import { FaqAccordion } from "@/components/ui/Accordion";
 import { CTASection } from "@/components/marketing/CTASection";
@@ -40,11 +40,14 @@ const faqs = [
 export default function MembershipPage() {
   return (
     <>
-      <PageHero
-        eyebrow="Join the academy"
-        title="Free membership, full library"
-        lede="Every OBA conversation and resource, free — plus invitations to panels and webinars as new programming is scheduled."
+      <DarkHero
+        size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Membership" }]}
+        eyebrow="Join the academy"
+        eyebrowDot
+        title="Free membership,"
+        titleDim="full library"
+        lede="Every OBA conversation and resource, free — plus invitations to panels and webinars as new programming is scheduled."
       />
 
       <Section spacing="default">

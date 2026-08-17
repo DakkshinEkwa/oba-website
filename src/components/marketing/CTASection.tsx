@@ -25,7 +25,7 @@ export function CTASection({
     <section className="relative overflow-hidden bg-ink-900">
       <div aria-hidden className="absolute inset-0" style={{ background: "var(--gradient-cta)" }} />
       <Container className="relative">
-        <div className="flex flex-col items-start py-24 sm:py-28">
+        <div className="flex flex-col items-start py-28 sm:py-36 lg:py-40">
           <Eyebrow tone="onDark">{eyebrow}</Eyebrow>
           <h2 className="mt-6 text-h1 font-light tracking-tight text-white">
             {title}

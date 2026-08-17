@@ -14,7 +14,6 @@ export default function HomePage() {
   const allEpisodes = getAllEpisodes();
   const latest = allEpisodes.slice(0, 3);
   const posts = getAllBlogPosts().slice(0, 3);
-  const episodeCount = allEpisodes.length;
   const hosts = getAllHosts();
 
   return (
@@ -22,7 +21,7 @@ export default function HomePage() {
       <HeroSection hosts={hosts} />
       <EpisodeTicker episodes={allEpisodes} />
       <FeaturedEpisode featured={featured} />
-      <StatBand episodeCount={episodeCount} />
+      <StatBand />
       <ProblemAreas />
       <Audiences />
       <Engagements />

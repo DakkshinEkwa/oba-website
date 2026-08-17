@@ -60,6 +60,18 @@ export function getFeaturedEpisode(): Episode | undefined {
   return all.find((e) => e.featured) ?? all[0];
 }
 
+/** Build-time catalog stats backing the sanctioned proof-by-numbers row. */
+export function getEpisodeStats() {
+  const all = getAllEpisodes();
+  const years = all.map((e) => new Date(e.publishedAt).getUTCFullYear());
+  return {
+    count: all.length,
+    firstYear: years.length ? String(Math.min(...years)) : "",
+    latestYear: years.length ? String(Math.max(...years)) : "",
+    hostCount: getAllHosts().length,
+  };
+}
+
 export function getRelatedEpisodes(slug: string, count = 3): Episode[] {
   return getAllEpisodes()
     .filter((e) => e.slug !== slug)

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Video, ArrowUpRight } from "lucide-react";
 import { Section } from "@/components/ui/Section";
-import { PageHero } from "@/components/marketing/PageHero";
+import { DarkHero } from "@/components/marketing/DarkHero";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Card, CardBody } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -19,11 +19,14 @@ export default function WebinarsPage() {
   const episodeCount = getAllEpisodes().length;
   return (
     <>
-      <PageHero
-        eyebrow="On-demand sessions"
-        title="Webinar archive"
-        lede="Deep-dive sessions on the operational, leadership, and growth decisions facing eye-care practices."
+      <DarkHero
+        size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Webinars" }]}
+        eyebrow="On-demand sessions"
+        eyebrowDot
+        title="Webinar"
+        titleDim="archive"
+        lede="Deep-dive sessions on the operational, leadership, and growth decisions facing eye-care practices."
       />
       <Section spacing="default">
         {webinars.length === 0 ? (

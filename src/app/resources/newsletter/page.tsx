@@ -21,12 +21,13 @@ export default function NewsletterPage() {
   return (
     <>
       <PageHero
+        tone="subtle"
         eyebrow="Stay in the loop"
         title="Insight for ophthalmology practice leaders"
         lede="Practical, business-focused insight from OBA's conversations — delivered to your inbox, free."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Newsletter" }]}
       />
-      <Section spacing="default" containerSize="narrow">
+      <Section tone="subtle" spacing="default" containerSize="narrow">
         <div className="rounded-xl border border-line bg-canvas p-8 sm:p-10">
           <ul className="mb-8 grid gap-3 sm:grid-cols-2">
             {benefits.map((b) => (

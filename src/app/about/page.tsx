@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Section, SectionHeader } from "@/components/ui/Section";
-import { PageHero } from "@/components/marketing/PageHero";
+import { DarkHero } from "@/components/marketing/DarkHero";
 import { HostCard } from "@/components/content/HostCard";
 import { CTASection } from "@/components/marketing/CTASection";
-import { getAllHosts, getAllEpisodes } from "@/lib/content";
+import { getAllHosts, getAllEpisodes, getEpisodeStats } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "About OBA",
@@ -33,14 +33,34 @@ const values = [
 export default function AboutPage() {
   const hosts = getAllHosts();
   const count = getAllEpisodes().length;
+  const stats = getEpisodeStats();
 
   return (
     <>
-      <PageHero
-        eyebrow="About OBA"
-        title="A forum for the decisions clinical training never covered"
-        lede="The Ophthalmology Business Academy convenes experienced ophthalmology leaders to examine, on the record, the business of running a stronger practice."
+      <DarkHero
+        size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
+        eyebrow="About OBA"
+        eyebrowDot
+        title="A forum for the decisions clinical"
+        titleDim="training never covered"
+        lede="The Ophthalmology Business Academy convenes experienced ophthalmology leaders to examine, on the record, the business of running a stronger practice."
+        proof={
+          <div className="flex flex-wrap gap-x-10 gap-y-4">
+            <div>
+              <p className="text-h4 font-medium text-white">{stats.count}+</p>
+              <p className="mt-1 font-mono text-micro uppercase tracking-wide text-white/50">Conversations</p>
+            </div>
+            <div>
+              <p className="text-h4 font-medium text-white">Since {stats.firstYear}</p>
+              <p className="mt-1 font-mono text-micro uppercase tracking-wide text-white/50">Recording</p>
+            </div>
+            <div>
+              <p className="text-h4 font-medium text-white">{stats.hostCount}</p>
+              <p className="mt-1 font-mono text-micro uppercase tracking-wide text-white/50">Named hosts</p>
+            </div>
+          </div>
+        }
       />
 
       <Section spacing="default" containerSize="narrow">
