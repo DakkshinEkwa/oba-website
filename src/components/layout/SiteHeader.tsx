@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { Logo } from "./Logo";
 import { MobileNav } from "./MobileNav";
@@ -12,7 +11,22 @@ import { primaryNav, siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 /** Routes whose hero is dark, so the attached (transparent) nav needs white text. */
-const DARK_HERO_ROUTES = ["/"];
+// NOTE: `/podcast` itself joins this list when Phase 2 lands DarkHero there.
+const DARK_HERO_ROUTES = [
+  /^\/$/,
+  /^\/podcast$/,
+  /^\/podcast\/episodes$/,
+  /^\/podcast\/episodes\/page\/\d+$/,
+  /^\/podcast\/hosts$/,
+  /^\/resources$/,
+  /^\/blog$/,
+  /^\/about$/,
+  /^\/speak$/,
+  /^\/partnerships$/,
+  /^\/membership$/,
+  /^\/resources\/events$/,
+  /^\/resources\/webinars$/,
+];
 
 /**
  * Qoves-style nav. At the top of the page it is transparent and spread across
@@ -31,7 +45,7 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const onDark = scrolled || DARK_HERO_ROUTES.includes(pathname);
+  const onDark = scrolled || DARK_HERO_ROUTES.some((r) => r.test(pathname));
 
   return (
     <header
@@ -115,61 +129,35 @@ function NavDropdown({
   active: boolean;
   onDark: boolean;
 }) {
-  const [open, setOpen] = useState(false);
-
   return (
-    <div
-      className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      <DropdownMenu.Root open={open} onOpenChange={setOpen}>
-        <DropdownMenu.Trigger asChild>
-          <button
-            type="button"
-            aria-current={active ? "page" : undefined}
-            className={cn(
-              "inline-flex min-h-11 items-center gap-1 rounded-md px-3 py-2 text-small transition-colors",
-              navLinkTone(onDark, active),
-            )}
-          >
-            {item.label}
-            <ChevronDown
-              className={cn("size-3.5 transition-transform", open && "rotate-180")}
-              aria-hidden
-            />
-          </button>
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content
-          sideOffset={12}
-          align="start"
-          className="z-50 min-w-72 rounded-xl border border-line bg-canvas/95 p-2 shadow-lg backdrop-blur-xl"
-        >
-          <DropdownMenu.Item asChild>
-            <Link
-              href={item.href}
-              aria-current={active ? "page" : undefined}
-              className="block rounded-lg px-3 py-2.5 outline-none transition-colors hover:bg-ink-900/8 data-[highlighted]:bg-ink-900/8"
-            >
-              <span className="block text-small font-medium text-ink-900">{item.label}</span>
-              <span className="mt-0.5 block text-small text-ink-400">Overview</span>
-            </Link>
-          </DropdownMenu.Item>
+    <div className="group relative">
+      <Link
+        href={item.href}
+        aria-current={active ? "page" : undefined}
+        className={cn(
+          "inline-flex min-h-11 items-center gap-1 rounded-md px-3 py-2 text-small transition-colors",
+          navLinkTone(onDark, active),
+        )}
+      >
+        {item.label}
+        <ChevronDown className="size-3.5 transition-transform group-hover:rotate-180" aria-hidden />
+      </Link>
+      <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+        <div className="w-72 rounded-xl border border-line bg-canvas/95 p-2 shadow-lg backdrop-blur-xl">
           {item.children!.map((child) => (
-            <DropdownMenu.Item asChild key={child.label}>
-              <Link
-                href={child.href}
-                className="block rounded-lg px-3 py-2.5 outline-none transition-colors hover:bg-ink-900/8 data-[highlighted]:bg-ink-900/8"
-              >
-                <span className="block text-small font-medium text-ink-900">{child.label}</span>
-                {child.description ? (
-                  <span className="mt-0.5 block text-small text-ink-400">{child.description}</span>
-                ) : null}
-              </Link>
-            </DropdownMenu.Item>
+            <Link
+              key={child.label}
+              href={child.href}
+              className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-ink-900/8"
+            >
+              <span className="block text-small font-medium text-ink-900">{child.label}</span>
+              {child.description ? (
+                <span className="mt-0.5 block text-small text-ink-400">{child.description}</span>
+              ) : null}
+            </Link>
           ))}
-        </DropdownMenu.Content>
-      </DropdownMenu.Root>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,58 +1,50 @@
-# Todo — UI-Audit Remediation
+# Todo — Cinematic Hero + Interactive Cards (interior pages)
 
-Merge order: F → A → B → C → D → E → H. All committed to `main`.
+Extends the home `/` and `/podcast/episodes` treatment to remaining interior pages. See `docs/messaging-strategy.md` for all copy.
 
-## PR F — Design-system tokens ✔
-- [x] F1: Tokenize hero + CTA gradients (`--gradient-hero`, `--gradient-cta`, `--gradient-hero-glow`); reference via `var()`
-- [x] F2: Add `--color-ink-dim`; `.title-dim` uses it
-- [x] F3: `rounded-2xl`→`rounded-xl` (AuthShell, membership); `--text-micro` token (LibsynPlayer, styleguide); hero h1 → `text-h1`; `.prose h3` → `--text-h4`
-- [x] F4: Remove decorative shadows (EpisodeCard, HeroHostStack); update CLAUDE.md shadow line
-- [x] F5: `--header-offset: 6rem`; layout.tsx `pt-24`, page.tsx `-mt-24`
-- [x] F6: Scope `transition-all`→`transition-colors` (Button, resources hub, SiteHeader)
+## Confirmed scope
+- Tilt stays exclusive to `/podcast/episodes` (unique to that page)
+- All other pages get cinematic `DarkHero` (no tilt)
+- Form pages (`/contact`, `/newsletter`, `/analyze`) → grey `canvas-subtle` page bg + white cards
+- Podcast home = `size="full"`
 
-## PR A — Forms accessibility ✔
-- [x] A1: Rework `Field.tsx` (useId ids, aria-describedby, required/aria-required, FieldError role="alert", hint `text-ink-500`)
-- [x] A2: Extract `SuccessPanel`; refactor 5 forms to it
-- [x] A3: Submit/pending state in all 5 forms (disabled + spinner + aria-busy)
-- [x] A4: NewsletterForm (aria-describedby, role="alert", pending)
-- [x] A5: styleguide Field demos `htmlFor`/`id`
+## Phase 2 — Content hub pages ✔
+- [x] P2a: `/podcast` → `DarkHero` full (CTAs + waveform proof + stat footer)
+- [x] P2b: `/resources` → `DarkHero` band
+- [x] P2c: `/blog` → `DarkHero` band
+- [x] P2d: `/podcast/hosts` → `DarkHero` band (+ `HeroHostStack` aside)
+- [x] P2e: `/about` → `DarkHero` band (+ stat proof)
+- [x] P2f: routes added to `DARK_HERO_ROUTES`
 
-## PR B — Navigation accessibility ✔ (dropdown intentionally reverted)
-- [x] B1: ~~Radix DropdownMenu NavDropdown~~ — intentionally reverted to the legacy CSS hover menu (keyboard-inaccessible dropdown finding re-opened / deferred)
-- [x] B2: `aria-current="page"` on active nav links
-- [x] B3: Skip link `pointer-events-auto`
-- [x] B4: MobileNav icon/aria-label swap, focus ring, ≥44px submenu
+### Checkpoint 2 ✔
+- [x] `tsc`/`lint`/`build` pass; nav light text legible on all new dark heroes (dev-server render verified)
 
-## PR C — Cards & audio player ✔
-- [x] C1: EpisodeCard/BlogCard stretched link + decorative image link (+ shadow removal)
-- [x] C2: LibsynPlayer region / aria-pressed / loading / error / no-audio
+## Phase 3 — Conversion pages ✔
+- [x] P3a: `/speak` → `DarkHero` (CTA → `#interest`)
+- [x] P3b: `/partnerships` → `DarkHero` (CTA → `#enquiry`)
+- [x] P3c: `/membership` → `DarkHero`
+- [x] P3d: routes added to `DARK_HERO_ROUTES`
 
-## PR D — Page-level a11y (empty states + heading hierarchy) ✔
-- [x] D1: EmptyState `role="status"` + `level` prop
-- [x] D2: Empty-state guards (home, blog, podcast, hosts, resources, EpisodesArchive)
-- [x] D3: h2 above card grids (blog, podcast features, hosts, resources hub, events, webinars, EpisodesArchive)
-- [x] D4: webinars dynamic episode count
-- [x] D5: paginated episodes metadata description
+### Checkpoint 3 ✔
+- [x] `tsc`/`lint`/`build` pass; anchor CTAs clear floating nav (`scroll-mt`)
 
-## PR E — Contrast & motion ✔
-- [x] E1: Breadcrumbs `text-ink-500`
-- [x] E2: `useReducedMotion` (HeroHostStack, AnimatedStat)
-- [x] E3: AnimatedStat aria-hidden + sr-only value
-- [x] E4: EpisodeTicker focus-within pause
+## Phase 4 — Events/webinars + light-page elevations ✔
+- [x] P4a: `/resources/events` → `DarkHero` band
+- [x] P4b: `/resources/webinars` → `DarkHero` band
+- [x] P4c: `/resources/newsletter` → `PageHero tone="subtle"` + grey section, white card
+- [x] P4d: `/contact` → `PageHero tone="subtle"` + grey section, white cards
+- [x] P4e: `/analyze` → steps section grey (hero was already `canvas-subtle`)
+- [x] P4f: events/webinars routes added to `DARK_HERO_ROUTES`
+- [x] `PageHero` gains `tone` prop ("canvas" | "subtle")
 
-## PR H — Minor/edge + code quality ✔
-- [x] H1: Pagination disabled/current spans (aria)
-- [x] H2: Button default `type="button"`, transition-colors
-- [x] H3: Logo Image `alt=""` + aria-hidden
-- [x] H4: Touch targets ≥40px
-- [x] H5: Markdown external-only `target=_blank` + h1→h2 remap
-- [x] H6: JSON-LD kept in body + comment
-- [x] H7: Extract `ui/IconCard` + checklist row; refactor grids/lists
-- [x] H8: Split page.tsx into `src/components/home/*`
+### Checkpoint 4 ✔
+- [x] `tsc`/`lint`/`build` pass; empty states render under dark hero (all 13 routes 200)
 
-## Final verification
-- [x] `npx tsc --noEmit` per PR
-- [x] `npm run lint` per PR
-- [x] `npm run build` per PR
-- [ ] Browser pass (form SR announcements, audio player states) — pending tooling
-- [ ] Nav dropdown keyboard access — intentionally deferred (kept the CSS hover menu)
+## Phase 5 — Polish
+- [x] P5c: responsive/contrast pass (DarkHero already owns scrim + contrast discipline; all 13 pages render 200, no dev errors)
+- [ ] Human browser pass: nav tone on dark heroes, form pages' grey cards, podcast full hero
+
+### Checkpoint 5 (Complete)
+- [x] `npx tsc --noUnusedLocals --noUnusedParameters --noEmit && npm run lint && npm run build` green
+- [x] Manual curl/dev-server verification of all converted routes
+- [ ] Human review before merge

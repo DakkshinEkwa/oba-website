@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { CalendarDays, MapPin } from "lucide-react";
 import { Section } from "@/components/ui/Section";
-import { PageHero } from "@/components/marketing/PageHero";
+import { DarkHero } from "@/components/marketing/DarkHero";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Card, CardBody } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -18,11 +18,14 @@ export default function EventsPage() {
   const events = getAllEvents();
   return (
     <>
-      <PageHero
-        eyebrow="Connect & learn"
-        title="Events & live panels"
-        lede="Live discussions of the problems ophthalmology practices are navigating right now — with the people navigating them."
+      <DarkHero
+        size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Events" }]}
+        eyebrow="Connect & learn"
+        eyebrowDot
+        title="Events &"
+        titleDim="live panels"
+        lede="Live discussions of the problems ophthalmology practices are navigating right now — with the people navigating them."
       />
       <Section spacing="default">
         {events.length === 0 ? (

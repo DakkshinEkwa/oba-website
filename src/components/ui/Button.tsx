@@ -13,9 +13,9 @@ export const buttonVariants = cva(
           "border border-line-strong bg-canvas text-ink-800 hover:border-ink-300 hover:bg-canvas-subtle",
         ghost: "text-ink-700 hover:bg-canvas-subtle",
         link: "text-ink-900 hover:text-ink-500 underline-offset-4 hover:underline rounded-none px-0",
-        onDark: "bg-white text-ink-900 hover:bg-canvas-subtle",
+        onDark: "bg-white text-ink-900 hover:bg-canvas-subtle focus-visible:outline-white",
         frosted:
-          "border border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20",
+          "border border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 focus-visible:outline-white",
       },
       size: {
         sm: "h-9 px-4 text-small",

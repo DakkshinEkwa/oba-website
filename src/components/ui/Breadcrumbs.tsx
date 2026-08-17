@@ -1,26 +1,49 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type Crumb = { label: string; href?: string };
 
-export function Breadcrumbs({ items }: { items: Crumb[] }) {
+const toneClasses = {
+  default: {
+    list: "text-ink-500",
+    link: "hover:text-accent-600",
+    current: "text-ink-600",
+    chevron: "text-ink-300",
+  },
+  onDark: {
+    list: "text-white/70",
+    link: "hover:text-white focus-visible:outline-white",
+    current: "text-white/90",
+    chevron: "text-white/40",
+  },
+} as const;
+
+export function Breadcrumbs({
+  items,
+  tone = "default",
+}: {
+  items: Crumb[];
+  tone?: keyof typeof toneClasses;
+}) {
+  const t = toneClasses[tone];
   return (
     <nav aria-label="Breadcrumb">
-      <ol className="flex flex-wrap items-center gap-1.5 text-small text-ink-500">
+      <ol className={cn("flex flex-wrap items-center gap-1.5 text-small", t.list)}>
         {items.map((item, i) => {
           const last = i === items.length - 1;
           return (
             <li key={i} className="flex items-center gap-1.5">
               {item.href && !last ? (
-                <Link href={item.href} className="hover:text-accent-600 transition-colors">
+                <Link href={item.href} className={cn(t.link, "transition-colors")}>
                   {item.label}
                 </Link>
               ) : (
-                <span className={last ? "text-ink-600" : undefined} aria-current={last ? "page" : undefined}>
+                <span className={last ? t.current : undefined} aria-current={last ? "page" : undefined}>
                   {item.label}
                 </span>
               )}
-              {!last ? <ChevronRight className="size-3.5 text-ink-300" aria-hidden /> : null}
+              {!last ? <ChevronRight className={cn("size-3.5", t.chevron)} aria-hidden /> : null}
             </li>
           );
         })}

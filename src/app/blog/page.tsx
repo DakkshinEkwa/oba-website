@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { FileText } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
-import { PageHero } from "@/components/marketing/PageHero";
+import { DarkHero } from "@/components/marketing/DarkHero";
 import { BlogCard } from "@/components/content/BlogCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { getAllBlogPosts } from "@/lib/content";
@@ -16,11 +16,13 @@ export default function BlogPage() {
   const posts = getAllBlogPosts();
   return (
     <>
-      <PageHero
+      <DarkHero
+        size="band"
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]}
         eyebrow="Insights"
+        eyebrowDot
         title="The OB Academy blog"
         lede="Practical, business-focused articles for ophthalmologists and practice owners."
-        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]}
       />
       <Section spacing="default">
         <SectionHeader eyebrow="Articles" title="All articles" />

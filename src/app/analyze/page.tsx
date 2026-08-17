@@ -82,7 +82,7 @@ export default function AnalyzePage() {
         </Container>
       </section>
 
-      <Section spacing="default">
+      <Section tone="subtle" spacing="default">
         <SectionHeader eyebrow="How it works" title="Three simple steps" align="center" />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {steps.map((s, i) => (
