@@ -25,15 +25,15 @@ export function IconCard({
   const chipCls = chip === "lg" ? "size-12" : "size-11";
   const iconCls = chip === "lg" ? "size-6" : "size-5";
   return (
-    <div className={cn("flex flex-col rounded-lg border border-line bg-canvas p-7", className)}>
+    <div className={cn("group flex flex-col rounded-[20px] border border-line bg-canvas p-8", className)}>
       <div className={cn("flex items-center gap-3")}>
-        <div className={cn("inline-flex items-center justify-center rounded-lg bg-accent-50 text-accent-600", chipCls)}>
+        <div className={cn("inline-flex items-center justify-center rounded-lg bg-accent-50 text-accent-600 transition-colors duration-200 ease-in-out group-hover:bg-ink-700 group-hover:text-white", chipCls)}>
           <Icon className={iconCls} aria-hidden />
         </div>
         {meta}
       </div>
-      <h3 className="mt-5 text-h3 font-normal">{title}</h3>
-      {body ? <p className={cn("mt-2 text-body text-ink-500", bodyClassName)}>{body}</p> : null}
+      <h3 className="mt-5 text-h3 font-normal text-ink-900">{title}</h3>
+      {body ? <p className={cn("mt-2 text-body font-light text-ink-400", bodyClassName)}>{body}</p> : null}
       {children}
     </div>
   );

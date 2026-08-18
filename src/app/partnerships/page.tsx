@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 const partnerFields = [
   { icon: ScanEye, title: "Diagnostics & imaging", body: "Organizations advancing how eye disease is detected, monitored, and understood." },
-  { icon: Cpu, title: "Surgical technology & AI", body: "Teams building the tools practices are deciding whether — and how — to adopt." },
+  { icon: Cpu, title: "Surgical technology & AI", body: "Teams building the tools practices are deciding whether and how to adopt." },
   { icon: MonitorSmartphone, title: "Remote monitoring & engagement", body: "Platforms changing how practices stay connected to patients between visits." },
   { icon: Workflow, title: "Clinical workflow & practice technology", body: "Systems that shape how a practice actually runs day to day." },
   { icon: Pill, title: "Therapeutics & vision rehabilitation", body: "Organizations supporting treatment, adherence, and life with low vision." },
@@ -25,7 +25,7 @@ const partnerFields = [
 const standards = [
   {
     title: "Education comes first",
-    body: "Every conversation starts from a problem the profession needs to solve — not from a product that needs an audience.",
+    body: "Every conversation starts from a problem the profession needs to solve, not from a product that needs an audience.",
   },
   {
     title: "Speakers are chosen for experience",
@@ -44,7 +44,7 @@ const standards = [
 const possibilities = [
   "Supporting a panel, webinar, or podcast series on a problem your field understands deeply",
   "Contributing implementation expertise to a conversation where it genuinely belongs",
-  "Helping convene a discussion the profession needs — and being credited for making it possible",
+  "Helping convene a discussion the profession needs, and being credited for making it possible",
 ];
 
 export default function PartnershipsPage() {
@@ -55,7 +55,7 @@ export default function PartnershipsPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Partnerships" }]}
         eyebrow="Partnerships"
         eyebrowDot
-        title="Support the conversation —"
+        title="Support the conversation"
         titleDim="without controlling it"
         lede="OBA gives organizations serving ophthalmology a way to back credible professional education. Not by buying attention, but by helping important conversations happen."
       >
@@ -71,7 +71,7 @@ export default function PartnershipsPage() {
         <div className="text-body-lg text-ink-600">
           <p>
             The organizations building ophthalmology&apos;s tools and services hold real
-            expertise — about implementation, adoption, and what actually happens when
+            expertise about implementation, adoption, and what actually happens when
             technology meets a working practice. That expertise belongs in the profession&apos;s
             conversations. What doesn&apos;t belong is advertising dressed up as education.
           </p>
@@ -79,7 +79,7 @@ export default function PartnershipsPage() {
             OBA partnerships are built on that distinction. Partners help meaningful
             conversations happen and are credited transparently for it; the conversations
             themselves stay independent, experience-led, and non-promotional. That protects the
-            audience&apos;s trust — which is the only reason partnering here is worth anything.
+            audience&apos;s trust, which is the only reason partnering here is worth anything.
           </p>
         </div>
       </Section>
@@ -101,7 +101,7 @@ export default function PartnershipsPage() {
         <SectionHeader
           eyebrow="Our standards"
           title="The rules that make partnership worth it"
-          lede="These commitments protect the audience, the speakers, and — not incidentally — the value of being associated with OBA."
+          lede="These commitments protect the audience, the speakers, and, not incidentally, the value of being associated with OBA."
         />
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           {standards.map((s) => (
@@ -140,7 +140,7 @@ export default function PartnershipsPage() {
           <SectionHeader
             eyebrow="Get in touch"
             title="Start a partnership conversation"
-            lede="Tell us who you are and what you'd like to explore. A member of the OBA team will follow up to discuss whether — and where — a collaboration makes sense."
+            lede="Tell us who you are and what you'd like to explore. A member of the OBA team will follow up to discuss whether, and where, a collaboration makes sense."
           />
           <div className="mt-10 rounded-xl border border-line bg-canvas p-6 sm:p-8">
             <ContactForm variant="partnership" />

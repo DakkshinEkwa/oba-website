@@ -11,6 +11,7 @@ import {
   slugFromUrl,
   writeMdx,
   decodeEntities,
+  linkifyLinkedIn,
 } from "./util";
 
 const ARCHIVE = `${BASE}/blog/`;
@@ -61,7 +62,7 @@ function extractBody($: cheerio.CheerioAPI): string {
     if (BOILERPLATE.test(text) || NOISE.test(text)) return;
     if (seen.has(text)) return;
     seen.add(text);
-    paras.push(text);
+    paras.push(linkifyLinkedIn(text));
   });
   return paras.join("\n\n");
 }

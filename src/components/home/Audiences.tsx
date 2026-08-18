@@ -3,15 +3,15 @@ import { Section, SectionHeader } from "@/components/ui/Section";
 const audiences = [
   {
     title: "Practice owners & partners",
-    body: "The decisions that come with the name on the door — growth, profitability, succession, and protecting clinical standards while the business scales.",
+    body: "The decisions that come with the name on the door: growth, profitability, succession, and protecting clinical standards while the business scales.",
   },
   {
     title: "Administrators & operations leaders",
-    body: "The systems behind a practice that runs well — staffing, patient flow, technology, and the day-to-day judgment calls that never make the textbooks.",
+    body: "The systems behind a practice that runs well: staffing, patient flow, technology, and the day-to-day judgment calls that never make the textbooks.",
   },
   {
     title: "Industry & technology leaders",
-    body: "The implementation reality behind diagnostics, imaging, AI, and workflow tools — what adoption actually looks like inside a practice.",
+    body: "The implementation reality behind diagnostics, imaging, AI, and workflow tools: what adoption actually looks like inside a practice.",
   },
   {
     title: "Emerging leaders",

@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { CalendarDays, MapPin } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { DarkHero } from "@/components/marketing/DarkHero";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Card, CardBody } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import { EventCard } from "@/components/content/EventCard";
+import { FeaturedEventCard } from "@/components/content/FeaturedEventCard";
 import { getAllEvents } from "@/lib/content";
-import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -15,7 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default function EventsPage() {
-  const events = getAllEvents();
+  const events = getAllEvents().slice().sort((a, b) => a.startDate.localeCompare(b.startDate));
+  const next = events[0];
+
   return (
     <>
       <DarkHero
@@ -25,9 +25,28 @@ export default function EventsPage() {
         eyebrowDot
         title="Events &"
         titleDim="live panels"
-        lede="Live discussions of the problems ophthalmology practices are navigating right now — with the people navigating them."
+        lede="Live discussions of the problems ophthalmology practices are navigating right now, with the people navigating them."
+        aside={next ? <FeaturedEventCard event={next} /> : null}
+        proof={
+          events.length > 0 ? (
+            <div className="flex flex-wrap gap-x-10 gap-y-4">
+              <div>
+                <p className="text-h4 font-medium text-white">{events.length}</p>
+                <p className="mt-1 font-mono text-micro uppercase tracking-wide text-white/50">Panels</p>
+              </div>
+              <div>
+                <p className="text-h4 font-medium text-white">Fall 2026</p>
+                <p className="mt-1 font-mono text-micro uppercase tracking-wide text-white/50">Season</p>
+              </div>
+              <div>
+                <p className="text-h4 font-medium text-white">Live</p>
+                <p className="mt-1 font-mono text-micro uppercase tracking-wide text-white/50">Virtual</p>
+              </div>
+            </div>
+          ) : null
+        }
       />
-      <Section spacing="default">
+      <Section spacing="loose" className="py-24 sm:py-32 lg:py-44">
         {events.length === 0 ? (
           <EmptyState
             level="h2"
@@ -37,30 +56,17 @@ export default function EventsPage() {
             action={{ label: "Join the Newsletter", href: "/resources/newsletter" }}
           />
         ) : (
-          <div className="grid gap-6 md:grid-cols-2">
-            {events.map((e) => (
-              <Card key={e.slug}>
-                <CardBody>
-                  <div className="flex items-center gap-2">
-                    <Badge tone="accent">{e.isVirtual ? "Virtual" : "In person"}</Badge>
-                    <span className="text-small text-ink-400">{formatDate(e.startDate)}</span>
-                  </div>
-                  <h3 className="mt-3 text-h3 font-normal">{e.title}</h3>
-                  {e.location ? (
-                    <p className="mt-1 inline-flex items-center gap-1.5 text-small text-ink-500">
-                      <MapPin className="size-4" aria-hidden /> {e.location}
-                    </p>
-                  ) : null}
-                  <p className="mt-2 text-body text-ink-500">{e.excerpt}</p>
-                  {e.registrationUrl ? (
-                    <Button href={e.registrationUrl} variant="primary" size="sm" className="mt-4">
-                      Register
-                    </Button>
-                  ) : null}
-                </CardBody>
-              </Card>
-            ))}
-          </div>
+          <>
+            <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+              <h2 className="text-h2 font-light tracking-tight text-ink-900">All panels</h2>
+              <p className="text-small text-ink-500">{events.length} live sessions · Fall 2026</p>
+            </div>
+            <div className="event-grid">
+              {events.map((e, i) => (
+                <EventCard key={e.slug} event={e} priority={i === 0} />
+              ))}
+            </div>
+          </>
         )}
       </Section>
     </>

@@ -34,7 +34,7 @@ export default function WebinarsPage() {
             level="h2"
             icon={Video}
             title="The webinar archive is empty for now"
-            body={`The podcast library is the best place to start — ${episodeCount}+ recorded conversations on the same problems webinars will examine.`}
+            body={`The podcast library is the best place to start: ${episodeCount}+ recorded conversations on the same problems webinars will examine.`}
             action={{ label: "Browse Episodes", href: "/podcast/episodes" }}
           />
         ) : (

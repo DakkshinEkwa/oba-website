@@ -21,20 +21,20 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — The Business of Eye Care, Led by Experience`,
+    default: `${siteConfig.name}: The Business of Eye Care, Led by Experience`,
     template: `%s · ${siteConfig.name}`,
   },
   description: siteConfig.description,
   openGraph: {
     type: "website",
     siteName: siteConfig.name,
-    title: `${siteConfig.name} — The Business of Eye Care, Led by Experience`,
+    title: `${siteConfig.name}: The Business of Eye Care, Led by Experience`,
     description: siteConfig.description,
     url: siteConfig.url,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — The Business of Eye Care, Led by Experience`,
+    title: `${siteConfig.name}: The Business of Eye Care, Led by Experience`,
     description: siteConfig.description,
   },
 };
@@ -64,6 +64,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${inter.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-canvas">

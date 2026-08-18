@@ -18,6 +18,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const EVENT_PLACEHOLDER_IMAGE = "/images/events/building-od-partnerships.webp";
+
+export function eventImage(image?: string): string {
+  return image ?? EVENT_PLACEHOLDER_IMAGE;
+}
+
 /** Format an ISO date string as e.g. "July 11, 2026". */
 export function formatDate(iso: string): string {
   const d = new Date(iso);

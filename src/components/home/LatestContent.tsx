@@ -26,7 +26,7 @@ export function LatestContent({ episodes, posts }: { episodes: Episode[]; posts:
             <EmptyState
               icon={Headphones}
               title="No episodes yet"
-              body="The conversation library is being built — the first episodes are on the way."
+              body="The conversation library is being built; the first episodes are on the way."
             />
           </div>
         ) : (

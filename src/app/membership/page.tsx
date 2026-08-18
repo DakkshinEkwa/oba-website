@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
+import Link from "next/link";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { DarkHero } from "@/components/marketing/DarkHero";
 import { Button } from "@/components/ui/Button";
@@ -9,13 +10,13 @@ import { CTASection } from "@/components/marketing/CTASection";
 export const metadata: Metadata = {
   title: "Membership",
   description:
-    "Free membership in the Ophthalmology Business Academy — the full conversation library, articles, the newsletter, and invitations to upcoming panels and events.",
+    "Free membership in the Ophthalmology Business Academy: the full conversation library, articles, the newsletter, and invitations to upcoming panels and events.",
 };
 
 const included = [
-  "The full podcast library — every conversation, on demand",
+  "The full podcast library: every conversation, on demand",
   "Articles on practice growth, operations, and leadership",
-  "The OBA newsletter — new conversations and event invitations",
+  "The OBA newsletter: new conversations and event invitations",
   "Invitations to upcoming panels and webinars as they're scheduled",
   "First word when new programming is announced",
 ];
@@ -24,16 +25,16 @@ const faqs = [
   {
     question: "How much does membership cost?",
     answer:
-      "Nothing. Membership is free — create an account and the full library of conversations and resources is yours.",
+      "Nothing. Membership is free: join the newsletter and the full library of conversations and resources is yours, with no account required.",
   },
   {
     question: "Who is membership for?",
     answer:
-      "Ophthalmologists, practice owners, administrators, operations and patient-experience leaders, and anyone responsible for the business side of an eye-care practice — including residents and fellows preparing for those responsibilities.",
+      "Ophthalmologists, practice owners, administrators, operations and patient-experience leaders, and anyone responsible for the business side of an eye-care practice, including residents and fellows preparing for those responsibilities.",
   },
   {
     question: "Can I cancel anytime?",
-    answer: "Yes — there's no commitment of any kind. Unsubscribe or close your account whenever you like.",
+    answer: "Yes, there's no commitment of any kind. Unsubscribe from the newsletter whenever you like.",
   },
 ];
 
@@ -47,7 +48,7 @@ export default function MembershipPage() {
         eyebrowDot
         title="Free membership,"
         titleDim="full library"
-        lede="Every OBA conversation and resource, free — plus invitations to panels and webinars as new programming is scheduled."
+        lede="Every OBA conversation and resource, free, plus invitations to panels and webinars as new programming is scheduled."
       />
 
       <Section spacing="default">
@@ -68,14 +69,14 @@ export default function MembershipPage() {
               </li>
             ))}
           </ul>
-          <Button href="/register" variant="primary" size="lg" className="mt-8 w-full">
-            Create your free account
+          <Button href="/resources/newsletter" variant="primary" size="lg" className="mt-8 w-full">
+            Join the newsletter
           </Button>
           <p className="mt-3 text-center text-small text-ink-400">
-            Already a member?{" "}
-            <a href="/login" className="text-accent-600 hover:text-accent-700">
-              Log in
-            </a>
+            No account needed: membership is free and open. Prefer to explore first?{" "}
+            <Link href="/podcast/episodes" className="text-accent-600 hover:text-accent-700">
+              Browse the episode library
+            </Link>
           </p>
         </div>
       </Section>

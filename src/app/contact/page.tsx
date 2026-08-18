@@ -9,7 +9,7 @@ import { siteConfig } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Reach the Ophthalmology Business Academy team — general questions, speaking, or partnerships.",
+    "Reach the Ophthalmology Business Academy team: general questions, speaking, or partnerships.",
 };
 
 const intents = [
@@ -36,7 +36,7 @@ export default function ContactPage() {
         tone="subtle"
         eyebrow="We'd love to hear from you"
         title="Get in touch"
-        lede="Questions about the academy, the podcast, an episode, or anything else — send a note and we'll get back to you."
+        lede="Questions about the academy, the podcast, an episode, or anything else? Send a note and we'll get back to you."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]}
       />
       <Section tone="subtle" spacing="default">

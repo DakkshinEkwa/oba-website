@@ -15,18 +15,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/speak",
     "/partnerships",
     "/contact",
-    "/analyze",
+    "/msm",
     "/membership",
     "/resources",
     "/resources/newsletter",
     "/resources/events",
     "/resources/webinars",
+    "/resources/webinars/replays",
     "/podcast",
     "/podcast/episodes",
     "/podcast/hosts",
+    "/reviews",
+    "/privacy",
+    "/terms",
     "/blog",
-    "/login",
-    "/register",
   ];
 
   const entries: MetadataRoute.Sitemap = staticPaths.map((p) => ({

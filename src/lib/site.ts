@@ -19,6 +19,7 @@ export const siteConfig = {
     label: "Contribute",
     href: "/speak",
   },
+  strategyMeetingUrl: "https://ekwasales-withoutceo.youcanbook.me/",
 } as const;
 
 export type NavLink = {
@@ -35,6 +36,7 @@ export const primaryNav: NavLink[] = [
     children: [
       { label: "Expert Insights Hub", href: "/resources", description: "Every OBA resource in one place" },
       { label: "Webinar Archive", href: "/resources/webinars", description: "On-demand expert sessions" },
+      { label: "Webinar Replays", href: "/resources/webinars/replays", description: "Recordings of past live sessions" },
       { label: "Blog", href: "/blog", description: "Articles on practice growth" },
       { label: "Newsletter", href: "/resources/newsletter", description: "New conversations to your inbox" },
       { label: "Events", href: "/resources/events", description: "Live panels and discussions" },
@@ -49,6 +51,8 @@ export const primaryNav: NavLink[] = [
       { label: "About the Podcast", href: "/podcast", description: "What the show is about" },
     ],
   },
+  { label: "Reviews", href: "/reviews" },
+  { label: "Marketing", href: "/msm" },
   {
     label: "Participate",
     href: "/speak",
@@ -68,6 +72,7 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
     links: [
       { label: "Expert Insights Hub", href: "/resources" },
       { label: "Webinar Archive", href: "/resources/webinars" },
+      { label: "Webinar Replays", href: "/resources/webinars/replays" },
       { label: "Blog", href: "/blog" },
       { label: "Events", href: "/resources/events" },
       { label: "Newsletter", href: "/resources/newsletter" },
@@ -85,18 +90,12 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
     title: "Academy",
     links: [
       { label: "About", href: "/about" },
+      { label: "Reviews", href: "/reviews" },
       { label: "Become a Speaker", href: "/speak" },
       { label: "Partnerships", href: "/partnerships" },
       { label: "Membership", href: "/membership" },
-      { label: "Marketing Analysis", href: "/analyze" },
+      { label: "Marketing Analysis", href: "/msm" },
       { label: "Contact", href: "/contact" },
-    ],
-  },
-  {
-    title: "Account",
-    links: [
-      { label: "Log In", href: "/login" },
-      { label: "Register", href: "/register" },
     ],
   },
 ];

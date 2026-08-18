@@ -20,7 +20,7 @@ export function HeroSection({ hosts }: { hosts: Host[] }) {
             <span className="text-white/45">meets execution.</span>
           </h1>
           <p className="mt-6 max-w-md text-body-lg text-white/65">
-            Personalized business education for ophthalmologists — strategies, expert
+            Personalized business education for ophthalmologists: strategies, expert
             interviews, and training built on what actually grows practices.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">

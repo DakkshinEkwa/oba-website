@@ -79,9 +79,6 @@ export function MobileNav({ tone = "light" }: { tone?: "light" | "dark" }) {
           </nav>
 
           <div className="flex flex-col gap-2 border-t border-line p-5">
-            <Button href="/login" variant="outline" onClick={() => setOpen(false)}>
-              Log In
-            </Button>
             <Button href={siteConfig.primaryCta.href} variant="primary" onClick={() => setOpen(false)}>
               {siteConfig.primaryCta.label}
             </Button>

@@ -14,7 +14,7 @@ import { getAllEpisodes, getAllHosts, getEpisodeStats } from "@/lib/content";
 export const metadata: Metadata = {
   title: "About the Podcast",
   description:
-    "The Ophthalmology Business Podcast — candid, non-promotional conversations about the decisions behind stronger eye-care practices.",
+    "The Ophthalmology Business Podcast: candid, non-promotional conversations about the decisions behind stronger eye-care practices.",
 };
 
 export default function PodcastPage() {
@@ -32,7 +32,7 @@ export default function PodcastPage() {
         eyebrowDot
         title="Where ophthalmology talks business,"
         titleDim="on the record"
-        lede={`${count}+ candid conversations with the physicians, administrators, and industry experts who have faced the decisions behind modern ophthalmology practices — recorded since 2022.`}
+        lede={`${count}+ candid conversations with the physicians, administrators, and industry experts who have faced the decisions behind modern ophthalmology practices, recorded since 2022.`}
         proof={
           <Waveform bars={16} baseHeight={26} className="text-white/40" animated />
         }
@@ -67,7 +67,7 @@ export default function PodcastPage() {
         />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {[
-            { icon: Mic, title: "Experience-led", body: "Hosted by operators and physicians who run real practices — and guests who have personally faced the problem being discussed." },
+            { icon: Mic, title: "Experience-led", body: "Hosted by operators and physicians who run real practices, and guests who have personally faced the problem being discussed." },
             { icon: Headphones, title: "Decision-focused", body: "Each conversation digs into a real choice: what was decided, what it cost, and what the trade-offs were." },
             { icon: Users, title: "Non-promotional", body: "No episode is a sales pitch. Guests are invited for their experience, not their sponsorship." },
           ].map((f) => (
@@ -88,7 +88,7 @@ export default function PodcastPage() {
             <EmptyState
               icon={Headphones}
               title="No episodes yet"
-              body="The conversation library is being built — the first episodes are on the way."
+              body="The conversation library is being built; the first episodes are on the way."
             />
           </div>
         ) : (

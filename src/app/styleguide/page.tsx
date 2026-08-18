@@ -47,14 +47,14 @@ export default function StyleguidePage() {
       <Section tone="subtle" spacing="tight">
         <SectionHeader eyebrow="Type" title="Typographic scale" />
         <div className="mt-8 space-y-3">
-          <p className="text-display font-light tracking-tight">Display — practice growth</p>
-          <p className="text-h1 font-light tracking-tight">H1 — Business insight for ophthalmology</p>
-          <p className="text-h2 font-light">H2 — Section heading</p>
-          <p className="text-h3 font-normal">H3 — Subsection heading</p>
-          <p className="text-lede text-ink-500">Lede — a slightly larger intro paragraph.</p>
-          <p className="text-body-lg">Body large — comfortable reading size.</p>
-          <p className="text-body">Body — default paragraph text.</p>
-          <p className="text-small text-ink-500">Small — metadata and captions.</p>
+          <p className="text-display font-light tracking-tight">Display: practice growth</p>
+          <p className="text-h1 font-light tracking-tight">H1: Business insight for ophthalmology</p>
+          <p className="text-h2 font-light">H2: Section heading</p>
+          <p className="text-h3 font-normal">H3: Subsection heading</p>
+          <p className="text-lede text-ink-500">Lede: a slightly larger intro paragraph.</p>
+          <p className="text-body-lg">Body large: comfortable reading size.</p>
+          <p className="text-body">Body: default paragraph text.</p>
+          <p className="text-small text-ink-500">Small: metadata and captions.</p>
           <Eyebrow>Eyebrow label</Eyebrow>
         </div>
       </Section>

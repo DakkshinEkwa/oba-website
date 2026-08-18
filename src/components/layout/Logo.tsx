@@ -16,7 +16,7 @@ export function Logo({ tone = "dark", className }: { tone?: "dark" | "light"; cl
   return (
     <Link
       href="/"
-      aria-label="Ophthalmology Business Academy — home"
+      aria-label="Ophthalmology Business Academy, home"
       className={cn("inline-flex items-center", className)}
       onClick={(e) => {
         // Link doesn't navigate (or scroll) when already on "/", so scroll manually.

@@ -20,15 +20,15 @@ export function EpisodeRow({ episode, priority = false }: { episode: Episode; pr
   const duration = formatDuration(episode.durationSec);
 
   return (
-    <li className="group relative grid grid-cols-[5rem_minmax(0,1fr)] items-center gap-5 py-4 sm:grid-cols-[7rem_minmax(0,1fr)_auto]">
-      <div className="relative aspect-video overflow-hidden rounded-md border border-line bg-canvas-subtle">
+    <li className="episode-row group grid grid-cols-[6rem_minmax(0,1fr)] items-center gap-5 rounded-[20px] px-6 py-6 sm:grid-cols-[8rem_minmax(0,1fr)_auto] sm:gap-7 sm:px-8 sm:py-7">
+      <div className="relative aspect-video overflow-hidden rounded-md bg-canvas">
         {episode.image ? (
           <Image
             src={episode.image}
             alt=""
             fill
             priority={priority}
-            sizes="(max-width:640px) 80px, 112px"
+            sizes="(max-width:640px) 96px, 128px"
             className="object-cover"
           />
         ) : (
@@ -38,32 +38,32 @@ export function EpisodeRow({ episode, priority = false }: { episode: Episode; pr
         )}
       </div>
 
-      <div className="min-w-0">
-        <p className="font-mono text-eyebrow uppercase text-ink-400">
+      <div className="relative min-w-0 transition-transform duration-200 ease-in-out group-hover:translate-x-4 group-focus-within:translate-x-4">
+        <p className="font-mono text-small font-light uppercase tracking-wide text-ink-400 transition-colors duration-200 ease-in-out group-hover:text-white group-focus-within:text-white">
           {episode.episodeNumber ? <span>Ep. {episode.episodeNumber} · </span> : null}
           <time dateTime={episode.publishedAt}>{formatDate(episode.publishedAt)}</time>
         </p>
-        <h3 className="mt-1 truncate text-body-lg font-medium leading-snug text-ink-900">
+        <h3 className="mt-2 truncate text-h4 font-medium text-ink-900 transition-colors duration-200 ease-in-out group-hover:text-white group-focus-within:text-white">
           <Link
             href={href}
-            className="transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-accent-700 focus-visible:outline-offset-4"
+            className="after:absolute after:inset-0 after:z-10 after:content-[''] focus-visible:outline-offset-4"
           >
             {episode.title}
           </Link>
         </h3>
         {support ? (
-          <p className="mt-1 hidden truncate text-body text-ink-500 sm:block">{support}</p>
+          <p className="mt-3 hidden truncate text-body font-light text-ink-400 transition-colors duration-200 ease-in-out group-hover:text-white group-focus-within:text-white sm:block">{support}</p>
         ) : null}
       </div>
 
-      <div className="hidden items-center justify-self-end gap-4 sm:flex">
+      <div className="relative hidden items-center justify-self-end gap-5 sm:flex">
         {duration ? (
-          <span className="font-mono text-eyebrow uppercase text-ink-400">{duration}</span>
+          <span className="font-mono text-small font-light uppercase tracking-wide text-ink-400 transition-colors duration-200 ease-in-out group-hover:text-white group-focus-within:text-white">{duration}</span>
         ) : null}
-        <span aria-hidden className="inline-flex items-center gap-1 text-small font-semibold text-accent-600">
-          Listen
-          <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
-        </span>
+        <ArrowRight
+          className="size-5 text-white opacity-0 transition-[opacity,transform] duration-200 ease-in-out group-hover:translate-x-1 group-hover:opacity-100 group-focus-within:translate-x-1 group-focus-within:opacity-100"
+          aria-hidden
+        />
       </div>
     </li>
   );

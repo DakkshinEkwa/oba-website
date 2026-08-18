@@ -16,6 +16,8 @@ type DarkHeroProps = {
   size?: "full" | "band";
   /** Optional right-hand column (featured episode card). */
   aside?: React.ReactNode;
+  /** Wider aside column for embeds that need horizontal room (e.g. booking calendars). */
+  asideWidth?: "narrow" | "wide";
   /** Optional content rendered directly under the lede, before children/CTA (e.g. waveform + stat row). */
   proof?: React.ReactNode;
   /** Optional bottom row (proof-by-numbers stat band). */
@@ -44,6 +46,7 @@ export function DarkHero({
   breadcrumbs,
   size = "full",
   aside,
+  asideWidth = "narrow",
   proof,
   footer,
   children,
@@ -81,7 +84,10 @@ export function DarkHero({
         <div
           className={cn(
             "min-w-0",
-            aside && "grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]",
+            aside &&
+              (asideWidth === "wide"
+                ? "grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)]"
+                : "grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]"),
           )}
         >
           <div className="max-w-2xl min-w-0 animate-fade-up">
