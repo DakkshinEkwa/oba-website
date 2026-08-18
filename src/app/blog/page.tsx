@@ -35,9 +35,9 @@ export default function BlogPage() {
             />
           </div>
         ) : (
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="panel-grid mt-10">
             {posts.map((post) => (
-              <BlogCard key={post.slug} post={post} />
+              <BlogCard key={post.slug} post={post} variant="panel" />
             ))}
           </div>
         )}

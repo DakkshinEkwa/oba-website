@@ -23,7 +23,7 @@ export default function HostsPage() {
         eyebrowDot
         title="Hosts & regular"
         titleDim="contributors"
-        lede="Practice operators, physicians, and industry experts — people who have personally made the decisions these conversations examine."
+        lede="Practice operators, physicians, and industry experts: people who have personally made the decisions these conversations examine."
         aside={hosts.length > 0 ? <HeroHostStack hosts={hosts} /> : null}
       />
       <Section spacing="default">
@@ -35,7 +35,7 @@ export default function HostsPage() {
             body="Meet the people behind the show once their profiles are published."
           />
         ) : (
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="hosts-reveal grid gap-6 md:grid-cols-2">
             {hosts.map((h) => (
               <HostCard key={h.slug} host={h} />
             ))}

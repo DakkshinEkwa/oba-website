@@ -30,7 +30,7 @@ export function NewsletterForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
           tone === "light" ? "text-accent-200" : "text-accent-700",
         )}
       >
-        <Check className="size-5" aria-hidden /> You&apos;re on the list — check your inbox to confirm.
+        <Check className="size-5" aria-hidden /> You&apos;re on the list. Check your inbox to confirm.
       </p>
     );
   }

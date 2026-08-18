@@ -33,10 +33,11 @@ src/
 ├─ components/
 │  ├─ ui/                   # design-system primitives (Button, Section, Card, Field, …)
 │  ├─ layout/               # SiteHeader, SiteFooter, MobileNav, Logo
-│  ├─ marketing/            # Hero, CTASection, PageHero
-│  ├─ content/              # EpisodeCard, BlogCard, LibsynPlayer, Markdown, …
-│  └─ forms/                # stubbed forms (Register, Login, Contact, Newsletter, …)
-├─ content/                 # local content: episodes/*.mdx, blog/*.mdx, hosts.json, …
+│  ├─ marketing/            # Hero, CTASection, PageHero, DarkHero
+│  ├─ content/              # EpisodeCard, BlogCard, EventCard, LibsynPlayer, Markdown, …
+│  ├─ forms/                # stubbed forms (Contact, Newsletter)
+│  └─ home/                 # homepage sections
+├─ content/                 # local content: episodes/*.mdx, blog/*.mdx, hosts.json, events.json
 ├─ lib/                     # site config, content loaders, zod schemas, utils
 └─ styles → app/globals.css # @theme design tokens (colors, type scale, spacing)
 scripts/scrape/             # one-off content scrapers (dev only)
@@ -46,8 +47,8 @@ scripts/scrape/             # one-off content scrapers (dev only)
 
 All tokens live in `src/app/globals.css` under `@theme` — Qoves-inspired near-monochrome
 language: white canvas, cool-charcoal ink scale, **muted steel accent** (no saturated color),
-hairline borders instead of shadows, fluid type scale, light-weight (300) display headlines
-with two-tone dim second lines (`.title-dim`), outline-chip eyebrows, dark cinematic
+hairline borders instead of decorative shadows, fluid type scale, light-weight (300) display
+headlines with two-tone dim second lines (`.title-dim`), outline-chip eyebrows, dark cinematic
 radial-gradient hero/CTA bands, floating frosted pill nav, giant wordmark footer. Fonts:
 Inter (display + body), IBM Plex Mono (eyebrow labels). Visual reference page:
 **`/styleguide`** (noindex).
@@ -68,15 +69,23 @@ npx tsx scripts/scrape/blog.ts       # → src/content/blog/*.mdx      (+ public
 Content types are validated with zod (`src/lib/schemas.ts`); loaders are in `src/lib/content/`.
 Podcast audio uses the direct Libsyn MP3 with a lazy custom player (`LibsynPlayer`).
 
+Site-wide nav, CTA, and booking URL live in `src/lib/site.ts`.
+
 ## Status & follow-ups
 
-- **Auth** (`/login`, `/register`, `/forgot-password`) and all **forms** (contact, newsletter,
-  analyze, register) are styled **UI shells** — they validate client-side and show success states
-  but submission is stubbed (`// TODO`). Wire to an auth provider / CRM / ESP when ready.
-- **Webinars** and **events** render honest empty states until real content is added
-  (`src/content/webinars/*.mdx`, `src/content/events.json`).
-- **Redirects**: legacy WordPress URLs are 301/308-redirected in `next.config.ts`. Expand from the
-  live sitemap before launch.
-- **Imagery**: episode/blog images are the originals from the live site; some are low-resolution
-  and may warrant replacement.
-```
+- **No account system.** Auth pages (`/login`, `/register`, `/forgot-password`) were removed.
+  Membership is free and account-free; the newsletter is the soft-conversion CTA.
+- **Forms** (contact, newsletter, speaker, partnership, marketing analysis) are styled **UI
+  shells** — they validate client-side and show success states but submission is stubbed
+  (`// TODO`). Wire to a CRM / ESP when ready.
+- **Marketing analysis** lives at `/msm` (header nav item "Marketing"). Legacy `/analyze` and
+  `/marketing` 301 to it. The offer is an Ekwa service, labeled separately from OBA editorial.
+- **Events** have a Fall 2026 virtual panel series in `src/content/events.json` (`EventCard` /
+  `FeaturedEventCard`). **Webinars**, **webinar replays**, and **reviews** still render honest
+  empty states until real content is added.
+- **Legal:** `/privacy` and `/terms` are linked from the footer.
+- **Redirects:** legacy WordPress URLs and live-site aliases are 301-redirected in
+  `next.config.ts`.
+- **Imagery:** episode/blog images are the originals from the live site; some are low-resolution
+  and may warrant replacement. Event cards fall back to
+  `public/images/events/building-od-partnerships.webp`.

@@ -1,1 +1,45 @@
-[]
+[
+  {
+    "slug": "building-od-partnerships-that-actually-drive-patient-volume",
+    "title": "Building OD Partnerships That Actually Drive Patient Volume",
+    "startDate": "2026-09-17",
+    "isVirtual": true,
+    "image": "/images/events/building-od-partnerships.webp"
+  },
+  {
+    "slug": "building-a-profitable-service-line-without-losing-patient-trust",
+    "title": "Building a Profitable Service Line Without Losing Patient Trust",
+    "startDate": "2026-09-24",
+    "isVirtual": true
+  },
+  {
+    "slug": "protecting-margin-when-reimbursement-tightens-and-costs-keep-rising",
+    "title": "Protecting Margin When Reimbursement Tightens and Costs Keep Rising",
+    "startDate": "2026-10-15",
+    "isVirtual": true
+  },
+  {
+    "slug": "increasing-patient-throughput-without-sacrificing-care-teams-or-physician-time",
+    "title": "Increasing Patient Throughput Without Sacrificing Care, Teams or Physician Time",
+    "startDate": "2026-10-27",
+    "isVirtual": true
+  },
+  {
+    "slug": "building-a-trusted-counseling-system-without-turning-education-into-a-sales-conversation",
+    "title": "Building a Trusted Counseling System Without Turning Education Into a Sales Conversation",
+    "startDate": "2026-11-19",
+    "isVirtual": true
+  },
+  {
+    "slug": "what-to-automate-what-to-keep-human-and-where-practices-can-get-hurt",
+    "title": "What to Automate, What to Keep Human and Where Practices Can Get Hurt",
+    "startDate": "2026-12-03",
+    "isVirtual": true
+  },
+  {
+    "slug": "knowing-where-to-grow-fix-or-hold-back-before-2027",
+    "title": "Knowing Where to Grow, Fix or Hold Back Before 2027",
+    "startDate": "2026-12-15",
+    "isVirtual": true
+  }
+]

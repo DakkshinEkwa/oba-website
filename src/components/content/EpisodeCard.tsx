@@ -1,11 +1,73 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Headphones, ArrowUpRight } from "lucide-react";
+import { Headphones, ArrowRight, ArrowUpRight } from "lucide-react";
 import type { Episode } from "@/lib/schemas";
 import { formatDate } from "@/lib/utils";
 
-export function EpisodeCard({ episode }: { episode: Episode }) {
+export function EpisodeCard({
+  episode,
+  variant = "card",
+}: {
+  episode: Episode;
+  variant?: "card" | "panel";
+}) {
   const href = `/podcast/episodes/${episode.slug}`;
+
+  // Panel variant: matches the Events page card anatomy (image, meta, title,
+  // CTA pill, whole-card hit target, dark hover) but without the sliding
+  // pill/highlight animation — hover is a simple color shift, nothing moves.
+  if (variant === "panel") {
+    const label = `Listen to ${episode.title}`;
+    const textHover =
+      "transition-colors duration-200 ease-in-out group-hover:text-white group-focus-within:text-white";
+    return (
+      <article className="panel-card group flex cursor-pointer flex-col rounded-[28px] p-4 transition-colors duration-300 ease-in-out hover:bg-ink-700 focus-within:bg-ink-700">
+        <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-canvas">
+          {episode.image ? (
+            <Image
+              src={episode.image}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-ink-300">
+              <Headphones className="size-10" aria-hidden />
+            </div>
+          )}
+        </div>
+
+        <div className="relative mt-8 min-w-0 px-4 sm:px-5">
+          <p className={`font-mono text-small font-light uppercase tracking-wide text-ink-400 ${textHover}`}>
+            {episode.episodeNumber ? <span>Ep. {episode.episodeNumber}</span> : null}
+            {episode.episodeNumber ? <span aria-hidden> · </span> : null}
+            <time dateTime={episode.publishedAt}>{formatDate(episode.publishedAt)}</time>
+          </p>
+          <h3 className={`mt-3 text-body-lg font-medium leading-snug text-ink-900 ${textHover}`}>
+            {episode.title}
+          </h3>
+        </div>
+
+        <div className="relative mt-auto flex items-center justify-between gap-4 px-4 pt-7 pb-5 sm:px-5 sm:pb-6">
+          <span className="inline-flex h-9 items-center rounded-pill border border-line-strong px-4 text-small font-semibold text-ink-800 transition-colors duration-200 ease-in-out group-hover:border-white/30 group-hover:text-white group-focus-within:border-white/30 group-focus-within:text-white">
+            Listen now
+          </span>
+          <ArrowRight
+            className="size-5 text-white opacity-0 transition-opacity duration-200 ease-in-out group-hover:opacity-100 group-focus-within:opacity-100"
+            aria-hidden
+          />
+        </div>
+
+        <Link
+          href={href}
+          className="absolute inset-0 z-[1] cursor-pointer rounded-[28px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          aria-label={label}
+        />
+      </article>
+    );
+  }
+
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-xl border border-line bg-canvas transition-colors duration-200 hover:border-ink-300">
       <Link

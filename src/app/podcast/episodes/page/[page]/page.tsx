@@ -16,9 +16,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { page } = await params;
   return {
-    title: `Podcast Episodes — Page ${page}`,
+    title: `Podcast Episodes: Page ${page}`,
     description:
-      "Every episode of the Ophthalmology Business Podcast — practice growth, marketing, operations, and leadership for eye care.",
+      "Every episode of the Ophthalmology Business Podcast: practice growth, marketing, operations, and leadership for eye care.",
   };
 }
 

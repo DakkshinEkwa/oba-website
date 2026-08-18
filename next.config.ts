@@ -24,7 +24,13 @@ const nextConfig: NextConfig = {
       { source: "/events", destination: "/resources/events", permanent: true },
       { source: "/hosts", destination: "/podcast/hosts", permanent: true },
       { source: "/about-podcast", destination: "/podcast", permanent: true },
-      { source: "/msm/ryan", destination: "/analyze", permanent: true },
+      { source: "/msm/ryan", destination: "/msm", permanent: true },
+      // URL parity with the current live site (obacademy.org 2026 relaunch).
+      { source: "/webinars", destination: "/resources/webinars", permanent: true },
+      { source: "/webinars/replays", destination: "/resources/webinars/replays", permanent: true },
+      { source: "/guest-speaker", destination: "/speak", permanent: true },
+      { source: "/marketing", destination: "/msm", permanent: true },
+      { source: "/analyze", destination: "/msm", permanent: true },
     ];
   },
 };

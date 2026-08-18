@@ -7,15 +7,15 @@ const problemAreas = [
   },
   {
     title: "Patient experience & care",
-    body: "The decisions behind better patient experiences — education, counseling, follow-up, adherence, and coordinating care across a growing team.",
+    body: "The decisions behind better patient experiences: education, counseling, follow-up, adherence, and coordinating care across a growing team.",
   },
   {
     title: "Leadership & teams",
-    body: "Hiring, retention, culture, and accountability — and the transition from clinician to leader that training never prepared anyone for.",
+    body: "Hiring, retention, culture, and accountability, and the transition from clinician to leader that training never prepared anyone for.",
   },
   {
     title: "Technology & innovation",
-    body: "Adopting new technology responsibly: what to implement, when, and how — from EMR transitions to AI, imaging, and workflow tools.",
+    body: "Adopting new technology responsibly: what to implement, when, and how, from EMR transitions to AI, imaging, and workflow tools.",
   },
 ];
 
@@ -26,7 +26,7 @@ export function ProblemAreas() {
         eyebrow="What we talk about"
         title="The decisions that determine"
         titleDim="whether a practice thrives."
-        lede="Clinical training builds excellent physicians. It rarely covers the decisions that follow — and those decisions are what OBA's conversations are for."
+        lede="Clinical training builds excellent physicians. It rarely covers the decisions that follow, and those decisions are what OBA's conversations are for."
       />
       <div className="mt-14 grid divide-y divide-line border-y border-line md:grid-cols-2 md:divide-x lg:grid-cols-4 lg:divide-y-0">
         {problemAreas.map((f, i) => (

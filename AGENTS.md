@@ -18,21 +18,23 @@ Gotchas:
 
 ## Architecture
 
-- Next.js App Router + TypeScript + Tailwind CSS v4, **fully static (SSG)**. No database, no API routes.
-- **Content is local files** in `src/content/` (episodes/*.mdx, blog/*.mdx, hosts.json, events.json). Frontmatter is zod-validated (`src/lib/schemas.ts`); loaders in `src/lib/content/` are memoized. Add/edit content there — invalid frontmatter fails the build.
-- **Site-wide config lives in `src/lib/site.ts`**: metadata, `primaryNav`, and the primary CTA. Change nav/CTA there, not in components.
-- Component layers (`src/components/`): `ui/` design-system primitives → `layout/` (header/footer/nav) → `marketing/` (hero, CTASection, PageHero) → `content/` (cards, LibsynPlayer, Markdown) → `forms/`. `home/` holds homepage sections (split out of `src/app/page.tsx`).
+- Next.js App Router + TypeScript + Tailwind CSS v4, **fully static (SSG)**. No database, no API routes, no account system.
+- **Content is local files** in `src/content/` (episodes/*.mdx, blog/*.mdx, hosts.json, events.json). Frontmatter is zod-validated (`src/lib/schemas.ts`); loaders in `src/lib/content/` are memoized. Add/edit content there — invalid frontmatter fails the build. Event `image` is optional; `eventImage()` in `src/lib/utils.ts` supplies the placeholder.
+- **Site-wide config lives in `src/lib/site.ts`**: metadata, `primaryNav`, `primaryCta` (Contribute → `/speak`), and `strategyMeetingUrl`. Change nav/CTA there, not in components. Header: Resources · Podcast · Reviews · Marketing · Participate · About · Contact.
+- Component layers (`src/components/`): `ui/` design-system primitives → `layout/` (header/footer/nav) → `marketing/` (hero, CTASection, PageHero, DarkHero) → `content/` (cards, EventCard, FeaturedEventCard, LibsynPlayer, Markdown) → `forms/`. `home/` holds homepage sections (split out of `src/app/page.tsx`).
 - Design tokens live in `src/app/globals.css` under `@theme`. Use `cn()` (`src/lib/utils.ts`) for class merging — it's configured so the custom `text-*` type utilities don't collide with `text-<color>` utilities.
-- SEO: legacy WordPress URLs 301-redirected in `next.config.ts`; `sitemap.ts`/`robots.ts` in `src/app/`.
+- SEO: legacy WordPress URLs and live-site aliases 301-redirected in `next.config.ts` (`/analyze` and `/marketing` → `/msm`); `sitemap.ts`/`robots.ts` in `src/app/`. Legal: `/privacy`, `/terms`.
 
 ## Conventions & constraints
 
-- **Copy must follow `docs/messaging-strategy.md`.** OBA is positioned as a professional platform for experienced ophthalmology leaders, not a lead-gen funnel; speaker/partner conversions are the primary CTAs. Only verifiable claims are allowed (75+ episodes, six named hosts, since 2022, 100% ophthalmology) — never add "thousands of practices" or "weekly content" claims, and describe empty sections honestly. Read that doc before writing or changing any site copy.
+- **Copy must follow `docs/messaging-strategy.md`.** OBA is positioned as a professional platform for experienced ophthalmology leaders, not a lead-gen funnel; speaker/partner conversions are the primary CTAs. The marketing-analysis offer is at `/msm` (nav label "Marketing") and must stay labeled as an Ekwa service. Only verifiable claims are allowed (75+ episodes, six named hosts, since 2022, 100% ophthalmology) — never add "thousands of practices" or "weekly content" claims, and describe empty sections honestly. Read that doc before writing or changing any site copy.
 - **Shadows are elevation-only** (floating/overlay surfaces: scrolled nav, dialogs, dropdowns). Cards use hairline borders — no decorative card shadows, no raw hex outside `@theme`.
-- Forms (contact, newsletter, analyze) and auth pages (`/login`, `/register`, `/forgot-password`) are **styled UI shells**: they validate client-side (vanilla React state) and show pending/success states, but submission is stubbed with `// TODO`. Don't wire backends unless asked.
-- Webinars and events render honest empty states until real content exists (`src/content/webinars/*.mdx`, `src/content/events.json`).
+- Forms (contact, newsletter, speaker, partnership, marketing analysis) are **styled UI shells**: they validate client-side (vanilla React state) and show pending/success states, but submission is stubbed with `// TODO`. `ContactForm` variants: `contact` | `analyze` | `speaker` | `partnership`. Don't wire backends unless asked.
+- There is **no auth**. Do not re-add `/login`, `/register`, or `/forgot-password`. Membership is account-free; newsletter is the soft CTA.
+- Webinars, webinar replays (`/resources/webinars/replays`), and reviews (`/reviews`) render honest empty states until real content exists. Events have a Fall 2026 series in `src/content/events.json` and keep an empty-state fallback.
 - `LibsynPlayer` plays direct Libsyn MP3s — keep `preload="none"` and its buffering/error/no-audio states.
 - Tailwind v4 token-var syntax uses parens, e.g. `pt-(--header-offset)` (the token pages use to clear the floating header).
+- Dark-hero routes must be listed in `DARK_HERO_ROUTES` in `SiteHeader` so the floating nav uses light text.
 
 ## Audit status
 

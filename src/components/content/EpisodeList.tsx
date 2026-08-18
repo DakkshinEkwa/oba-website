@@ -14,13 +14,13 @@ export function EpisodeList({ episodes }: { episodes: Episode[] }) {
       <EmptyState
         icon={Headphones}
         title="No episodes yet"
-        body="The conversation library is being built — the first episodes are on the way."
+        body="The conversation library is being built; the first episodes are on the way."
       />
     );
   }
 
   return (
-    <ol className="divide-y divide-line border-y border-line">
+    <ol className="episode-list">
       {episodes.map((ep, i) => (
         <EpisodeRow key={ep.slug} episode={ep} priority={i < 3} />
       ))}

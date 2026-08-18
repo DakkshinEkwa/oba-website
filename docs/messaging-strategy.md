@@ -114,9 +114,9 @@ No pages are added for size; two are added because two core audiences currently 
 | Resources `/resources` (+ blog, webinars, events, newsletter) | Everything beyond the podcast, honestly labeled | Ophthalmologists & practice leaders | Newsletter signup | "What else is here, and is it current?" |
 | Membership `/membership` | Honest free-membership offer | Engaged audience | Free account | "What do I get, and what does it cost?" |
 | Contact `/contact` | Route intent: speaking, partnership, general | All | Correct routing | "How do I reach the right person for my reason?" |
-| Marketing Analysis `/analyze` | Transparently attributed Ekwa service, off the main journey | Practice owners who want it | Analysis request | "Who is actually offering this, and what's the catch?" |
+| Marketing Analysis `/msm` | Transparently attributed Ekwa service | Practice owners who want it | Analysis request | "Who is actually offering this, and what's the catch?" |
 
-Navigation: **Resources · Podcast · Participate (Become a Speaker / Partnerships / Membership) · About · Contact**, with header CTA **"Contribute as a Speaker."** `/analyze` moves out of the header to the footer and in-context mentions.
+Navigation: **Resources · Podcast · Reviews · Marketing · Participate (Become a Speaker / Partnerships / Membership) · About · Contact**, with header CTA **"Contribute as a Speaker."** The Ekwa service was originally placed in the footer only; per client decision it now sits in the header as a top-level **Marketing** item (`/msm`) in addition to the labeled footer link and the in-context mention on `/about`.
 
 ---
 
@@ -184,13 +184,13 @@ Free membership restated honestly: full podcast library, articles, newsletter, i
 
 Intent routing added: speaking → /speak, partnerships → /partnerships, everything else → form. Address/email retained. ⚑ (address is Ekwa's Mississauga office; confirm it's the right public address for OBA)
 
-### 5.10 Marketing Analysis `/analyze`
+### 5.10 Marketing Analysis `/msm`
 
 Reframed with full attribution: the analysis is provided by **Ekwa Marketing**, the practice-marketing firm led by OBA's founder ⚑ (confirm attribution wording); copy separates it explicitly from OBA's editorial content ("This is a service, not part of OBA's educational programming"). FAQ updated to answer "Who actually performs this?" honestly.
 
 ### 5.11 Auth pages
 
-"Join thousands…" removed from AuthShell; perks restated to the deliverable library. Register/login microcopy aligned.
+Auth pages (`/login`, `/register`, `/forgot-password`) and the account-based AuthShell/register/login forms have been **removed** from the site — there is no account system. Membership is free and account-free: the newsletter is the soft-conversion CTA on `/membership` (→ `/resources/newsletter`).
 
 ---
 
@@ -202,9 +202,8 @@ Reframed with full attribution: the analysis is provided by **Ekwa Marketing**, 
 | **Share Your Area of Expertise** → /speak form | Primary | /speak hero and form section |
 | **Start a Partnership Conversation** → /partnerships form | Primary | /partnerships |
 | **Browse the Conversations** → /podcast/episodes | Primary (audience) | Home hero, secondary on CTA bands, empty states |
-| **Join the Newsletter** → /resources/newsletter | Soft conversion | Footer band, resources hub, events empty state |
-| **Create a Free Account** → /register | Soft conversion | Membership, auth cross-links |
-| **Request the Complimentary Analysis** → /analyze form | Contained | /analyze only, plus one labeled footer link and one transparent mention on /about |
+| **Join the Newsletter** → /resources/newsletter | Soft conversion | Footer band, resources hub, events empty state, membership CTA |
+| **Request the Complimentary Analysis** → /msm form | Contained | /msm (header nav item "Marketing"), plus a labeled footer link and one transparent mention on /about |
 | **Contact the OBA Team** → /contact | Utility | Contact routing, partnership fallback |
 
 Banned on this site: "Learn More," "Click Here," "Get Started," "Join Now."
@@ -234,7 +233,7 @@ Banned on this site: "Learn More," "Click Here," "Get Started," "Join Now."
 - Social links in `site.ts` are bare placeholder domains — link real profiles or remove the icons.
 - The Mississauga address is Ekwa's office — confirm it's OBA's intended public address.
 - All forms (newsletter, contact, speaker, partnership, analyze, auth) are stubbed client-side demos — connect them before promoting the new conversion paths.
-- Founding/Ekwa disclosure wording on /about and /analyze needs the founder's sign-off.
+- Founding/Ekwa disclosure wording on /about and /msm needs the founder's sign-off.
 
 ---
 

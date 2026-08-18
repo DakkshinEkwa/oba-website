@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { Mic } from "lucide-react";
 import type { Episode } from "@/lib/schemas";
 import { Button } from "@/components/ui/Button";
@@ -49,30 +50,39 @@ export function FeaturedEpisodeCard({ episode }: { episode: Episode }) {
         className="relative overflow-hidden rounded-xl border border-white/10 bg-ink-800 shadow-xl transition-transform duration-200 ease-out will-change-transform"
         style={style}
       >
-        <div className="relative flex aspect-[16/9] flex-col items-center justify-between overflow-hidden bg-ink-900 p-6">
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0)",
-              backgroundSize: "18px 18px",
-            }}
-          />
-          <div aria-hidden className="absolute inset-0 opacity-70" style={{ background: "var(--gradient-hero-glow)" }} />
+        <div className="relative aspect-[16/9] overflow-hidden bg-ink-900">
+          {episode.image ? (
+            <Image
+              src={episode.image}
+              alt=""
+              fill
+              sizes="(max-width: 1024px) 90vw, 26rem"
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center gap-6">
+              <div
+                aria-hidden
+                className="absolute inset-0"
+                style={{
+                  backgroundImage:
+                    "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0)",
+                  backgroundSize: "18px 18px",
+                }}
+              />
+              <div aria-hidden className="absolute inset-0 opacity-70" style={{ background: "var(--gradient-hero-glow)" }} />
+              <div className="relative flex size-16 items-center justify-center rounded-full border border-white/25 bg-white/10">
+                <Mic className="size-7 text-white" aria-hidden />
+              </div>
+              <Waveform bars={16} baseHeight={22} animated className="relative text-white/40" />
+            </div>
+          )}
 
-          <div className="relative flex w-full justify-end">
-            {episode.episodeNumber ? (
-              <span className="rounded-md bg-white/10 px-2.5 py-1 font-mono text-micro font-semibold text-white">
-                EP {episode.episodeNumber}
-              </span>
-            ) : null}
-          </div>
-
-          <div className="relative flex size-16 items-center justify-center rounded-full border border-white/25 bg-white/10">
-            <Mic className="size-7 text-white" aria-hidden />
-          </div>
-
-          <Waveform bars={16} baseHeight={22} animated className="relative text-white/40" />
+          {episode.episodeNumber ? (
+            <span className="absolute top-4 right-4 rounded-md bg-black/45 px-2.5 py-1 font-mono text-micro font-semibold text-white backdrop-blur-sm">
+              EP {episode.episodeNumber}
+            </span>
+          ) : null}
         </div>
 
         <div className="flex flex-col gap-3 bg-canvas p-6">

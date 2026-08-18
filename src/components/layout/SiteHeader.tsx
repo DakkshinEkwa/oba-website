@@ -19,13 +19,16 @@ const DARK_HERO_ROUTES = [
   /^\/podcast\/episodes\/page\/\d+$/,
   /^\/podcast\/hosts$/,
   /^\/resources$/,
+  /^\/resources\/webinars\/replays$/,
   /^\/blog$/,
   /^\/about$/,
+  /^\/reviews$/,
   /^\/speak$/,
   /^\/partnerships$/,
   /^\/membership$/,
   /^\/resources\/events$/,
   /^\/resources\/webinars$/,
+  /^\/msm$/,
 ];
 
 /**
@@ -90,18 +93,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-1.5 lg:flex">
-          <Button
-            href="/login"
-            size="sm"
-            className={cn(
-              "h-11",
-              onDark
-                ? "bg-transparent text-white/75 hover:bg-white/10 hover:text-white"
-                : "text-ink-500 hover:bg-ink-900/5 hover:text-ink-900",
-            )}
-          >
-            Log In
-          </Button>
           <Button href={siteConfig.primaryCta.href} variant={onDark ? "onDark" : "primary"} size="sm" className="h-11">
             {siteConfig.primaryCta.label}
           </Button>
@@ -142,7 +133,7 @@ function NavDropdown({
         {item.label}
         <ChevronDown className="size-3.5 transition-transform group-hover:rotate-180" aria-hidden />
       </Link>
-      <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+      <div className="invisible pointer-events-none absolute left-0 top-full pt-3 opacity-0 transition-[opacity,visibility] duration-150 group-hover:visible group-hover:pointer-events-auto group-hover:opacity-100">
         <div className="w-72 rounded-xl border border-line bg-canvas/95 p-2 shadow-lg backdrop-blur-xl">
           {item.children!.map((child) => (
             <Link

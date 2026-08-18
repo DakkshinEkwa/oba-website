@@ -19,7 +19,7 @@ export function SiteFooter() {
                 Insight for ophthalmology practice leaders
               </h2>
               <p className="mt-2 text-body text-ink-500">
-                New conversations, practical articles, and event invitations — straight to your inbox.
+                New conversations, practical articles, and event invitations, straight to your inbox.
               </p>
             </div>
             <div className="lg:w-full lg:max-w-md lg:justify-self-end">
@@ -31,7 +31,7 @@ export function SiteFooter() {
 
       {/* Link columns */}
       <Container size="wide">
-        <div className="grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
+        <div className="grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div className="max-w-xs">
             <Logo />
             <p className="mt-4 text-small text-ink-400">{siteConfig.description}</p>
@@ -78,9 +78,23 @@ export function SiteFooter() {
             <p>
               © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
             </p>
-            <p>
-              {siteConfig.address.line1}, {siteConfig.address.line2}
-            </p>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <p>
+                {siteConfig.address.line1}, {siteConfig.address.line2}
+              </p>
+              <span aria-hidden className="text-ink-300">
+                ·
+              </span>
+              <Link href="/privacy" className="transition-colors hover:text-ink-900">
+                Privacy
+              </Link>
+              <span aria-hidden className="text-ink-300">
+                ·
+              </span>
+              <Link href="/terms" className="transition-colors hover:text-ink-900">
+                Terms
+              </Link>
+            </div>
           </div>
         </Container>
       </div>

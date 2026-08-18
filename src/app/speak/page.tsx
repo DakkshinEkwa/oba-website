@@ -43,7 +43,7 @@ const expertiseGroups = [
   {
     icon: HeartHandshake,
     title: "Patient-experience & care leaders",
-    body: "People who rebuilt patient education, counseling, follow-up, or care coordination — and can speak to what changed.",
+    body: "People who rebuilt patient education, counseling, follow-up, or care coordination, and can speak to what changed.",
   },
   {
     icon: Cpu,
@@ -57,13 +57,13 @@ const process = [
     icon: MessageSquareQuote,
     step: "Before",
     title: "We shape the topic with you",
-    body: "A short conversation to find the problem your experience speaks to best, then a guided outline of the discussion — so nothing is sprung on you.",
+    body: "A short conversation to find the problem your experience speaks to best, then a guided outline of the discussion, so nothing is sprung on you.",
   },
   {
     icon: Mic,
     step: "During",
     title: "A conversation, not a performance",
-    body: "Recorded remotely at a time that works for you, hosted by people who run practices. No script, no slides — just a candid discussion of decisions you've made.",
+    body: "Recorded remotely at a time that works for you, hosted by people who run practices. No script, no slides: just a candid discussion of decisions you've made.",
   },
   {
     icon: CalendarCheck,
@@ -74,10 +74,10 @@ const process = [
 ];
 
 const standards = [
-  "No product pitches — conversations are framed around problems and decisions, never around anything for sale.",
-  "You're invited for your experience, not your sponsorship — participation costs nothing and sells nothing.",
-  "Lessons, trade-offs, and even failures are welcome. Polish is not required — candor is.",
-  "Your name stays associated with your judgment — every conversation stays educational.",
+  "No product pitches: conversations are framed around problems and decisions, never around anything for sale.",
+  "You're invited for your experience, not your sponsorship; participation costs nothing and sells nothing.",
+  "Lessons, trade-offs, and even failures are welcome. Polish is not required; candor is.",
+  "Your name stays associated with your judgment; every conversation stays educational.",
 ];
 
 export default function SpeakPage() {
@@ -90,7 +90,7 @@ export default function SpeakPage() {
         eyebrowDot
         title="Lend your experience to"
         titleDim="the conversation"
-        lede="OBA's podcast episodes, panels, and webinars are built on firsthand experience. If you've navigated a decision your peers are still facing, your perspective belongs here — and contributing is straightforward."
+        lede="OBA's podcast episodes, panels, and webinars are built on firsthand experience. If you've navigated a decision your peers are still facing, your perspective belongs here, and contributing is straightforward."
       >
         <Button href="#interest" variant="onDark" size="lg">
           <Send className="size-4" aria-hidden /> Share your area of expertise
@@ -102,7 +102,7 @@ export default function SpeakPage() {
 
       <Section spacing="default" containerSize="narrow">
         <p className="text-body-lg text-ink-600">
-          Each OBA conversation starts with a problem facing modern ophthalmology — and finds
+          Each OBA conversation starts with a problem facing modern ophthalmology and finds
           the person who has lived it. The invitation is a well-prepared, professionally
           produced discussion of a decision you understand deeply: not a promotional
           appearance, and never a sales environment.
@@ -143,7 +143,7 @@ export default function SpeakPage() {
       <Section tone="subtle" spacing="default" containerSize="narrow">
         <SectionHeader
           eyebrow="Our editorial standard"
-          title="What we protect — including your name"
+          title="What we protect, including your name"
           lede="A conversation is only worth your reputation if the platform protects it. These commitments apply to every session."
         />
         <ul className="mt-10 space-y-4">
@@ -160,7 +160,7 @@ export default function SpeakPage() {
           <SectionHeader
             eyebrow="Express interest"
             title="Share your area of expertise"
-            lede="Tell us the problem or decision you could speak to. A member of the OBA team reads every note and follows up personally — there's no committee and no formal application."
+            lede="Tell us the problem or decision you could speak to. A member of the OBA team reads every note and follows up personally; there's no committee and no formal application."
           />
           <div className="mt-10 rounded-xl border border-line bg-canvas p-6 sm:p-8">
             <ContactForm variant="speaker" />

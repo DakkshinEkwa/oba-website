@@ -15,6 +15,7 @@
   --color-canvas: #ffffff;
   --color-canvas-subtle: #f4f6f7;
   --color-canvas-ink: #16232c;
+  --color-canvas-inverse: #141314;
 
   /* ---- Ink (text) scale — cool charcoal ---- */
   --color-ink-900: #16232c;
@@ -286,6 +287,330 @@
   }
 }
 
+/* Episode archive — one sliding hover pill (Collins programs pattern) */
+.episode-list {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+}
+
+.episode-row {
+  position: relative;
+  transition: opacity 0.3s var(--ease-in-out);
+}
+
+/* Hairline separators between rows, drawn as inset pseudo-element lines so
+   they stay straight — a border-bottom would follow the row's rounded corners
+   and curve at each end. The insets (1.5rem / 2rem) match the row's content
+   padding and clear the 20px corner radius. The list's bottom edge stays
+   clean, and the active row's separator — and the one above it — yield to the
+   hover pill so the pill still reads as a single continuous surface. */
+.episode-row::after {
+  content: "";
+  position: absolute;
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: 0;
+  height: 1px;
+  background-color: var(--color-line);
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease-in-out);
+}
+
+@media (min-width: 640px) {
+  .episode-row::after {
+    left: 2rem;
+    right: 2rem;
+  }
+}
+
+.episode-row:last-child::after {
+  display: none;
+}
+
+.episode-row:hover::after,
+.episode-row:has(+ .episode-row:hover)::after,
+.episode-row:focus-within::after,
+.episode-row:has(+ .episode-row:focus-within)::after {
+  opacity: 0;
+}
+
+.episode-row > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (any-pointer: fine) {
+  .episode-list:has(.episode-row:hover) .episode-row,
+  .episode-list:has(.episode-row:focus-within) .episode-row {
+    opacity: 0.4;
+  }
+
+  .episode-list:has(.episode-row:hover) .episode-row:hover,
+  .episode-list:has(.episode-row:focus-within) .episode-row:focus-within {
+    opacity: 1;
+  }
+}
+
+@supports (position-anchor: --episode-hover) {
+  .episode-list::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    position-anchor: --episode-hover;
+    top: anchor(top);
+    bottom: anchor(bottom);
+    left: anchor(left);
+    right: anchor(right);
+    border-radius: 20px;
+    background-color: var(--color-ink-700);
+    opacity: 0;
+    transition:
+      top 0.3s var(--ease-in-out),
+      bottom 0.3s var(--ease-in-out),
+      left 0.3s var(--ease-in-out),
+      right 0.3s var(--ease-in-out),
+      opacity 0.3s var(--ease-in-out);
+  }
+
+  .episode-row:first-child {
+    anchor-name: --episode-hover;
+  }
+
+  .episode-row:hover,
+  .episode-row:focus-within {
+    anchor-name: --episode-hover;
+  }
+
+  .episode-list:has(.episode-row:focus-within)::before {
+    opacity: 1;
+  }
+
+  @media (any-pointer: fine) {
+    .episode-list:has(.episode-row:hover)::before {
+      opacity: 1;
+    }
+  }
+}
+
+@supports not (position-anchor: --episode-hover) {
+  .episode-row:focus-within {
+    background-color: var(--color-ink-700);
+  }
+
+  @media (any-pointer: fine) {
+    .episode-row:hover {
+      background-color: var(--color-ink-700);
+    }
+  }
+}
+
+.event-grid {
+  --event-gap-x: 2rem;
+  --event-gap-y: 2.5rem;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  overflow: hidden;
+  gap: var(--event-gap-y) var(--event-gap-x);
+}
+
+@media (min-width: 640px) {
+  .event-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .event-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.event-card {
+  position: relative;
+  transition: opacity 0.3s var(--ease-in-out);
+}
+
+.event-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.event-card::before,
+.event-card::after {
+  content: "";
+  position: absolute;
+  background-color: var(--color-line);
+  pointer-events: none;
+}
+
+/* Separator hairlines sit centered inside the grid gap instead of running
+   the full shared edge: each line is inset to the middle of its side, and
+   `overflow: hidden` on .event-grid clips the half-gap that pokes past the
+   last row/column, so no lines appear on the grid's outer edges. */
+.event-card::before {
+  left: 20%;
+  right: 20%;
+  bottom: calc(var(--event-gap-y) / -2 - 0.5px);
+  height: 1px;
+}
+
+.event-card::after {
+  top: 20%;
+  bottom: 20%;
+  right: calc(var(--event-gap-x) / -2 - 0.5px);
+  width: 1px;
+}
+
+@media (any-pointer: fine) {
+  .event-grid:has(.event-card:hover) .event-card,
+  .event-grid:has(.event-card:focus-within) .event-card {
+    opacity: 0.4;
+  }
+
+  .event-grid:has(.event-card:hover) .event-card:hover,
+  .event-grid:has(.event-card:focus-within) .event-card:focus-within {
+    opacity: 1;
+  }
+}
+
+@supports (position-anchor: --event-hover) {
+  .event-grid::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    position-anchor: --event-hover;
+    top: anchor(top);
+    bottom: anchor(bottom);
+    left: anchor(left);
+    right: anchor(right);
+    border-radius: 28px;
+    background-color: var(--color-ink-700);
+    opacity: 0;
+    transition:
+      top 0.3s var(--ease-in-out),
+      bottom 0.3s var(--ease-in-out),
+      left 0.3s var(--ease-in-out),
+      right 0.3s var(--ease-in-out),
+      opacity 0.3s var(--ease-in-out);
+  }
+
+  .event-card:first-child {
+    anchor-name: --event-hover;
+  }
+
+  .event-card:hover,
+  .event-card:focus-within {
+    anchor-name: --event-hover;
+  }
+
+  .event-grid:has(.event-card:focus-within)::before {
+    opacity: 1;
+  }
+
+  @media (any-pointer: fine) {
+    .event-grid:has(.event-card:hover)::before {
+      opacity: 1;
+    }
+  }
+}
+
+@supports not (position-anchor: --event-hover) {
+  .event-card:focus-within {
+    background-color: var(--color-ink-700);
+  }
+
+  @media (any-pointer: fine) {
+    .event-card:hover {
+      background-color: var(--color-ink-700);
+    }
+  }
+}
+
+/* Panel grid (used on /resources “Latest episodes”/“Latest articles” and the
+   blog archive) — same separated card layout as the events grid, minus the
+   sliding hover pill: cards get hairline separators centered in the grid gaps,
+   and hover is a plain color shift with no animation. */
+.panel-grid {
+  --panel-gap-x: 2rem;
+  --panel-gap-y: 2.5rem;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  overflow: hidden;
+  gap: var(--panel-gap-y) var(--panel-gap-x);
+}
+
+@media (min-width: 640px) {
+  .panel-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .panel-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.panel-card {
+  position: relative;
+}
+
+.panel-card::before,
+.panel-card::after {
+  content: "";
+  position: absolute;
+  background-color: var(--color-line);
+  pointer-events: none;
+}
+
+/* Separator hairlines sit centered inside the grid gap instead of running
+   the full shared edge; `overflow: hidden` on the grid clips the half-gap
+   that pokes past the last row/column, so no lines show on outer edges. */
+.panel-card::before {
+  left: 20%;
+  right: 20%;
+  bottom: calc(var(--panel-gap-y) / -2 - 0.5px);
+  height: 1px;
+}
+
+.panel-card::after {
+  top: 20%;
+  bottom: 20%;
+  right: calc(var(--panel-gap-x) / -2 - 0.5px);
+  width: 1px;
+}
+
+/* Host card — mobile swipe: the bio panel fades/lifts in as it is dragged
+   into view, tying the reveal to scroll progress instead of a timed animation.
+   Progressive enhancement: browsers without scroll-driven animations simply
+   show the panel once swiped into view. */
+@media (max-width: 1023.98px) {
+  @supports (animation-timeline: scroll(inline nearest)) {
+    .host-card__bio-panel {
+      animation: host-card-bio-in 1ms linear both;
+      animation-timeline: scroll(inline nearest);
+      animation-range: 25% 95%;
+    }
+  }
+}
+
+@keyframes host-card-bio-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -299,6 +624,45 @@
 
 @utility animate-fade-up {
   animation: fade-up 0.6s var(--ease-out) both;
+}
+
+/* Hosts page — staggered entrance: cards fade up in sequence on load so the
+   info appears gradually. Scoped to .hosts-reveal so the HostCard grids on
+   /about and /podcast stay untouched. The global reduced-motion kill-switch
+   collapses durations; zeroing the delay here keeps reduced-motion users from
+   waiting for a stagger with nothing to animate. */
+.hosts-reveal > * {
+  animation: fade-up 0.6s var(--ease-out) both;
+}
+
+.hosts-reveal > *:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+.hosts-reveal > *:nth-child(3) {
+  animation-delay: 200ms;
+}
+
+.hosts-reveal > *:nth-child(4) {
+  animation-delay: 300ms;
+}
+
+.hosts-reveal > *:nth-child(5) {
+  animation-delay: 400ms;
+}
+
+.hosts-reveal > *:nth-child(6) {
+  animation-delay: 500ms;
+}
+
+.hosts-reveal > *:nth-child(n + 7) {
+  animation-delay: 600ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hosts-reveal > * {
+    animation-delay: 0s;
+  }
 }
 
 @keyframes waveform {

@@ -7,14 +7,14 @@ import { NewsletterForm } from "@/components/forms/NewsletterForm";
 export const metadata: Metadata = {
   title: "Newsletter",
   description:
-    "Join the OBA newsletter — practical business insight for ophthalmology practices, new conversations, and event invitations.",
+    "Join the OBA newsletter: practical business insight for ophthalmology practices, new conversations, and event invitations.",
 };
 
 const benefits = [
   "Business insight specific to ophthalmology practices",
   "New conversations and articles as they're published",
   "Invitations to panels and events, before they're announced publicly",
-  "No spam — unsubscribe anytime",
+  "No spam: unsubscribe anytime",
 ];
 
 export default function NewsletterPage() {
@@ -24,7 +24,7 @@ export default function NewsletterPage() {
         tone="subtle"
         eyebrow="Stay in the loop"
         title="Insight for ophthalmology practice leaders"
-        lede="Practical, business-focused insight from OBA's conversations — delivered to your inbox, free."
+        lede="Practical, business-focused insight from OBA's conversations, delivered to your inbox, free."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Newsletter" }]}
       />
       <Section tone="subtle" spacing="default" containerSize="narrow">

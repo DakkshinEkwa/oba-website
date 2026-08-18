@@ -34,7 +34,7 @@ export function EpisodesArchive({ page }: { page: number }) {
         eyebrowDot
         title="Every conversation,"
         titleDim="on demand"
-        lede="The full library — candid discussions of growth, operations, patient experience, leadership, and technology with the people who have lived them."
+        lede="The full library: candid discussions of growth, operations, patient experience, leadership, and technology with the people who have lived them."
         aside={featured ? <FeaturedEpisodeCard episode={featured} /> : null}
         proof={
           <div className="flex flex-col gap-6">

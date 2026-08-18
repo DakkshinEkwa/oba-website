@@ -70,6 +70,7 @@ export const eventSchema = z.object({
   isVirtual: z.boolean().default(false),
   registrationUrl: z.string().optional(),
   excerpt: z.string().default(""),
+  image: z.string().optional(),
 });
 
 export type EpisodeMeta = z.infer<typeof episodeSchema>;
