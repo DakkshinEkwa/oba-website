@@ -10,6 +10,7 @@ import { CTASection } from "@/components/marketing/CTASection";
 import { getAllBlogPosts, getBlogPostBySlug } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
+import { pageMetadata } from "@/lib/og/metadata";
 
 export function generateStaticParams() {
   return getAllBlogPosts().map((p) => ({ slug: p.slug }));
@@ -23,17 +24,14 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getBlogPostBySlug(slug);
   if (!post) return {};
-  return {
+  return pageMetadata({
     title: post.title,
     description: post.excerpt,
-    openGraph: {
-      type: "article",
-      title: post.title,
-      description: post.excerpt,
-      images: post.coverImage ? [post.coverImage] : undefined,
-      publishedTime: post.publishedAt,
-    },
-  };
+    path: `/blog/${slug}`,
+    type: "article",
+    publishedTime: post.publishedAt,
+    image: "none",
+  });
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {

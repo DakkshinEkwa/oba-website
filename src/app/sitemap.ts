@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/msm",
     "/membership",
     "/resources",
+    "/resources/free-resources",
     "/resources/newsletter",
     "/resources/events",
     "/resources/webinars",

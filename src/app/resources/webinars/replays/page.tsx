@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import { Video } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { DarkHero } from "@/components/marketing/DarkHero";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Webinar Replays",
   description:
     "On-demand recordings of live OBA webinars and expert panels, free, on your schedule.",
-};
+  path: "/resources/webinars/replays",
+});
 
 export default function WebinarReplaysPage() {
   return (

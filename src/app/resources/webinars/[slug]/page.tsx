@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Section } from "@/components/ui/Section";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { getAllWebinars, getWebinarBySlug } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
+import { pageMetadata } from "@/lib/og/metadata";
 
 export function generateStaticParams() {
   return getAllWebinars().map((w) => ({ slug: w.slug }));
@@ -13,10 +13,15 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+}) {
   const { slug } = await params;
   const w = getWebinarBySlug(slug);
-  return w ? { title: w.title, description: w.excerpt } : {};
+  if (!w) return {};
+  return pageMetadata({
+    title: w.title,
+    description: w.excerpt,
+    path: `/resources/webinars/${slug}`,
+  });
 }
 
 export default async function WebinarPage({ params }: { params: Promise<{ slug: string }> }) {

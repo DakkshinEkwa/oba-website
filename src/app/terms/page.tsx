@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import { PageHero } from "@/components/marketing/PageHero";
 import { Section } from "@/components/ui/Section";
 import { Prose } from "@/components/ui/Prose";
 import { siteConfig } from "@/lib/site";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Terms of Use",
   description:
     "The terms that govern your use of the Ophthalmology Business Academy website.",
-};
+  path: "/terms",
+});
 
 export default function TermsPage() {
   return (

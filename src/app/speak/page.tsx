@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import {
   Stethoscope,
   Building2,
@@ -13,16 +12,19 @@ import {
 } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { DarkHero } from "@/components/marketing/DarkHero";
+import { SpeakMicrophone } from "@/components/marketing/SpeakMicrophone";
 import { Button } from "@/components/ui/Button";
 import { IconCard } from "@/components/ui/IconCard";
 import { ChecklistItem } from "@/components/ui/ChecklistItem";
 import { ContactForm } from "@/components/forms/ContactForm";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Become a Speaker",
   description:
     "OBA convenes experienced ophthalmology professionals for candid, non-promotional conversations. If you've navigated a problem your peers are still facing, share your area of expertise.",
-};
+  path: "/speak",
+});
 
 const expertiseGroups = [
   {
@@ -91,6 +93,7 @@ export default function SpeakPage() {
         title="Lend your experience to"
         titleDim="the conversation"
         lede="OBA's podcast episodes, panels, and webinars are built on firsthand experience. If you've navigated a decision your peers are still facing, your perspective belongs here, and contributing is straightforward."
+        aside={<SpeakMicrophone />}
       >
         <Button href="#interest" variant="onDark" size="lg">
           <Send className="size-4" aria-hidden /> Share your area of expertise

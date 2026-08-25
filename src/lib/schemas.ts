@@ -61,6 +61,19 @@ export const webinarSchema = z.object({
   sourceUrl: z.string().url().optional(),
 });
 
+export const freeResourceCategorySchema = z.enum(["guide", "template", "checklist"]);
+
+export const freeResourceSchema = z.object({
+  slug: z.string().min(1),
+  category: freeResourceCategorySchema,
+  title: z.string().min(1),
+  description: z.string().min(1),
+  author: z.string().min(1),
+  tags: z.array(z.string()).default([]),
+  pdfUrl: z.string().min(1),
+  image: z.string().optional(),
+});
+
 export const eventSchema = z.object({
   slug: z.string().min(1),
   title: z.string().min(1),
@@ -78,6 +91,8 @@ export type BlogPostMeta = z.infer<typeof blogPostSchema>;
 export type Host = z.infer<typeof hostSchema>;
 export type Webinar = z.infer<typeof webinarSchema>;
 export type Event = z.infer<typeof eventSchema>;
+export type FreeResourceCategory = z.infer<typeof freeResourceCategorySchema>;
+export type FreeResource = z.infer<typeof freeResourceSchema>;
 
 /** A content record combines validated frontmatter with the raw Markdown body. */
 export type Episode = EpisodeMeta & { body: string };

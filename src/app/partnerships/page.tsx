@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { ScanEye, Cpu, Workflow, Pill, Briefcase, MonitorSmartphone, ShieldCheck, Handshake } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { DarkHero } from "@/components/marketing/DarkHero";
@@ -6,12 +5,14 @@ import { Button } from "@/components/ui/Button";
 import { IconCard } from "@/components/ui/IconCard";
 import { ChecklistItem } from "@/components/ui/ChecklistItem";
 import { ContactForm } from "@/components/forms/ContactForm";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Partnerships",
   description:
     "How organizations serving ophthalmology can support credible, non-promotional professional education with the Ophthalmology Business Academy.",
-};
+  path: "/partnerships",
+});
 
 const partnerFields = [
   { icon: ScanEye, title: "Diagnostics & imaging", body: "Organizations advancing how eye disease is detected, monitored, and understood." },

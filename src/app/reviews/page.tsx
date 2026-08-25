@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import { Star } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { DarkHero } from "@/components/marketing/DarkHero";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Reviews",
   description:
     "What listeners and members say about the Ophthalmology Business Academy.",
-};
+  path: "/reviews",
+});
 
 export default function ReviewsPage() {
   return (

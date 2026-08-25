@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { PageHero } from "@/components/marketing/PageHero";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Newsletter",
   description:
     "Join the OBA newsletter: practical business insight for ophthalmology practices, new conversations, and event invitations.",
-};
+  path: "/resources/newsletter",
+});
 
 const benefits = [
   "Business insight specific to ophthalmology practices",

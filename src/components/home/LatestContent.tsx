@@ -30,9 +30,9 @@ export function LatestContent({ episodes, posts }: { episodes: Episode[]; posts:
             />
           </div>
         ) : (
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="panel-grid mt-10">
             {episodes.map((ep) => (
-              <EpisodeCard key={ep.slug} episode={ep} />
+              <EpisodeCard key={ep.slug} episode={ep} variant="panel" />
             ))}
           </div>
         )}
@@ -46,9 +46,9 @@ export function LatestContent({ episodes, posts }: { episodes: Episode[]; posts:
               All articles <ArrowRight className="size-4" aria-hidden />
             </Button>
           </div>
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="panel-grid mt-10">
             {posts.map((post) => (
-              <BlogCard key={post.slug} post={post} />
+              <BlogCard key={post.slug} post={post} variant="panel" />
             ))}
           </div>
         </Section>

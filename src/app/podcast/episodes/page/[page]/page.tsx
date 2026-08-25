@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { EpisodesArchive, EPISODES_PER_PAGE } from "@/components/content/EpisodesArchive";
 import { getAllEpisodes } from "@/lib/content";
+import { pageMetadata } from "@/lib/og/metadata";
 
 export function generateStaticParams() {
   const total = Math.ceil(getAllEpisodes().length / EPISODES_PER_PAGE);
@@ -13,13 +13,14 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ page: string }>;
-}): Promise<Metadata> {
+}) {
   const { page } = await params;
-  return {
+  return pageMetadata({
     title: `Podcast Episodes: Page ${page}`,
     description:
       "Every episode of the Ophthalmology Business Podcast: practice growth, marketing, operations, and leadership for eye care.",
-  };
+    path: `/podcast/episodes/page/${page}`,
+  });
 }
 
 export default async function EpisodesPaginatedPage({

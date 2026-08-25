@@ -1,6 +1,5 @@
-import type { Metadata } from "next";
 import Link from "next/link";
-import { Headphones, FileText, Video, CalendarDays, Mail, ArrowUpRight } from "lucide-react";
+import { Headphones, FileText, Video, CalendarDays, Mail, Download, ArrowUpRight } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { DarkHero } from "@/components/marketing/DarkHero";
 import { EpisodeCard } from "@/components/content/EpisodeCard";
@@ -8,16 +7,19 @@ import { BlogCard } from "@/components/content/BlogCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { CTASection } from "@/components/marketing/CTASection";
 import { getAllEpisodes, getAllBlogPosts } from "@/lib/content";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Expert Insights Hub",
   description:
     "Podcasts, articles, webinars, and events: every OB Academy resource for growing your ophthalmology practice, in one place.",
-};
+  path: "/resources",
+});
 
 const hubLinks = [
   { icon: Headphones, title: "Podcast", body: "Recorded conversations with practice leaders.", href: "/podcast/episodes" },
   { icon: FileText, title: "Blog", body: "Practical articles on practice growth.", href: "/blog" },
+  { icon: Download, title: "Free Resources", body: "Guides, templates, and checklists.", href: "/resources/free-resources" },
   { icon: Video, title: "Webinars", body: "On-demand expert sessions.", href: "/resources/webinars" },
   { icon: CalendarDays, title: "Events", body: "Live panels and discussions.", href: "/resources/events" },
   { icon: Mail, title: "Newsletter", body: "New conversations to your inbox.", href: "/resources/newsletter" },

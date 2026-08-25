@@ -7,11 +7,13 @@ import {
   hostSchema,
   webinarSchema,
   eventSchema,
+  freeResourceSchema,
   type Episode,
   type BlogPost,
   type Host,
   type Webinar,
   type Event,
+  type FreeResource,
 } from "@/lib/schemas";
 
 const CONTENT_DIR = path.join(process.cwd(), "src", "content");
@@ -122,4 +124,11 @@ export function getWebinarBySlug(slug: string): Webinar | undefined {
 export function getAllEvents(): Event[] {
   const json = readJson<unknown[]>("events.json", []);
   return json.map((e) => eventSchema.parse(e)).sort((a, b) => byDateDesc(b.startDate, a.startDate));
+}
+
+/* --------------------------- Free Resources ------------------------------ */
+
+export function getAllFreeResources(): FreeResource[] {
+  const json = readJson<unknown[]>("free-resources.json", []);
+  return json.map((r) => freeResourceSchema.parse(r));
 }
