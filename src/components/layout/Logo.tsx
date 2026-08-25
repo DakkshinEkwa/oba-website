@@ -27,7 +27,7 @@ export function Logo({ tone = "dark", className }: { tone?: "dark" | "light"; cl
       }}
     >
       <Image
-        src={tone === "light" ? "/images/oba-logo-white.png" : "/images/oba-logo.png"}
+        src={tone === "light" ? "/images/oba-logo-white.webp" : "/images/oba-logo.webp"}
         alt=""
         aria-hidden
         width={2278}
