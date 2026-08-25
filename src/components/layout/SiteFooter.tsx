@@ -4,7 +4,15 @@ import { Container } from "@/components/ui/Container";
 import { Logo } from "./Logo";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { FacebookIcon, LinkedinIcon, InstagramIcon } from "@/components/icons/BrandIcons";
-import { footerNav, siteConfig } from "@/lib/site";
+import { ChatGPTIcon, ClaudeIcon, GeminiIcon, GrokIcon, SparkleIcon } from "@/components/icons/AiIcons";
+import { aiSummary, footerNav, siteConfig } from "@/lib/site";
+
+const aiBrandIcons = {
+  ChatGPT: ChatGPTIcon,
+  Claude: ClaudeIcon,
+  Gemini: GeminiIcon,
+  Grok: GrokIcon,
+} as const;
 
 /** Light, hairline-ruled footer ending in a giant wordmark (Qoves-style). */
 export function SiteFooter() {
@@ -70,6 +78,38 @@ export function SiteFooter() {
           ))}
         </div>
       </Container>
+
+      {/* AI summary band */}
+      <div className="border-t border-line">
+        <Container size="wide">
+          <div className="flex flex-col items-center gap-4 py-8 text-small text-ink-500 sm:flex-row sm:justify-center sm:gap-3">
+            <p className="flex items-center gap-2">
+              <SparkleIcon className="size-4" />
+              {aiSummary.label}
+            </p>
+            <ul className="flex items-center gap-2.5">
+              {aiSummary.providers.map((provider) => {
+                const Icon = aiBrandIcons[provider.name];
+                const href = `${provider.chatUrl}?q=${encodeURIComponent(aiSummary.prompt)}`;
+                return (
+                  <li key={provider.name}>
+                    <a
+                      href={href}
+                      aria-label={`${aiSummary.label} with ${provider.name}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex size-10 items-center justify-center rounded-md border border-white/15 text-white transition hover:border-white/35 hover:brightness-110 focus-visible:outline-white"
+                      style={{ background: "var(--gradient-hero)" }}
+                    >
+                      <Icon className="size-5" />
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </Container>
+      </div>
 
       {/* Legal bar */}
       <div className="border-t border-line">
