@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import {
   Search,
   LineChart,
@@ -24,12 +23,14 @@ import { DarkHero } from "@/components/marketing/DarkHero";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { AnimatedStat } from "@/components/marketing/AnimatedStat";
 import { siteConfig } from "@/lib/site";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Free Marketing Analysis for Ophthalmology Practices",
   description:
     "A complimentary, no-obligation review of your ophthalmology practice's digital marketing, provided by Ekwa Marketing, a service offered alongside, and separate from, OBA's educational content.",
-};
+  path: "/msm",
+});
 
 const heroChecklist = [
   {
@@ -192,19 +193,8 @@ export default function MsmPage() {
               title="Book your free strategy meeting"
               allow="payment"
               loading="lazy"
-              className="mt-5 block h-[360px] w-full rounded-xl border border-white/15"
+              className="mt-5 block h-[520px] w-full rounded-xl border border-white/15"
             />
-            <p className="mt-4 text-small text-white/60">
-              Calendar not loading?{" "}
-              <a
-                href={siteConfig.strategyMeetingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-white/80 underline underline-offset-2 hover:text-white"
-              >
-                Open the booking page instead
-              </a>
-            </p>
           </div>
         }
       />

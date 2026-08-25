@@ -35,6 +35,7 @@ export const primaryNav: NavLink[] = [
     href: "/resources",
     children: [
       { label: "Expert Insights Hub", href: "/resources", description: "Every OBA resource in one place" },
+      { label: "Free Resources", href: "/resources/free-resources", description: "Guides, templates, and checklists" },
       { label: "Webinar Archive", href: "/resources/webinars", description: "On-demand expert sessions" },
       { label: "Webinar Replays", href: "/resources/webinars/replays", description: "Recordings of past live sessions" },
       { label: "Blog", href: "/blog", description: "Articles on practice growth" },
@@ -71,6 +72,7 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
     title: "Resources",
     links: [
       { label: "Expert Insights Hub", href: "/resources" },
+      { label: "Free Resources", href: "/resources/free-resources" },
       { label: "Webinar Archive", href: "/resources/webinars" },
       { label: "Webinar Replays", href: "/resources/webinars/replays" },
       { label: "Blog", href: "/blog" },

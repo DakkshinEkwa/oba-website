@@ -1,16 +1,17 @@
-import type { Metadata } from "next";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { DarkHero } from "@/components/marketing/DarkHero";
 import { HostCard } from "@/components/content/HostCard";
 import { CTASection } from "@/components/marketing/CTASection";
 import { getAllHosts, getAllEpisodes, getEpisodeStats } from "@/lib/content";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "About OBA",
   description:
     "What the Ophthalmology Business Academy is, why it exists, and the editorial principles behind every conversation we publish.",
-};
+  path: "/about",
+});
 
 const values = [
   {

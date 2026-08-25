@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Video, ArrowUpRight } from "lucide-react";
 import { Section } from "@/components/ui/Section";
@@ -8,11 +7,13 @@ import { Card, CardBody } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { getAllWebinars, getAllEpisodes } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Webinar Archive",
   description: "On-demand webinars with experts on growing your ophthalmology practice.",
-};
+  path: "/resources/webinars",
+});
 
 export default function WebinarsPage() {
   const webinars = getAllWebinars();

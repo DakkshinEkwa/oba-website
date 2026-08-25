@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "maximizing-the-impact-of-your-website-key-elements",
+    "category": "guide",
+    "title": "Maximizing the Impact of Your Website: Top Key Elements Every Ophthalmologist Should Consider",
+    "description": "The essential elements of a high-impact ophthalmology website — search-engine visibility, a user-centric experience, local search, and the trust signals that shape a patient's first impression.",
+    "author": "Ryan Davies",
+    "tags": ["Website", "SEO", "PatientExperience"],
+    "pdfUrl": "/pdfs/maximizing-the-impact-of-your-website-key-elements.pdf",
+    "image": "/images/free-resources/website-impact.webp"
+  },
+  {
+    "slug": "turning-lookers-into-bookers-effective-practice-marketing",
+    "category": "guide",
+    "title": "Turning Lookers into Bookers: The Key to Effective Ophthalmology Practice Marketing",
+    "description": "How to convert website visitors into booked appointments — the digital-experience fundamentals that help patients choose your practice over the alternatives at their fingertips.",
+    "author": "Ryan Davies",
+    "tags": ["Marketing", "Conversion", "PatientAcquisition"],
+    "pdfUrl": "/pdfs/turning-lookers-into-bookers-effective-practice-marketing.pdf",
+    "image": "/images/free-resources/lookers-into-bookers.webp"
+  },
+  {
+    "slug": "f-and-z-patterns-engaging-website-landing-pages",
+    "category": "guide",
+    "title": "F and Z Patterns in Designing an Engaging Website Landing Page",
+    "description": "How eye-tracking F and Z patterns shape effective landing-page layouts — and where to place headlines, service information, and calls to action so patients actually see them.",
+    "author": "Ryan Davies",
+    "tags": ["LandingPage", "UX", "WebDesign"],
+    "pdfUrl": "/pdfs/f-and-z-patterns-engaging-website-landing-pages.pdf",
+    "image": "/images/free-resources/f-and-z-patterns.webp"
+  }
+]

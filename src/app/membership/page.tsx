@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import Link from "next/link";
 import { Section, SectionHeader } from "@/components/ui/Section";
@@ -6,12 +5,14 @@ import { DarkHero } from "@/components/marketing/DarkHero";
 import { Button } from "@/components/ui/Button";
 import { FaqAccordion } from "@/components/ui/Accordion";
 import { CTASection } from "@/components/marketing/CTASection";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Membership",
   description:
     "Free membership in the Ophthalmology Business Academy: the full conversation library, articles, the newsletter, and invitations to upcoming panels and events.",
-};
+  path: "/membership",
+});
 
 const included = [
   "The full podcast library: every conversation, on demand",

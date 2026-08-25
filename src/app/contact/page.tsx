@@ -1,16 +1,17 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Mail, MapPin, Mic, Handshake, ArrowUpRight } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { PageHero } from "@/components/marketing/PageHero";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { siteConfig } from "@/lib/site";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Contact",
   description:
     "Reach the Ophthalmology Business Academy team: general questions, speaking, or partnerships.",
-};
+  path: "/contact",
+});
 
 const intents = [
   {

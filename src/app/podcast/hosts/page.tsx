@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Users } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { DarkHero } from "@/components/marketing/DarkHero";
@@ -6,11 +5,13 @@ import { HeroHostStack } from "@/components/marketing/HeroHostStack";
 import { HostCard } from "@/components/content/HostCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { getAllHosts } from "@/lib/content";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Hosts",
   description: "Meet the hosts and regular guests of the Ophthalmology Business Podcast.",
-};
+  path: "/podcast/hosts",
+});
 
 export default function HostsPage() {
   const hosts = getAllHosts();

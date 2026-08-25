@@ -20,6 +20,7 @@ const DARK_HERO_ROUTES = [
   /^\/podcast\/hosts$/,
   /^\/resources$/,
   /^\/resources\/webinars\/replays$/,
+  /^\/resources\/free-resources$/,
   /^\/blog$/,
   /^\/about$/,
   /^\/reviews$/,

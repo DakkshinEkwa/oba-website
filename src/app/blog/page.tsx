@@ -1,16 +1,17 @@
-import type { Metadata } from "next";
 import { FileText } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { DarkHero } from "@/components/marketing/DarkHero";
 import { BlogCard } from "@/components/content/BlogCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { getAllBlogPosts } from "@/lib/content";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Blog",
   description:
     "Articles on marketing, operations, and leadership for the modern ophthalmology practice.",
-};
+  path: "/blog",
+});
 
 export default function BlogPage() {
   const posts = getAllBlogPosts();

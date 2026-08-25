@@ -24,6 +24,12 @@ export function eventImage(image?: string): string {
   return image ?? EVENT_PLACEHOLDER_IMAGE;
 }
 
+export const FREE_RESOURCE_PLACEHOLDER_IMAGE = "/images/free-resources/website-impact.webp";
+
+export function resourceImage(image?: string): string {
+  return image ?? FREE_RESOURCE_PLACEHOLDER_IMAGE;
+}
+
 /** Format an ISO date string as e.g. "July 11, 2026". */
 export function formatDate(iso: string): string {
   const d = new Date(iso);

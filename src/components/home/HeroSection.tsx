@@ -27,8 +27,8 @@ export function HeroSection({ hosts }: { hosts: Host[] }) {
             <Button href="/podcast/episodes" variant="onDark" size="lg">
               Browse Episodes
             </Button>
-            <Button href="/speak" variant="frosted" size="lg" className="rounded-lg">
-              Contribute
+            <Button href="/msm" variant="frosted" size="lg" className="rounded-lg">
+              Free Strategy Call
             </Button>
           </div>
           <div className="mt-10">

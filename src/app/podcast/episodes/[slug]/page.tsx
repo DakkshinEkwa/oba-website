@@ -13,6 +13,7 @@ import { CTASection } from "@/components/marketing/CTASection";
 import { getAllEpisodes, getEpisodeBySlug, getRelatedEpisodes } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
+import { pageMetadata } from "@/lib/og/metadata";
 
 export function generateStaticParams() {
   return getAllEpisodes().map((e) => ({ slug: e.slug }));
@@ -26,16 +27,14 @@ export async function generateMetadata({
   const { slug } = await params;
   const ep = getEpisodeBySlug(slug);
   if (!ep) return {};
-  return {
+  return pageMetadata({
     title: ep.title,
     description: ep.excerpt,
-    openGraph: {
-      type: "article",
-      title: ep.title,
-      description: ep.excerpt,
-      images: ep.image ? [ep.image] : undefined,
-    },
-  };
+    path: `/podcast/episodes/${slug}`,
+    type: "article",
+    publishedTime: ep.publishedAt,
+    image: "none",
+  });
 }
 
 export default async function EpisodePage({ params }: { params: Promise<{ slug: string }> }) {

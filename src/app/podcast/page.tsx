@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Mic, Headphones, Users, ArrowRight } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { DarkHero } from "@/components/marketing/DarkHero";
@@ -10,12 +9,14 @@ import { IconCard } from "@/components/ui/IconCard";
 import { CTASection } from "@/components/marketing/CTASection";
 import { Waveform } from "@/components/ui/Waveform";
 import { getAllEpisodes, getAllHosts, getEpisodeStats } from "@/lib/content";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "About the Podcast",
   description:
     "The Ophthalmology Business Podcast: candid, non-promotional conversations about the decisions behind stronger eye-care practices.",
-};
+  path: "/podcast",
+});
 
 export default function PodcastPage() {
   const latest = getAllEpisodes().slice(0, 3);
@@ -92,9 +93,9 @@ export default function PodcastPage() {
             />
           </div>
         ) : (
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="panel-grid mt-10">
             {latest.map((ep) => (
-              <EpisodeCard key={ep.slug} episode={ep} />
+              <EpisodeCard key={ep.slug} episode={ep} variant="panel" />
             ))}
           </div>
         )}

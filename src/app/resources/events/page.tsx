@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { CalendarDays } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { DarkHero } from "@/components/marketing/DarkHero";
@@ -6,11 +5,13 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { EventCard } from "@/components/content/EventCard";
 import { FeaturedEventCard } from "@/components/content/FeaturedEventCard";
 import { getAllEvents } from "@/lib/content";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Events",
   description: "Live panels, meetups, and events for the ophthalmology business community.",
-};
+  path: "/resources/events",
+});
 
 export default function EventsPage() {
   const events = getAllEvents().slice().sort((a, b) => a.startDate.localeCompare(b.startDate));
