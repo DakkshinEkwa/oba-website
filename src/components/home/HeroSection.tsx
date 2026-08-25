@@ -17,6 +17,7 @@ export function HeroSection({ hosts }: { hosts: Host[] }) {
           <h1 className="mt-6 text-h1 font-light tracking-tight text-white">
             <span className="whitespace-nowrap">Where practice strategy</span>
             <br />
+            {" "}
             <span className="text-white/45">meets execution.</span>
           </h1>
           <p className="mt-6 max-w-md text-body-lg text-white/65">

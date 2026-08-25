@@ -17,7 +17,10 @@ import { Button } from "@/components/ui/Button";
 import { IconCard } from "@/components/ui/IconCard";
 import { ChecklistItem } from "@/components/ui/ChecklistItem";
 import { ContactForm } from "@/components/forms/ContactForm";
+import { FaqSection } from "@/components/marketing/FaqSection";
+import { SPEAK_FAQS } from "@/content/faqs";
 import { pageMetadata } from "@/lib/og/metadata";
+import { pageJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Become a Speaker",
@@ -85,6 +88,15 @@ const standards = [
 export default function SpeakPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd({
+          name: "Become a Speaker",
+          description:
+            "OBA convenes experienced ophthalmology professionals for candid, non-promotional conversations. If you've navigated a problem your peers are still facing, share your area of expertise.",
+          path: "/speak",
+        })) }}
+      />
       <DarkHero
         size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Become a Speaker" }]}
@@ -170,6 +182,11 @@ export default function SpeakPage() {
           </div>
         </div>
       </Section>
+      <FaqSection
+        items={SPEAK_FAQS}
+        title="Questions from"
+        titleDim="prospective speakers"
+      />
     </>
   );
 }

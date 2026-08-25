@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Markdown } from "@/components/content/Markdown";
 import { CTASection } from "@/components/marketing/CTASection";
 import { getAllBlogPosts, getBlogPostBySlug } from "@/lib/content";
-import { formatDate } from "@/lib/utils";
+import { formatDate, metaDescription } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/og/metadata";
 
@@ -26,11 +26,14 @@ export async function generateMetadata({
   if (!post) return {};
   return pageMetadata({
     title: post.title,
-    description: post.excerpt,
+    description: metaDescription(post),
     path: `/blog/${slug}`,
     type: "article",
     publishedTime: post.publishedAt,
-    image: "none",
+    modifiedTime: post.updatedAt ?? post.publishedAt,
+    authors: [post.author],
+    ...(post.tags.length ? { tags: post.tags } : {}),
+    image: "route",
   });
 }
 
@@ -45,9 +48,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     headline: post.title,
     datePublished: post.publishedAt,
     dateModified: post.updatedAt ?? post.publishedAt,
-    description: post.excerpt,
+    description: metaDescription(post),
     author: { "@type": "Organization", name: post.author },
     url: `${siteConfig.url}/blog/${post.slug}`,
+    mainEntityOfPage: `${siteConfig.url}/blog/${post.slug}`,
     ...(post.coverImage ? { image: `${siteConfig.url}${post.coverImage}` } : {}),
   };
 
@@ -74,7 +78,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-xl border border-line">
             <Image
               src={post.coverImage}
-              alt=""
+              alt={post.title}
               fill
               priority
               sizes="(max-width: 768px) 100vw, 760px"

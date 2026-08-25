@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { breadcrumbJsonLd } from "@/lib/jsonld";
 
 type Crumb = { label: string; href?: string };
 
@@ -29,6 +30,12 @@ export function Breadcrumbs({
   const t = toneClasses[tone];
   return (
     <nav aria-label="Breadcrumb">
+      {/* BreadcrumbList lives here so every visible trail is described exactly
+          once, rather than being re-declared per page. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(items)) }}
+      />
       <ol className={cn("flex flex-wrap items-center gap-1.5 text-small", t.list)}>
         {items.map((item, i) => {
           const last = i === items.length - 1;

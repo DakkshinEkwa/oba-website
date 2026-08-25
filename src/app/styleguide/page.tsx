@@ -8,7 +8,11 @@ import { Field, Input, Textarea, Select } from "@/components/ui/Field";
 import { FaqAccordion } from "@/components/ui/Accordion";
 import { Prose } from "@/components/ui/Prose";
 
-export const metadata: Metadata = { title: "Style Guide", robots: { index: false } };
+export const metadata: Metadata = {
+  title: "Style Guide",
+  robots: { index: false },
+  alternates: { canonical: "/styleguide" },
+};
 
 const inkSwatches = [
   { cls: "bg-ink-900", label: "ink-900", light: false },

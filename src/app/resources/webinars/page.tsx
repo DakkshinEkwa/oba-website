@@ -11,7 +11,8 @@ import { pageMetadata } from "@/lib/og/metadata";
 
 export const metadata = pageMetadata({
   title: "Webinar Archive",
-  description: "On-demand webinars with experts on growing your ophthalmology practice.",
+  description:
+    "The OBA webinar archive is in development. Browse 75 recorded conversations on the Ophthalmology Business Podcast in the meantime.",
   path: "/resources/webinars",
 });
 

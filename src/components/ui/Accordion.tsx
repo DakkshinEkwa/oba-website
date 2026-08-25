@@ -4,7 +4,16 @@ import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type FaqItem = { question: string; answer: React.ReactNode };
+/**
+ * `answer` is the canonical plain-text answer and is the ONLY thing that reaches
+ * FAQPage structured data. Supply `answerNode` when the rendered answer needs
+ * links or markup; it never leaks into JSON-LD.
+ */
+export type FaqItem = {
+  question: string;
+  answer: string;
+  answerNode?: React.ReactNode;
+};
 
 export function FaqAccordion({ items, className }: { items: FaqItem[]; className?: string }) {
   return (
@@ -21,7 +30,7 @@ export function FaqAccordion({ items, className }: { items: FaqItem[]; className
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content className="overflow-hidden data-[state=closed]:animate-none data-[state=open]:animate-none">
-            <div className="pb-5 pr-10 text-body text-ink-500">{item.answer}</div>
+            <div className="pb-5 pr-10 text-body text-ink-500">{item.answerNode ?? item.answer}</div>
           </AccordionPrimitive.Content>
         </AccordionPrimitive.Item>
       ))}

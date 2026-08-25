@@ -9,7 +9,10 @@ import { IconCard } from "@/components/ui/IconCard";
 import { CTASection } from "@/components/marketing/CTASection";
 import { Waveform } from "@/components/ui/Waveform";
 import { getAllEpisodes, getAllHosts, getEpisodeStats } from "@/lib/content";
+import { FaqSection } from "@/components/marketing/FaqSection";
+import { PODCAST_FAQS } from "@/content/faqs";
 import { pageMetadata } from "@/lib/og/metadata";
+import { podcastSeriesJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "About the Podcast",
@@ -21,11 +24,20 @@ export const metadata = pageMetadata({
 export default function PodcastPage() {
   const latest = getAllEpisodes().slice(0, 3);
   const hosts = getAllHosts().slice(0, 3);
+  const allHosts = getAllHosts();
   const stats = getEpisodeStats();
   const count = getAllEpisodes().length;
+  const seriesJsonLd = podcastSeriesJsonLd(
+    allHosts,
+    "Candid, non-promotional conversations with the physicians, administrators, and industry experts behind modern ophthalmology practices."
+  );
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(seriesJsonLd) }}
+      />
       <DarkHero
         size="full"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Podcast" }]}
@@ -117,6 +129,7 @@ export default function PodcastPage() {
         </Section>
       ) : null}
 
+      <FaqSection items={PODCAST_FAQS} title="About the" titleDim="podcast" />
       <CTASection />
     </>
   );

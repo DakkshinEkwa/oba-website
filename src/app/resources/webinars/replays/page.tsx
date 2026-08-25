@@ -7,7 +7,7 @@ import { pageMetadata } from "@/lib/og/metadata";
 export const metadata = pageMetadata({
   title: "Webinar Replays",
   description:
-    "On-demand recordings of live OBA webinars and expert panels, free, on your schedule.",
+    "Replays of OBA webinars and expert panels will appear here as sessions are recorded. The Ophthalmology Business Podcast is the live body of work today.",
   path: "/resources/webinars/replays",
 });
 

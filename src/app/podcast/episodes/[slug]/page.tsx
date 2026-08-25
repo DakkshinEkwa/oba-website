@@ -10,10 +10,12 @@ import { LibsynPlayer } from "@/components/content/LibsynPlayer";
 import { Markdown } from "@/components/content/Markdown";
 import { EpisodeCard } from "@/components/content/EpisodeCard";
 import { CTASection } from "@/components/marketing/CTASection";
-import { getAllEpisodes, getEpisodeBySlug, getRelatedEpisodes } from "@/lib/content";
-import { formatDate } from "@/lib/utils";
+import { getAllEpisodes, getEpisodeBySlug, getHostBySlug, getRelatedEpisodes } from "@/lib/content";
+import { formatDate, isoDuration, metaDescription } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/og/metadata";
+import { person, PODCAST_SERIES_ID } from "@/lib/jsonld";
+import type { Host } from "@/lib/schemas";
 
 export function generateStaticParams() {
   return getAllEpisodes().map((e) => ({ slug: e.slug }));
@@ -29,11 +31,14 @@ export async function generateMetadata({
   if (!ep) return {};
   return pageMetadata({
     title: ep.title,
-    description: ep.excerpt,
+    description: metaDescription(ep),
     path: `/podcast/episodes/${slug}`,
     type: "article",
     publishedTime: ep.publishedAt,
-    image: "none",
+    modifiedTime: ep.publishedAt,
+    section: "The Ophthalmology Business Podcast",
+    ...(ep.tags.length ? { tags: ep.tags } : {}),
+    image: "route",
   });
 }
 
@@ -43,19 +48,38 @@ export default async function EpisodePage({ params }: { params: Promise<{ slug: 
   if (!ep) notFound();
 
   const related = getRelatedEpisodes(slug, 3);
+  const hosts = ep.hostSlugs
+    .map((s) => getHostBySlug(s))
+    .filter((h): h is Host => Boolean(h));
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "PodcastEpisode",
     name: ep.title,
     datePublished: ep.publishedAt,
-    description: ep.excerpt,
+    dateModified: ep.publishedAt,
+    inLanguage: "en",
+    description: metaDescription(ep),
     url: `${siteConfig.url}/podcast/episodes/${ep.slug}`,
     ...(ep.episodeNumber ? { episodeNumber: ep.episodeNumber } : {}),
     ...(ep.audioUrl
-      ? { associatedMedia: { "@type": "MediaObject", contentUrl: ep.audioUrl } }
+      ? {
+          associatedMedia: {
+            "@type": "AudioObject",
+            contentUrl: ep.audioUrl,
+            encodingFormat: "audio/mpeg",
+            uploadDate: ep.publishedAt,
+            ...(isoDuration(ep.durationSec) ? { duration: isoDuration(ep.durationSec) } : {}),
+          },
+        }
       : {}),
-    partOfSeries: { "@type": "PodcastSeries", name: "The Ophthalmology Business Podcast" },
+    ...(ep.guests.length
+      ? { actor: ep.guests.map((g) => ({ "@type": "Person", name: g })) }
+      : {}),
+    ...(hosts.length
+      ? { author: hosts.map((h) => person(h, `${siteConfig.url}/podcast/hosts`)) }
+      : {}),
+    partOfSeries: { "@id": PODCAST_SERIES_ID },
   };
 
   return (
@@ -85,7 +109,7 @@ export default async function EpisodePage({ params }: { params: Promise<{ slug: 
           <div className="relative mt-8 aspect-video overflow-hidden rounded-xl border border-line">
             <Image
               src={ep.image}
-              alt=""
+              alt={ep.title}
               fill
               priority
               sizes="(max-width: 768px) 100vw, 760px"

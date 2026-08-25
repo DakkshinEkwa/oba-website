@@ -7,6 +7,7 @@ import { Pagination } from "@/components/ui/Pagination";
 import { Waveform } from "@/components/ui/Waveform";
 import { getAllEpisodes, getEpisodeStats, getFeaturedEpisode } from "@/lib/content";
 import { paginate } from "@/lib/utils";
+import { siteConfig } from "@/lib/site";
 
 export const EPISODES_PER_PAGE = 20;
 
@@ -20,9 +21,24 @@ export function EpisodesArchive({ page }: { page: number }) {
   const featured = getFeaturedEpisode();
   const result = paginate(all, page, EPISODES_PER_PAGE);
   if (page > result.totalPages) notFound();
+  const listJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Ophthalmology Business Podcast episodes",
+    itemListElement: result.items.map((ep, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${siteConfig.url}/podcast/episodes/${ep.slug}`,
+      name: ep.title,
+    })),
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(listJsonLd) }}
+      />
       <DarkHero
         size="band"
         breadcrumbs={[

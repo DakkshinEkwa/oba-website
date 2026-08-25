@@ -7,7 +7,10 @@ export const episodeSchema = z.object({
   title: z.string().min(1),
   episodeNumber: z.number().int().positive().optional(),
   publishedAt: z.string(), // ISO date
+  updatedAt: z.string().optional(),
   excerpt: z.string().default(""),
+  /** Optional hand-written meta description. Overrides the derived one. */
+  seoDescription: z.string().optional(),
   durationSec: z.number().int().positive().optional(),
   libsynId: z.string().optional(),
   audioUrl: z.string().url().optional(),
@@ -25,6 +28,8 @@ export const blogPostSchema = z.object({
   publishedAt: z.string(),
   updatedAt: z.string().optional(),
   excerpt: z.string().default(""),
+  /** Optional hand-written meta description. Overrides the derived one. */
+  seoDescription: z.string().optional(),
   author: z.string().default("Ophthalmology Business Academy"),
   authorSlug: z.string().optional(),
   coverImage: z.string().optional(),
