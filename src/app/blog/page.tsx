@@ -5,6 +5,7 @@ import { BlogCard } from "@/components/content/BlogCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { getAllBlogPosts } from "@/lib/content";
 import { pageMetadata } from "@/lib/og/metadata";
+import { siteConfig } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Blog",
@@ -15,8 +16,23 @@ export const metadata = pageMetadata({
 
 export default function BlogPage() {
   const posts = getAllBlogPosts();
+  const listJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Ophthalmology Business Academy articles",
+    itemListElement: posts.map((post, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${siteConfig.url}/blog/${post.slug}`,
+      name: post.title,
+    })),
+  };
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(listJsonLd) }}
+      />
       <DarkHero
         size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]}

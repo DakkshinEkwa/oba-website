@@ -5,6 +5,7 @@ import { PageHero } from "@/components/marketing/PageHero";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/og/metadata";
+import { pageJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Contact",
@@ -33,6 +34,20 @@ const intents = [
 export default function ContactPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            pageJsonLd({
+              type: "ContactPage",
+              name: "Contact",
+              description:
+                "Reach the Ophthalmology Business Academy team: general questions, speaking, or partnerships.",
+              path: "/contact",
+            }),
+          ),
+        }}
+      />
       <PageHero
         tone="subtle"
         eyebrow="We'd love to hear from you"

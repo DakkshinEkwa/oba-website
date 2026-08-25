@@ -8,6 +8,17 @@ import { Audiences } from "@/components/home/Audiences";
 import { Engagements } from "@/components/home/Engagements";
 import { LatestContent } from "@/components/home/LatestContent";
 import { getAllEpisodes, getFeaturedEpisode, getAllBlogPosts, getAllHosts } from "@/lib/content";
+import { pageMetadata } from "@/lib/og/metadata";
+import { siteConfig } from "@/lib/site";
+
+const homeTitle = `${siteConfig.name} | The Business of Eye Care`;
+
+export const metadata = {
+  ...pageMetadata({ title: homeTitle, description: siteConfig.description, path: "/" }),
+  // The root layout sets a "%s · OB Academy" template; the homepage title is the
+  // brand line itself, so it must opt out of the suffix.
+  title: { absolute: homeTitle },
+};
 
 export default function HomePage() {
   const featured = getFeaturedEpisode();

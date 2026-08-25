@@ -1,5 +1,13 @@
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Page not found",
+  // Next emits its own noindex for not-found. The canonical must be cleared or
+  // the 404 inherits the layout's "/" and claims to be the homepage.
+  alternates: { canonical: null },
+};
 
 export default function NotFound() {
   return (

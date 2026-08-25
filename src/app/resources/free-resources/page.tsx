@@ -4,6 +4,7 @@ import { CTASection } from "@/components/marketing/CTASection";
 import { FreeResourceCard } from "@/components/content/FreeResourceCard";
 import { getAllFreeResources } from "@/lib/content";
 import { pageMetadata } from "@/lib/og/metadata";
+import { freeResourceListJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Free Resources",
@@ -21,6 +22,10 @@ export default function FreeResourcesPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(freeResourceListJsonLd(resources)) }}
+      />
       <DarkHero
         size="band"
         breadcrumbs={[

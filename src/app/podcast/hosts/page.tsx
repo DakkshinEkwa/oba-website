@@ -6,6 +6,7 @@ import { HostCard } from "@/components/content/HostCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { getAllHosts } from "@/lib/content";
 import { pageMetadata } from "@/lib/og/metadata";
+import { personListJsonLd, pageJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Hosts",
@@ -15,8 +16,26 @@ export const metadata = pageMetadata({
 
 export default function HostsPage() {
   const hosts = getAllHosts();
+  const personListJsonLdData = personListJsonLd(hosts);
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            pageJsonLd({
+              type: "CollectionPage",
+              name: "Hosts",
+              description: "Meet the hosts and regular guests of the Ophthalmology Business Podcast.",
+              path: "/podcast/hosts",
+            }),
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personListJsonLdData) }}
+      />
       <DarkHero
         size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Podcast", href: "/podcast" }, { label: "Hosts" }]}

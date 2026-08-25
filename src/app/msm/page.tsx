@@ -24,6 +24,7 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { AnimatedStat } from "@/components/marketing/AnimatedStat";
 import { siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/og/metadata";
+import { faqJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Free Marketing Analysis for Ophthalmology Practices",
@@ -168,8 +169,13 @@ const faqs = [
 ];
 
 export default function MsmPage() {
+  const faqJsonLdData = faqJsonLd(faqs);
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLdData) }}
+      />
       <DarkHero
         size="band"
         asideWidth="wide"

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { FaqAccordion } from "@/components/ui/Accordion";
 import { CTASection } from "@/components/marketing/CTASection";
 import { pageMetadata } from "@/lib/og/metadata";
+import { faqJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Membership",
@@ -40,8 +41,13 @@ const faqs = [
 ];
 
 export default function MembershipPage() {
+  const faqJsonLdData = faqJsonLd(faqs);
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLdData) }}
+      />
       <DarkHero
         size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Membership" }]}

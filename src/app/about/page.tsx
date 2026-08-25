@@ -4,7 +4,10 @@ import { DarkHero } from "@/components/marketing/DarkHero";
 import { HostCard } from "@/components/content/HostCard";
 import { CTASection } from "@/components/marketing/CTASection";
 import { getAllHosts, getAllEpisodes, getEpisodeStats } from "@/lib/content";
+import { FaqSection } from "@/components/marketing/FaqSection";
+import { ABOUT_FAQS } from "@/content/faqs";
 import { pageMetadata } from "@/lib/og/metadata";
+import { pageJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "About OBA",
@@ -39,6 +42,16 @@ export default function AboutPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd({
+          type: "AboutPage",
+          name: "About OBA",
+          description:
+            "What the Ophthalmology Business Academy is, why it exists, and the editorial principles behind every conversation we publish.",
+          path: "/about",
+        })) }}
+      />
       <DarkHero
         size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
@@ -163,6 +176,7 @@ export default function AboutPage() {
         </Section>
       ) : null}
 
+      <FaqSection items={ABOUT_FAQS} title="About the" titleDim="academy" />
       <CTASection />
     </>
   );

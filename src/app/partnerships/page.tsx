@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/Button";
 import { IconCard } from "@/components/ui/IconCard";
 import { ChecklistItem } from "@/components/ui/ChecklistItem";
 import { ContactForm } from "@/components/forms/ContactForm";
+import { FaqSection } from "@/components/marketing/FaqSection";
+import { PARTNERSHIP_FAQS } from "@/content/faqs";
 import { pageMetadata } from "@/lib/og/metadata";
+import { pageJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Partnerships",
@@ -51,6 +54,15 @@ const possibilities = [
 export default function PartnershipsPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd({
+          name: "Partnerships",
+          description:
+            "How organizations serving ophthalmology can support credible, non-promotional professional education with the Ophthalmology Business Academy.",
+          path: "/partnerships",
+        })) }}
+      />
       <DarkHero
         size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Partnerships" }]}
@@ -148,6 +160,11 @@ export default function PartnershipsPage() {
           </div>
         </div>
       </Section>
+      <FaqSection
+        items={PARTNERSHIP_FAQS}
+        title="Questions from"
+        titleDim="prospective partners"
+      />
     </>
   );
 }

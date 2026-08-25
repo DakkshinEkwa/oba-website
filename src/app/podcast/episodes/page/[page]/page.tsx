@@ -15,10 +15,14 @@ export async function generateMetadata({
   params: Promise<{ page: string }>;
 }) {
   const { page } = await params;
+  const n = Number(page);
+  const total = getAllEpisodes().length;
+  const from = (n - 1) * EPISODES_PER_PAGE + 1;
+  const to = Math.min(n * EPISODES_PER_PAGE, total);
   return pageMetadata({
     title: `Podcast Episodes: Page ${page}`,
-    description:
-      "Every episode of the Ophthalmology Business Podcast: practice growth, marketing, operations, and leadership for eye care.",
+    // Name the range so each paginated page has its own description.
+    description: `Episodes ${from}\u2013${to} of ${total} from the Ophthalmology Business Podcast: practice growth, marketing, operations, and leadership for eye care.`,
     path: `/podcast/episodes/page/${page}`,
   });
 }

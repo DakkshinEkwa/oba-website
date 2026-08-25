@@ -5,7 +5,10 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { EventCard } from "@/components/content/EventCard";
 import { FeaturedEventCard } from "@/components/content/FeaturedEventCard";
 import { getAllEvents } from "@/lib/content";
+import { FaqSection } from "@/components/marketing/FaqSection";
+import { EVENTS_FAQS } from "@/content/faqs";
 import { pageMetadata } from "@/lib/og/metadata";
+import { eventListJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Events",
@@ -16,9 +19,14 @@ export const metadata = pageMetadata({
 export default function EventsPage() {
   const events = getAllEvents().slice().sort((a, b) => a.startDate.localeCompare(b.startDate));
   const next = events[0];
+  const eventJsonLd = eventListJsonLd(events);
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+      />
       <DarkHero
         size="band"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Events" }]}
@@ -70,6 +78,7 @@ export default function EventsPage() {
           </>
         )}
       </Section>
+      <FaqSection items={EVENTS_FAQS} title="About the" titleDim="live panels" />
     </>
   );
 }
