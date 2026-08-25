@@ -126,6 +126,10 @@ export function getAllEvents(): Event[] {
   return json.map((e) => eventSchema.parse(e)).sort((a, b) => byDateDesc(b.startDate, a.startDate));
 }
 
+export function getEventBySlug(slug: string): Event | undefined {
+  return getAllEvents().find((e) => e.slug === slug);
+}
+
 /* --------------------------- Free Resources ------------------------------ */
 
 export function getAllFreeResources(): FreeResource[] {
