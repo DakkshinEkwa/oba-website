@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import type { Event } from "@/lib/schemas";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -14,6 +15,8 @@ export function FeaturedEventCard({ event }: { event: Event }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [style, setStyle] = useState<React.CSSProperties>({});
   const [glow, setGlow] = useState({ x: 50, y: 50, opacity: 0 });
+  const actionLabel = event.registrationUrl ? "Reserve" : "Details";
+  const href = event.registrationUrl ?? `/resources/events/${event.slug}`;
 
   function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     const rect = frameRef.current?.getBoundingClientRect();
@@ -68,23 +71,15 @@ export function FeaturedEventCard({ event }: { event: Event }) {
             {formatDate(event.startDate)}
           </time>
           <Button variant="primary" className="pointer-events-none mt-2 w-full">
-            Reserve
+            {actionLabel}
           </Button>
         </div>
 
-        {event.registrationUrl ? (
-          <a
-            href={event.registrationUrl}
-            className="absolute inset-0 z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            aria-label={`Reserve ${event.title}`}
-          />
-        ) : (
-          <button
-            type="button"
-            className="absolute inset-0 z-10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            aria-label={`Reserve ${event.title}`}
-          />
-        )}
+        <Link
+          href={href}
+          className="absolute inset-0 z-10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          aria-label={`${actionLabel} ${event.title}`}
+        />
 
         <div
           aria-hidden
