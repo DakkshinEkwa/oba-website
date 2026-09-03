@@ -1,6 +1,7 @@
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { HeroHostStack } from "@/components/marketing/HeroHostStack";
+import { HeroGlobeMount } from "./HeroGlobeMount";
 import type { Host } from "@/lib/schemas";
 
 /** Full-bleed dark cinematic hero (Qoves-style). */
@@ -9,10 +10,17 @@ export function HeroSection({ hosts }: { hosts: Host[] }) {
     <section className="relative -mt-(--header-offset) flex min-h-[92svh] flex-col overflow-hidden bg-ink-900">
       {/* Cinematic slate backdrop */}
       <div aria-hidden className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
-      <div aria-hidden className="absolute inset-0 opacity-45" style={{ background: "var(--gradient-hero-glow)" }} />
+      {/* Dialled back from 45: the glow lobe sits at 72% 42%, right where the globe is,
+          and a backdrop brighter than the planet made it read as a silhouette. */}
+      <div aria-hidden className="absolute inset-0 opacity-25" style={{ background: "var(--gradient-hero-glow)" }} />
 
-      <Container size="wide" className="relative flex flex-1 flex-col justify-center pb-16 pt-40 sm:pt-44">
-        <div className="max-w-2xl">
+      <HeroGlobeMount />
+
+      <Container
+        size="wide"
+        className="pointer-events-none relative z-10 flex flex-1 flex-col justify-center pb-16 pt-40 sm:pt-44"
+      >
+        <div className="pointer-events-auto max-w-2xl">
           <p className="text-body text-white/60">The Ophthalmology Business Academy</p>
           <h1 className="mt-6 text-h1 font-light tracking-tight text-white">
             <span className="whitespace-nowrap">Where practice strategy</span>
@@ -39,7 +47,7 @@ export function HeroSection({ hosts }: { hosts: Host[] }) {
       </Container>
 
       {/* Bottom micro-label row with hairline dividers */}
-      <Container size="wide" className="relative pb-10">
+      <Container size="wide" className="pointer-events-none relative z-10 pb-10">
         <div className="grid max-w-2xl grid-cols-3 divide-x divide-white/15">
           {[
             { t: "Experience-led", s: "Hosted by operators and physicians" },

@@ -28,6 +28,15 @@ npx tsx scripts/scrape/episodes.ts   # → src/content/episodes/*.mdx + public/i
 npx tsx scripts/scrape/blog.ts       # → src/content/blog/*.mdx + public/images/blog
 ```
 
+`scripts/generate-landmask.ts` is the same kind of one-off tool: it rasterizes Natural Earth
+1:50m land polygons into `src/components/home/landmask.ts` (a committed 512×256 packed 1-bit
+mask, ~21KB base64) that `HeroGlobe` samples to place its particles over continents. Re-run only
+to change resolution or source data. Its `world-atlas` / `topojson-client` deps are dev-only.
+
+```bash
+npx tsx scripts/generate-landmask.ts
+```
+
 ## Architecture
 
 Ground-up rebuild of obacademy.org (Ophthalmology Business Academy): **Next.js 16 App Router +
@@ -53,6 +62,38 @@ Podcast · Reviews · Marketing · Participate · About · Contact.
 `content/` (EpisodeCard, BlogCard, EventCard, FeaturedEventCard, LibsynPlayer, Markdown) →
 `forms/` → `home/` (homepage sections, split out of `src/app/page.tsx`). Podcast audio plays via
 the direct Libsyn MP3 URL through the lazy custom `LibsynPlayer`.
+
+**WebGL:** `home/HeroGlobe.tsx` is the site's only WebGL surface — a `three` globe bleeding off
+the homepage hero's bottom-right corner. It is loaded through `home/HeroGlobeMount.tsx`
+(`next/dynamic`, `ssr: false`) so `three` stays out of the server bundle, renders only at `lg`
+and up, pauses its rAF loop offscreen, and freezes under `prefers-reduced-motion`. Camera
+flights reuse framer-motion's `animate()` — do not add GSAP, and do not add OrbitControls.
+
+It is a **hollow dot shell** — deliberately no solid body, so the far hemisphere shows through.
+Nothing writes depth (`depthTest: false` everywhere); instead each layer fades itself out as it
+turns away, via `vFacing` (the view-space normal's z). That fade *is* the depth cue — don't
+remove it without adding an occluder back. Three layers, over one shared view-space light:
+6,500 points blanketing the whole sphere, 14 `QuadraticBezierCurve3` arcs, and pulsing endpoint
+markers.
+
+`landmask.ts` does not filter the points — every point is drawn, and the mask only sets a
+per-point `aLand` flag. Every dot is the same white (`PARTICLE_COLOR`); the flag only raises
+opacity and size, so continents surface out of an even lattice while ocean dots stay a faint grid
+at `OCEAN_ALPHA`. The single splash of color is `MARKER_COLOR` on the pulsing endpoint rings and
+the city marker — keep color to those accents rather than the dot field. Arcs still start and end
+on land points only.
+
+Two constraints worth knowing before editing: arcs are `TubeGeometry`, not lines, because
+`gl.lineWidth` is clamped to 1px on every browser; and blending is `NormalBlending`, not
+additive, because additive saturates against the bright `--gradient-hero-glow` behind the globe.
+Five people are pinned at real coordinates (`PEOPLE`). Each frame the loop picks the front-most
+pin that is also inside the visible slice of the canvas and positions a circular portrait at its
+projected 3D point. Three gotchas are load-bearing there: the avatar needs `max-w-none`, because
+the global `img { max-width: 100% }` resolves against the zero-width positioning anchor and
+clamps it to 0; the active-index tracker must be a local inside the effect, not a ref, or it
+survives effect re-runs while the DOM resets and no portrait ever shows; and the visibility test
+is loose with the result clamped, since exact margins let each pin qualify for only ~2s per
+87s rotation. The globe has no controls, so the names are carried in an `sr-only` list.
 
 **Design system:** all tokens are in `src/app/globals.css` under `@theme` — Qoves-inspired
 near-monochrome (white canvas, cool-charcoal ink scale, muted steel accent, hairline borders, no
