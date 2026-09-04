@@ -7,7 +7,7 @@ import { ProblemAreas } from "@/components/home/ProblemAreas";
 import { Audiences } from "@/components/home/Audiences";
 import { Engagements } from "@/components/home/Engagements";
 import { LatestContent } from "@/components/home/LatestContent";
-import { getAllEpisodes, getFeaturedEpisode, getAllBlogPosts, getAllHosts } from "@/lib/content";
+import { getAllEpisodes, getFeaturedEpisode, getAllBlogPosts } from "@/lib/content";
 import { pageMetadata } from "@/lib/og/metadata";
 import { siteConfig } from "@/lib/site";
 
@@ -25,11 +25,10 @@ export default function HomePage() {
   const allEpisodes = getAllEpisodes();
   const latest = allEpisodes.slice(0, 3);
   const posts = getAllBlogPosts().slice(0, 3);
-  const hosts = getAllHosts();
 
   return (
     <>
-      <HeroSection hosts={hosts} />
+      <HeroSection />
       <EpisodeTicker episodes={allEpisodes} />
       <FeaturedEpisode featured={featured} />
       <StatBand />

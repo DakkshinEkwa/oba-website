@@ -20,7 +20,7 @@ const PARTICLE_COUNT = 6500; // dots blanket the whole sphere, land and ocean al
 const OCEAN_ALPHA = 0.2; // ocean dots stay as a faint lattice; land reads on top of it
 const ARC_COUNT = 14;
 const ARC_SEGMENTS = 64;
-const ARC_RADIUS = 0.0026; // gl.lineWidth is clamped to 1px, so arcs are real tubes
+const ARC_RADIUS = 0.0013; // ~1.5px diameter at the 960px globe; gl.lineWidth is clamped to 1px, so arcs are tubes
 const ARC_LIFT = 1.012; // keep tube endpoints clear of the body surface
 const MARKER_SIZE = 34; // sprite px for the pulsing endpoint rings
 const MARKER_SPEED = 0.5; // ring expansions per second
@@ -58,9 +58,14 @@ const PEOPLE = [
 
 const PIN_SIZE = 46; // sprite px for the people pins — larger than the arc markers
 const PIN_VISIBLE = 0.1; // min facing dot before a pin can own the card
-const CARD_MARGIN_X = 52; // half the avatar, so it stays fully on screen
+const PIN_HYSTERESIS = 0.12; // extra facing required to steal the card
+const CARD_MARGIN_X = 52; // half the avatar; used to fade before it clips
 const CARD_MARGIN_TOP = 100; // the avatar stacks upward from its pin
-const CARD_SLACK = 48; // a pin just off the visible edge still gets a clamped card
+const CARD_SLACK = 48; // a pin just off the visible edge can still be considered
+const CARD_EDGE_FADE = 48; // px of side/top inset over which the portrait eases out
+const CARD_EDGE_BOTTOM = 16; // avatar sits bottom-4 above the pin; don't dim southern pins
+const CARD_FADE_IN = 0.55;
+const CARD_FADE_OUT = 0.35;
 
 /* ------------------------------------------------------------------ *
  * Landmask
@@ -147,6 +152,18 @@ function latLonToVector3(lat: number, lon: number, radius: number) {
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
+}
+
+/** 1 while the avatar is fully inside the visible hero, 0 as it would clip. */
+function portraitEdgeFade(
+  x: number,
+  y: number,
+  visible: { x0: number; y0: number; x1: number; y1: number },
+) {
+  const dx = Math.min(x - visible.x0 - CARD_MARGIN_X, visible.x1 - CARD_MARGIN_X - x);
+  const dTop = y - visible.y0 - CARD_MARGIN_TOP;
+  const dBot = visible.y1 - y + CARD_EDGE_BOTTOM;
+  return clamp(Math.min(dx / CARD_EDGE_FADE, dTop / CARD_EDGE_FADE, dBot / CARD_EDGE_BOTTOM), 0, 1);
 }
 
 /**
@@ -546,7 +563,10 @@ export default function HeroGlobe() {
     // Local to the effect, not a ref: a ref survives effect re-runs (StrictMode's
     // double mount, every hot reload) while the DOM is re-created with opacity 0,
     // so the change-gate would skip the write and no avatar would ever show.
-    let lastActive = -2;
+    let shownIndex = -1;
+    let writtenIndex = -2;
+    let fade = 0;
+    let hiding = false;
 
     // The canvas bleeds past the hero, so most of it is never on screen. Cards
     // may only be placed inside this box, in canvas-local pixels.
@@ -581,6 +601,15 @@ export default function HeroGlobe() {
     let elapsed = 0;
     let lastFrameTime = performance.now();
     const projected = new THREE.Vector3();
+    const pinState = pinVectors.map(() => ({ facing: 0, x: 0, y: 0 }));
+
+    const writeAvatars = (index: number) => {
+      if (index === writtenIndex) return;
+      avatarRefs.current.forEach((img, i) => {
+        if (img) img.style.opacity = i === index ? "1" : "0";
+      });
+      writtenIndex = index;
+    };
 
     const tick = () => {
       frame = requestAnimationFrame(tick);
@@ -604,53 +633,86 @@ export default function HeroGlobe() {
         globe.rotation.x = clamp(globe.rotation.x + velocity.x, -MAX_TILT, MAX_TILT);
       }
 
-      // The card goes to the front-most pin that is ALSO somewhere the viewer can
-      // see it. Picking purely by facing puts cards at the sphere's centre, which
-      // sits off the bottom-right corner of the hero. The test is deliberately
-      // loose and the result clamped: rejecting on the exact margins let each pin
-      // qualify for only a second or two per rotation, and left pins below ~30°N
-      // permanently just under the bottom edge.
+      // Project every pin once. The card belongs to the front-most pin that is
+      // actually on the visible limb — picking by facing alone parks it at the
+      // sphere's centre, which sits off the hero's bottom-right corner.
       let bestIndex = -1;
       let bestFacing = PIN_VISIBLE;
-      let bestX = 0;
-      let bestY = 0;
       for (let i = 0; i < pinVectors.length; i++) {
         projected.copy(pinVectors[i]).applyEuler(globe.rotation);
         const facing = projected.z; // camera sits on +z looking at the origin
-        if (facing <= bestFacing) continue;
-
         projected.project(camera);
         const x = (projected.x * 0.5 + 0.5) * host.clientWidth;
         const y = (-projected.y * 0.5 + 0.5) * host.clientHeight;
+        pinState[i].facing = facing;
+        pinState[i].x = x;
+        pinState[i].y = y;
+
+        if (facing <= bestFacing) continue;
         if (x < visible.x0 - CARD_SLACK || x > visible.x1 + CARD_SLACK) continue;
         if (y < visible.y0 - CARD_SLACK || y > visible.y1 + CARD_SLACK) continue;
+        if (portraitEdgeFade(x, y, visible) <= 0) continue;
 
         bestFacing = facing;
         bestIndex = i;
-        bestX = x;
-        bestY = y;
       }
 
-      // Driven straight from the loop rather than React state — the loop already
-      // owns the label's transform and opacity.
-      if (bestIndex !== lastActive) {
-        avatarRefs.current.forEach((el, i) => {
-          if (el) el.style.opacity = i === bestIndex ? "1" : "0";
-        });
-        lastActive = bestIndex;
+      // Hold the current pin until another is clearly in front, so two similar
+      // facings don't flicker the photo.
+      let wantIndex = bestIndex;
+      if (shownIndex >= 0 && !hiding) {
+        const shown = pinState[shownIndex];
+        const shownOnScreen =
+          shown.facing > PIN_VISIBLE && portraitEdgeFade(shown.x, shown.y, visible) > 0;
+        if (
+          shownOnScreen &&
+          (wantIndex < 0 || wantIndex === shownIndex || bestFacing < shown.facing + PIN_HYSTERESIS)
+        ) {
+          wantIndex = shownIndex;
+        }
       }
+
+      const reduceMotion = reduceMotionRef.current;
+      if (reduceMotion) {
+        shownIndex = wantIndex;
+        fade = wantIndex >= 0 ? 1 : 0;
+        hiding = false;
+      } else if (hiding && wantIndex === shownIndex) {
+        hiding = false;
+      } else if (hiding) {
+        fade = Math.max(0, fade - delta / CARD_FADE_OUT);
+        if (fade === 0) {
+          hiding = false;
+          shownIndex = wantIndex;
+        }
+      } else if (shownIndex !== wantIndex) {
+        const shownFade =
+          shownIndex >= 0 ? portraitEdgeFade(pinState[shownIndex].x, pinState[shownIndex].y, visible) : 0;
+        if (shownIndex >= 0 && fade > 0 && shownFade > 0) {
+          hiding = true;
+        } else {
+          shownIndex = wantIndex;
+          fade = 0;
+        }
+      }
+
+      if (!reduceMotion && !hiding && shownIndex >= 0) {
+        fade = Math.min(1, fade + delta / CARD_FADE_IN);
+      } else if (!reduceMotion && !hiding && shownIndex < 0) {
+        fade = 0;
+      }
+
+      writeAvatars(shownIndex);
 
       const label = labelRef.current;
       if (label) {
-        if (bestIndex === -1) {
+        if (shownIndex < 0 || fade === 0) {
           label.style.opacity = "0";
         } else {
-          // Clamp so the avatar is never half off the hero.
-          const cx = clamp(bestX, visible.x0 + CARD_MARGIN_X, visible.x1 - CARD_MARGIN_X);
-          const cy = clamp(bestY, visible.y0 + CARD_MARGIN_TOP, visible.y1 - 8);
-          label.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-          // Ease in as the pin swings to the front, out again as it leaves.
-          label.style.opacity = String(Math.min(1, (bestFacing - PIN_VISIBLE) / 0.25));
+          const shown = pinState[shownIndex];
+          const eased = fade * fade * (3 - 2 * fade);
+          label.style.transform = `translate3d(${shown.x}px, ${shown.y}px, 0)`;
+          label.style.opacity = String(eased * portraitEdgeFade(shown.x, shown.y, visible));
         }
       }
 
@@ -739,9 +801,8 @@ export default function HeroGlobe() {
               width={80}
               height={80}
               style={{ opacity: 0 }}
-              // No CSS transition here on purpose: the container's opacity already
-              // eases with the pin's facing every frame, so the fade is driven by the
-              // render loop rather than by a separate animation timeline.
+              // No CSS transition: appear/leave is a timed fade on the container,
+              // driven by the render loop so it stays synced with the pin.
               // max-w-none is load-bearing: the global `img { max-width: 100% }` resolves
               // against this zero-width positioning anchor and would clamp the avatar to 0.
               className="absolute bottom-4 left-0 h-20 w-20 max-w-none -translate-x-1/2 rounded-full object-cover shadow-xl ring-1 ring-white/25"
