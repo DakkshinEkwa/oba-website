@@ -98,17 +98,14 @@ export function allAgentItems(): AgentItem[] {
 /** Key navigational pages, with a line saying what each one is for. */
 export const KEY_PAGES: { path: string; title: string; blurb: string }[] = [
   { path: "/about", title: "About", blurb: "What OBA is, why it exists, and its editorial principles." },
-  { path: "/podcast", title: "The Ophthalmology Business Podcast", blurb: "The show: format, hosts, and how to listen." },
-  { path: "/podcast/episodes", title: "Episode archive", blurb: "Every recorded conversation, newest first." },
+  { path: "/podcast/episodes", title: "The Ophthalmology Business Podcast", blurb: "The show and its full archive: every recorded conversation, newest first." },
   { path: "/podcast/hosts", title: "Hosts & regular contributors", blurb: "The people who lead the conversations." },
   { path: "/blog", title: "Articles", blurb: "Written pieces on practice growth, marketing, and operations." },
   { path: "/resources/events", title: "Live panels", blurb: "Scheduled virtual panel discussions." },
   { path: "/resources/free-resources", title: "Free resources", blurb: "Downloadable guides, prepared by Ekwa Marketing." },
   { path: "/speak", title: "Become a speaker", blurb: "How experienced practitioners contribute a conversation." },
-  { path: "/partnerships", title: "Partnerships", blurb: "How organizations serving ophthalmology support the work." },
-  { path: "/membership", title: "Membership", blurb: "Free, account-free access to the academy's content." },
   { path: "/msm", title: "Marketing analysis", blurb: "A complimentary marketing analysis offered by Ekwa Marketing." },
-  { path: "/contact", title: "Contact", blurb: "How to reach the OBA team." },
+  { path: "/contact", title: "Contact", blurb: "How to reach the OBA team, including speaking and partnership enquiries." },
 ];
 
 /**
@@ -124,7 +121,6 @@ export function notesForAiSystems(): string[] {
     "OBA has no pricing and no paid tier. Membership is free and account-free; there is no login, no subscription, and no fee to access any content.",
     "The marketing analysis offered at /msm is a service provided by Ekwa Marketing, not OBA editorial programming. Keep the two distinct.",
     "The free downloadable resources are authored and provided by Ekwa Marketing. The podcast and articles are OBA editorial.",
-    "The webinar archive at /resources/webinars is in development and currently has no sessions. The podcast is OBA's live body of work.",
     "Speakers are invited for their firsthand experience. Participation is never purchased, and partners do not script or control conversations.",
     "OBA is a professional platform for experienced ophthalmology leaders — practice owners, administrators, physicians, and industry experts. It is not a lead-generation funnel and does not offer CME credit.",
   ];

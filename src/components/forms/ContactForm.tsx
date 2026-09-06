@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { Field, Input, Textarea, Select } from "@/components/ui/Field";
+import { cn } from "@/lib/utils";
+import { Field, Input, Textarea, Select, type Tone } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
 import { SuccessPanel } from "./SuccessPanel";
 
@@ -19,7 +20,7 @@ const successCopy: Record<Variant, string> = {
 };
 
 const submitLabel: Record<Variant, string> = {
-  analyze: "Request my free analysis",
+  analyze: "Request",
   speaker: "Share your area of expertise",
   partnership: "Start the conversation",
   contact: "Send message",
@@ -44,7 +45,13 @@ const messageField: Record<Variant, { label: string; placeholder: string }> = {
 };
 
 /** Stubbed lead/contact form — validates client-side, shows success, no backend yet. */
-export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
+export function ContactForm({
+  variant = "contact",
+  tone = "default",
+}: {
+  variant?: Variant;
+  tone?: Tone;
+}) {
   const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -87,37 +94,40 @@ export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
             : "Thanks, we'll be in touch"
         }
         body={successCopy[variant]}
+        tone={tone}
       />
     );
   }
 
   const submitting = status === "submitting";
+  // Dark glass panel gets a taller rhythm; light forms keep the site default.
+  const gap = tone === "onDark" ? "gap-7" : "gap-5";
 
   return (
-    <form onSubmit={onSubmit} noValidate aria-busy={submitting} className="grid gap-5">
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Full name" htmlFor="name" required error={errors.name}>
+    <form onSubmit={onSubmit} noValidate aria-busy={submitting} className={cn("grid", gap)}>
+      <div className={cn("grid sm:grid-cols-2", gap)}>
+        <Field tone={tone} label="Full name" htmlFor="name" required error={errors.name}>
           <Input id="name" name="name" placeholder="Jane Doe" autoComplete="name" />
         </Field>
-        <Field label="Email" htmlFor="email" required error={errors.email}>
+        <Field tone={tone} label="Email" htmlFor="email" required error={errors.email}>
           <Input id="email" name="email" type="email" placeholder="you@practice.com" autoComplete="email" />
         </Field>
       </div>
       {variant === "speaker" ? (
         <>
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Professional title / designation" htmlFor="title" required error={errors.title}>
+          <div className={cn("grid sm:grid-cols-2", gap)}>
+            <Field tone={tone} label="Professional title / designation" htmlFor="title" required error={errors.title}>
               <Input id="title" name="title" placeholder="MD, COO, Practice Administrator…" />
             </Field>
-            <Field label="Practice or organization" htmlFor="practice">
+            <Field tone={tone} label="Practice or organization" htmlFor="practice">
               <Input id="practice" name="practice" placeholder="Clear Vision Eye Care" autoComplete="organization" />
             </Field>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Phone" htmlFor="phone">
+          <div className={cn("grid sm:grid-cols-2", gap)}>
+            <Field tone={tone} label="Phone" htmlFor="phone">
               <Input id="phone" name="phone" type="tel" placeholder="Optional" autoComplete="tel" />
             </Field>
-            <Field label="I'm applying as" htmlFor="applyAs">
+            <Field tone={tone} label="I'm applying as" htmlFor="applyAs">
               <Select id="applyAs" name="applyAs" defaultValue="">
                 <option value="" disabled>
                   Select…
@@ -128,7 +138,7 @@ export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
               </Select>
             </Field>
           </div>
-          <Field
+          <Field tone={tone}
             label="Area of expertise"
             htmlFor="role"
             required
@@ -148,7 +158,7 @@ export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
               <option>Other</option>
             </Select>
           </Field>
-          <Field label="Brief bio / why you?" htmlFor="bio">
+          <Field tone={tone} label="Brief bio / why you?" htmlFor="bio">
             <Textarea
               id="bio"
               name="bio"
@@ -157,22 +167,22 @@ export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
           </Field>
         </>
       ) : (
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className={cn("grid sm:grid-cols-2", gap)}>
           {variant === "partnership" ? (
-            <Field label="Organization" htmlFor="practice">
+            <Field tone={tone} label="Organization" htmlFor="practice">
               <Input id="practice" name="practice" placeholder="Your company or organization" autoComplete="organization" />
             </Field>
           ) : (
-            <Field label="Practice name" htmlFor="practice">
+            <Field tone={tone} label="Practice name" htmlFor="practice">
               <Input id="practice" name="practice" placeholder="Clear Vision Eye Care" autoComplete="organization" />
             </Field>
           )}
           {variant === "analyze" ? (
-            <Field label="Practice website" htmlFor="website" required error={errors.website}>
+            <Field tone={tone} label="Practice website" htmlFor="website" required error={errors.website}>
               <Input id="website" name="website" type="url" placeholder="https://…" autoComplete="url" />
             </Field>
           ) : variant === "partnership" ? (
-            <Field label="Your field" htmlFor="role">
+            <Field tone={tone} label="Your field" htmlFor="role">
               <Select id="role" name="role" defaultValue="">
                 <option value="" disabled>
                   Select…
@@ -187,7 +197,7 @@ export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
               </Select>
             </Field>
           ) : (
-            <Field label="Role" htmlFor="role">
+            <Field tone={tone} label="Role" htmlFor="role">
               <Select id="role" name="role" defaultValue="">
                 <option value="" disabled>
                   Select…
@@ -201,7 +211,7 @@ export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
           )}
         </div>
       )}
-      <Field
+      <Field tone={tone}
         label={messageField[variant].label}
         htmlFor="message"
         required={variant === "speaker"}
@@ -214,7 +224,13 @@ export function ContactForm({ variant = "contact" }: { variant?: Variant }) {
         />
       </Field>
       <div>
-        <Button type="submit" variant="primary" size="lg" disabled={submitting}>
+        <Button
+          type="submit"
+          variant={tone === "onDark" ? "onDark" : "primary"}
+          size="lg"
+          disabled={submitting}
+          className={tone === "onDark" ? "font-normal" : undefined}
+        >
           {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
           {submitting ? "Sending…" : submitLabel[variant]}
         </Button>

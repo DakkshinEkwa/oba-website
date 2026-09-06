@@ -6,6 +6,8 @@ import { Section } from "@/components/ui/Section";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Button } from "@/components/ui/Button";
 import { Markdown } from "@/components/content/Markdown";
+import { CopyMarkdownButton } from "@/components/content/CopyMarkdownButton";
+import { RelatedArticles } from "@/components/content/RelatedArticles";
 import { CTASection } from "@/components/marketing/CTASection";
 import { getAllBlogPosts, getBlogPostBySlug } from "@/lib/content";
 import { formatDate, metaDescription } from "@/lib/utils";
@@ -42,6 +44,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const post = getBlogPostBySlug(slug);
   if (!post) notFound();
 
+  // The raw `excerpt` on every post is the first ~20 words of the body with a
+  // WordPress "[…]" marker still attached. `metaDescription` prefers whole
+  // sentences off the body and strips that marker, so it is the only safe
+  // source for a visible lede.
+  const lede = metaDescription(post);
+
+  // Recency, excluding this post. No tags exist to do anything smarter.
+  const related = getAllBlogPosts()
+    .filter((p) => p.slug !== post.slug)
+    .slice(0, 3);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -74,6 +87,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </div>
         <h1 className="mt-3 text-h1 font-light tracking-tight text-ink-900">{post.title}</h1>
 
+        {lede ? <p className="mt-5 text-lede text-ink-500">{lede}</p> : null}
+
+        <div className="mt-7 border-t border-line pt-6">
+          <CopyMarkdownButton markdown={post.body} />
+        </div>
+
         {post.coverImage ? (
           <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-xl border border-line">
             <Image
@@ -97,6 +116,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </Button>
         </div>
       </Section>
+
+      <RelatedArticles posts={related} />
       <CTASection />
     </>
   );

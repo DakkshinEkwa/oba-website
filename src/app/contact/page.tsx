@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { Mail, MapPin, Mic, Handshake, ArrowUpRight } from "lucide-react";
-import { Section } from "@/components/ui/Section";
+import { Section, SectionHeader } from "@/components/ui/Section";
 import { PageHero } from "@/components/marketing/PageHero";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/og/metadata";
+import { FaqSection } from "@/components/marketing/FaqSection";
+import { PARTNERSHIP_FAQS } from "@/content/faqs";
 import { pageJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
@@ -25,9 +27,9 @@ const intents = [
   {
     icon: Handshake,
     title: "Exploring a partnership?",
-    body: "Organizations serving ophthalmology can read how we collaborate before reaching out.",
-    href: "/partnerships",
-    label: "Explore Partnerships",
+    body: "Organizations serving ophthalmology can start the conversation with the partnership form below.",
+    href: "#partnership",
+    label: "Start a partnership conversation",
   },
 ];
 
@@ -107,6 +109,21 @@ export default function ContactPage() {
           </div>
         </div>
       </Section>
+
+      <Section id="partnership" spacing="default" containerSize="narrow" className="scroll-mt-24 border-t border-line">
+        <SectionHeader
+          eyebrow="Partnerships"
+          title="Start a partnership"
+          titleDim="conversation"
+          lede="Organizations serving ophthalmology can support the conversations, panels, and written work the academy publishes. Partnership supports the programme; it does not buy placement inside it."
+          align="center"
+        />
+        <div className="mt-10 rounded-xl border border-line bg-canvas p-6 sm:p-8">
+          <ContactForm variant="partnership" />
+        </div>
+      </Section>
+
+      <FaqSection items={PARTNERSHIP_FAQS} title="About" titleDim="partnerships" />
     </>
   );
 }

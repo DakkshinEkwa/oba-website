@@ -22,6 +22,19 @@
   --color-ink-600: #465a66;
   --color-accent-600: #3d5361;
 
+  --color-page-bg: #0d151b;
+  --color-glow: #d6e4eb;
+  --color-pale-accent: #a9c1d0;
+  --color-tile-bg: #2a3741;
+  --color-mono-ink: #f0f4f6;
+
+  --alpha-bar: 0.28;
+  --alpha-hairline: 0.14;
+  --alpha-eyebrowDot: 0.85;
+  --alpha-dim: 0.55;
+  --alpha-muted: 0.66;
+  --alpha-faint: 0.45;
+
   --gradient-hero: radial-gradient(
     115% 90% at 78% 30%,
     #5b7484 0%,
@@ -40,6 +53,12 @@
   --color-canvas: #ffffff;
   --color-canvas-subtle: #f4f6f7;
   --color-canvas-inverse: #141314;
+
+  /* CHIPBG from the brand palette (guidelines ch.1): "chip and light-well
+     fill". Kept outside the generated markers because build-tokens.py does not
+     emit it yet — it is transcribed here so a light well has a brand value to
+     stand on rather than borrowing canvas-subtle, which is a UI grey. */
+  --color-chip-bg: #f1f3f7;
 
   /* ---- Ink (text) scale — cool charcoal. 900-600 are brand, above ---- */
   --color-ink-500: #5f7481;
@@ -68,6 +87,9 @@
   /* ---- Feedback (muted) ---- */
   --color-success: #0f7a4f;
   --color-error: #c23b47;
+  /* Error text on the dark ground: #c23b47 drops to ~3:1 over the hero
+     gradient's mid-stops. Functional, not a chromatic accent. */
+  --color-error-soft: #eba7ae;
   --color-warning: #b8791f;
 
   /* ---- Radius ---- */
@@ -76,6 +98,13 @@
   --radius-lg: 16px;
   --radius-xl: 22px;
   --radius-pill: 999px;
+
+  /* Brand radii. The scale above is this site's own documented divergence;
+     these two are the design system's, and only components built out of brand
+     artwork (the episode hero, its transport, portrait tiles) may use them.
+     Guidelines ch.4: 30 for cards, 18 for portrait tiles, 999 for pills. */
+  --radius-brand: 30px;
+  --radius-tile: 18px;
 
   /* ---- Shadows (restrained — borders do most of the work) ---- */
   --shadow-xs: 0 1px 2px 0 rgb(11 18 32 / 0.04);
@@ -294,6 +323,35 @@
   }
 }
 
+/* Dots texture (guidelines ch.5) — an 18px grid that keeps a flat dark fill
+   alive at small sizes. Painted as one repeating radial-gradient rather than
+   a masked or grouped overlay, so the dot alpha is a property of the paint
+   itself and nothing downstream can flatten it. Texture sits *under* content
+   and never carries meaning: it is pointer-transparent and aria-hidden at the
+   call site. */
+.dot-field {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgb(255 255 255 / 0.07) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+}
+
+/* Light-ground twin of .dot-field, for CHIPBG / canvas wells.
+   Same 18px grid the guidelines specify (ch.5), with the dot ink inverted —
+   white dots are invisible on a pale well. Alpha is a little higher than the
+   dark field's .07 because dark-on-light reads weaker at the same value.
+   Texture sits under content and carries no meaning, per ch.5. */
+.dot-field-light {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgb(22 35 44 / 0.09) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+}
+
 /* Episode archive — one sliding hover pill (Collins programs pattern) */
 .episode-list {
   position: relative;
@@ -372,7 +430,8 @@
     left: anchor(left);
     right: anchor(right);
     border-radius: 20px;
-    background-color: var(--color-ink-700);
+    background: var(--gradient-hero);
+    backdrop-filter: blur(8px);
     opacity: 0;
     transition:
       top 0.3s var(--ease-in-out),
@@ -392,24 +451,24 @@
   }
 
   .episode-list:has(.episode-row:focus-within)::before {
-    opacity: 1;
+    opacity: 0.9;
   }
 
   @media (any-pointer: fine) {
     .episode-list:has(.episode-row:hover)::before {
-      opacity: 1;
+      opacity: 0.9;
     }
   }
 }
 
 @supports not (position-anchor: --episode-hover) {
   .episode-row:focus-within {
-    background-color: var(--color-ink-700);
+    background: var(--gradient-hero);
   }
 
   @media (any-pointer: fine) {
     .episode-row:hover {
-      background-color: var(--color-ink-700);
+      background: var(--gradient-hero);
     }
   }
 }
@@ -422,6 +481,12 @@
   display: grid;
   overflow: hidden;
   gap: var(--event-gap-y) var(--event-gap-x);
+  /* `--event-hover` is a document-wide anchor name, so two grids on one page
+     (the homepage runs episodes and posts back to back) would both claim it and
+     the later one in tree order would win — every grid's highlight would then
+     chase the last grid's card. Scoping the name to the grid keeps each
+     highlight anchored to its own cards. */
+  anchor-scope: --event-hover;
 }
 
 @media (min-width: 640px) {
@@ -441,9 +506,21 @@
   transition: opacity 0.3s var(--ease-in-out);
 }
 
-.event-card > * {
-  position: relative;
-  z-index: 1;
+/* Lifts the card's own content above `.event-grid::before` — the sliding
+   highlight, which paints at z-index 0 behind every card.
+
+   This one rule is layered on purpose while the rest of this block is not.
+   Unlayered CSS outranks *any* `@layer`, so as plain CSS the `position:
+   relative` here beat the `absolute` utility on each card's whole-card overlay
+   link, collapsing that link to a zero-size inline element and making the card
+   silently unclickable. Inside `@layer components`, Tailwind's utilities layer
+   still wins, so the overlay stays absolute and children that set no position
+   of their own still get one. Do not unwrap it. */
+@layer components {
+  .event-card > * {
+    position: relative;
+    z-index: 1;
+  }
 }
 
 .event-card::before,
@@ -496,7 +573,8 @@
     left: anchor(left);
     right: anchor(right);
     border-radius: 28px;
-    background-color: var(--color-ink-700);
+    background: var(--gradient-hero);
+    backdrop-filter: blur(8px);
     opacity: 0;
     transition:
       top 0.3s var(--ease-in-out),
@@ -516,39 +594,38 @@
   }
 
   .event-grid:has(.event-card:focus-within)::before {
-    opacity: 1;
+    opacity: 0.9;
   }
 
   @media (any-pointer: fine) {
     .event-grid:has(.event-card:hover)::before {
-      opacity: 1;
+      opacity: 0.9;
     }
   }
 }
 
 @supports not (position-anchor: --event-hover) {
   .event-card:focus-within {
-    background-color: var(--color-ink-700);
+    background: var(--gradient-hero);
   }
 
   @media (any-pointer: fine) {
     .event-card:hover {
-      background-color: var(--color-ink-700);
+      background: var(--gradient-hero);
     }
   }
 }
 
 /* Panel grid (used on /resources “Latest episodes”/“Latest articles” and the
    blog archive) — same separated card layout as the events grid, minus the
-   sliding hover pill: cards get hairline separators centered in the grid gaps,
-   and hover is a plain color shift with no animation. */
+   sliding hover pill: cards get a hairline border, and hover is a plain color
+   shift with no animation. */
 .panel-grid {
   --panel-gap-x: 2rem;
   --panel-gap-y: 2.5rem;
   position: relative;
   isolation: isolate;
   display: grid;
-  overflow: hidden;
   gap: var(--panel-gap-y) var(--panel-gap-x);
 }
 
@@ -566,31 +643,51 @@
 
 .panel-card {
   position: relative;
+  isolation: isolate;
+  border: 1px solid var(--color-line);
+  transition: border-color 0.3s var(--ease-in-out);
 }
 
+/* Frosted slate on hover, matching the chips in the stat bento: the hero
+   gradient held just off full strength with a sheen across the top. Drawn as
+   two layers behind the content rather than a flat `background`, so the
+   translucency and the sheen never touch the card's own children. */
 .panel-card::before,
 .panel-card::after {
   content: "";
   position: absolute;
-  background-color: var(--color-line);
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
   pointer-events: none;
+  transition: opacity 0.3s var(--ease-in-out);
 }
 
-/* Separator hairlines sit centered inside the grid gap instead of running
-   the full shared edge; `overflow: hidden` on the grid clips the half-gap
-   that pokes past the last row/column, so no lines show on outer edges. */
 .panel-card::before {
-  left: 20%;
-  right: 20%;
-  bottom: calc(var(--panel-gap-y) / -2 - 0.5px);
-  height: 1px;
+  inset: 0;
+  background: var(--gradient-hero);
+  backdrop-filter: blur(8px);
 }
 
 .panel-card::after {
-  top: 20%;
-  bottom: 20%;
-  right: calc(var(--panel-gap-x) / -2 - 0.5px);
-  width: 1px;
+  inset: 0 0 auto 0;
+  height: 55%;
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.12), transparent);
+}
+
+.panel-card:hover,
+.panel-card:focus-within {
+  border-color: rgb(255 255 255 / 0.15);
+}
+
+.panel-card:hover::before,
+.panel-card:focus-within::before {
+  opacity: 0.9;
+}
+
+.panel-card:hover::after,
+.panel-card:focus-within::after {
+  opacity: 1;
 }
 
 /* Host card — mobile swipe: the bio panel fades/lifts in as it is dragged
@@ -687,19 +784,124 @@
   animation: waveform 1.1s var(--ease-in-out) infinite;
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
+/* The only sanctioned motion in the system (guidelines ch.10): a dot that
+   pulses *only* while something is genuinely live. Mounted solely while audio
+   is actually playing — a permanently pulsing dot is a lie about state, and
+   readers learn to ignore it. */
+@keyframes live-dot {
+  0%,
+  100% {
+    opacity: var(--alpha-dim);
   }
-  to {
-    transform: translateX(-50%);
+  50% {
+    opacity: 1;
   }
 }
 
-@utility animate-marquee {
-  animation: marquee 240s linear infinite;
+@utility animate-live-dot {
+  animation: live-dot 2s var(--ease-in-out) infinite;
+}
 
-  @media (prefers-reduced-motion: reduce) {
-    animation-play-state: paused;
+/* FAQ accordion — Radix sets --radix-accordion-content-height on the content
+   panel while it measures, so animating to/from that variable (rather than a
+   fixed height) gives an accurate slide open/close instead of an instant cut. */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@utility animate-accordion-down {
+  animation: accordion-down 0.4s var(--ease-out);
+}
+
+@utility animate-accordion-up {
+  animation: accordion-up 0.35s var(--ease-in-out);
+}
+
+/* Stat bento — separator hairlines drawn in the grid gaps rather than on the
+   cards, so the tiles stay visually separate instead of fusing into one panel.
+   Each cell draws a line below and to its right, centred in the gap and run
+   the full length of the edge so it reads as a border between the tiles;
+   `overflow: hidden` on the grid clips the half-gap that would otherwise poke
+   past the last row and column. Held at `--color-line` (the blog cards' weight)
+   so the lines register without competing with the tiles. */
+.bento-grid {
+  --bento-gap: 1.5rem;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  overflow: hidden;
+  gap: var(--bento-gap);
+}
+
+.bento-cell::before,
+.bento-cell::after {
+  content: "";
+  position: absolute;
+  background-color: var(--color-line);
+  pointer-events: none;
+}
+
+.bento-cell::before {
+  left: 0;
+  right: 0;
+  bottom: calc(var(--bento-gap) / -2 - 0.5px);
+  height: 1px;
+}
+
+.bento-cell::after {
+  top: 0;
+  bottom: 0;
+  right: calc(var(--bento-gap) / -2 - 0.5px);
+  width: 1px;
+}
+
+/* Audiences — the section pins to the viewport while its four cards advance,
+   one per screen of scroll. Nothing is scroll-jacked: the page keeps its own
+   scrolling, the panel is `sticky` inside a tall wrapper, and the wrapper's
+   extra height *is* the travel that walks the cards.
+   The pin is gated here, in CSS, and it is the single source of truth —
+   `AudienceAccordion` decides which driver to run by measuring whether the wrapper
+   is actually taller than the viewport, so it never has to restate this query.
+   Three conditions, all of which must hold:
+   - wide enough that the header and cards sit in two columns (the stacked
+     layout is too tall to pin without clipping),
+   - tall enough to hold the panel with the header offset cleared,
+   - motion not being suppressed — a pinned section quadruples the scroll
+     distance, which is exactly what a reduced-motion reader is asking not to
+     get. Below any of those it is a plain stacked section that scrolls past. */
+@media (min-width: 1024px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+  .audience-pin {
+    height: calc(100svh + var(--audience-steps) * 70svh);
+  }
+
+  /* Centred with `align-content`, not flex: these rules sit outside
+     `@layer`, so they outrank every Tailwind utility on the element — setting
+     `display` here would quietly beat the `grid` that builds the two columns. */
+  .audience-pin-panel {
+    position: sticky;
+    top: 0;
+    min-height: 100svh;
+    align-content: center;
+    padding-top: var(--header-offset);
+    padding-bottom: 3rem;
+  }
+
+  /* The step rail only means anything while the section is pinned. */
+  .audience-rail {
+    display: flex;
   }
 }

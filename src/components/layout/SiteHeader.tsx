@@ -9,26 +9,24 @@ import { MobileNav } from "./MobileNav";
 import { Button } from "@/components/ui/Button";
 import { primaryNav, siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { isPlainClick, jumpToHash } from "@/lib/scroll";
 
 /** Routes whose hero is dark, so the attached (transparent) nav needs white text. */
-// NOTE: `/podcast` itself joins this list when Phase 2 lands DarkHero there.
 const DARK_HERO_ROUTES = [
   /^\/$/,
-  /^\/podcast$/,
   /^\/podcast\/episodes$/,
   /^\/podcast\/episodes\/page\/\d+$/,
+  // Single-segment only, so it matches /podcast/episodes/<slug> but not the
+  // paginated archive above.
+  /^\/podcast\/episodes\/[^/]+$/,
   /^\/podcast\/hosts$/,
+  /^\/podcast\/speakers$/,
   /^\/resources$/,
-  /^\/resources\/webinars\/replays$/,
   /^\/resources\/free-resources$/,
   /^\/blog$/,
   /^\/about$/,
-  /^\/reviews$/,
   /^\/speak$/,
-  /^\/partnerships$/,
-  /^\/membership$/,
   /^\/resources\/events$/,
-  /^\/resources\/webinars$/,
   /^\/msm$/,
 ];
 
@@ -80,12 +78,31 @@ export function SiteHeader() {
             if (item.children) {
               return <NavDropdown key={item.label} item={item} active={active} onDark={onDark} />;
             }
+            const className = cn(
+              "inline-flex min-h-11 items-center rounded-md px-3 py-2 text-small transition-colors",
+              navLinkTone(onDark, active),
+            );
+            // In-page anchors stay plain <a>s and land instantly — see jumpToHash.
+            if (item.href.startsWith("#")) {
+              return (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={className}
+                  onClick={(event) => {
+                    if (isPlainClick(event) && jumpToHash(item.href)) event.preventDefault();
+                  }}
+                >
+                  {item.label}
+                </a>
+              );
+            }
             return (
               <Link
                 key={item.label}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={cn("inline-flex min-h-11 items-center rounded-md px-3 py-2 text-small transition-colors", navLinkTone(onDark, active))}
+                className={className}
               >
                 {item.label}
               </Link>
@@ -94,8 +111,8 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-1.5 lg:flex">
-          <Button href={siteConfig.primaryCta.href} variant={onDark ? "onDark" : "primary"} size="sm" className="h-11">
-            {siteConfig.primaryCta.label}
+          <Button href={siteConfig.headerCta.href} variant={onDark ? "onDark" : "primary"} size="sm" className="h-11">
+            {siteConfig.headerCta.label}
           </Button>
         </div>
 

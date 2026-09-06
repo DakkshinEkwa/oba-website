@@ -52,9 +52,9 @@ export default function BlogPage() {
             />
           </div>
         ) : (
-          <div className="panel-grid mt-10">
+          <div className="event-grid mt-10">
             {posts.map((post) => (
-              <BlogCard key={post.slug} post={post} variant="panel" />
+              <BlogCard key={post.slug} post={post} variant="slider" />
             ))}
           </div>
         )}

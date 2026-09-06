@@ -54,7 +54,7 @@ export default function FreeResourcesPage() {
         </div>
       </Section>
 
-      <CTASection />
+      <CTASection tone="light" />
     </>
   );
 }

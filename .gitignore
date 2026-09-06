@@ -40,5 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Scraper cache
+# Scraper / publish caches (audio, WhisperX output)
 scripts/scrape/.cache/
+scripts/publish/.cache/

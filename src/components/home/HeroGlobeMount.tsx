@@ -9,7 +9,9 @@ import dynamic from "next/dynamic";
  */
 const HeroGlobe = dynamic(() => import("./HeroGlobe"), {
   ssr: false,
-  loading: () => <div className="aspect-square w-full max-w-[520px]" />,
+  // No placeholder: the globe is an absolutely-positioned decorative layer, so an
+  // in-flow box here would only squash the hero copy until the chunk lands.
+  loading: () => null,
 });
 
 export function HeroGlobeMount() {

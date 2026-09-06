@@ -20,7 +20,24 @@ export const siteConfig = {
     label: "Contribute",
     href: "/speak",
   },
+  /**
+   * The header/mobile-nav button. Separate from `primaryCta` on purpose: the
+   * nav already carries "Participate" → /speak, so a second speaker button in
+   * the corner was saying the same thing twice. The closing CTA bands still
+   * run `primaryCta`, which keeps the speaker ask as the site-wide primary
+   * conversion that docs/messaging-strategy.md calls for.
+   */
+  headerCta: {
+    label: "Contact",
+    href: "/contact",
+  },
   strategyMeetingUrl: "https://ekwasales-withoutceo.youcanbook.me/",
+  /**
+   * Booking link for prospective contributors. Distinct from
+   * `strategyMeetingUrl`, which is Ekwa's marketing-analysis booking — this one
+   * is the editorial speaker conversation and must never be conflated with it.
+   */
+  speakerCallUrl: "https://calendly.com/lestersmith/bookwithme",
 } as const;
 
 export const aiSummary = {
@@ -130,48 +147,34 @@ export const primaryNav: NavLink[] = [
     children: [
       { label: "Expert Insights Hub", href: "/resources", description: "Every OBA resource in one place" },
       { label: "Free Resources", href: "/resources/free-resources", description: "Guides, templates, and checklists" },
-      { label: "Webinar Archive", href: "/resources/webinars", description: "On-demand expert sessions" },
-      { label: "Webinar Replays", href: "/resources/webinars/replays", description: "Recordings of past live sessions" },
       { label: "Blog", href: "/blog", description: "Articles on practice growth" },
-      { label: "Newsletter", href: "/resources/newsletter", description: "New conversations to your inbox" },
       { label: "Events", href: "/resources/events", description: "Live panels and discussions" },
     ],
   },
   {
     label: "Podcast",
-    href: "/podcast",
+    href: "/podcast/episodes",
     children: [
       { label: "Episodes", href: "/podcast/episodes", description: "Every conversation, on demand" },
       { label: "Hosts", href: "/podcast/hosts", description: "Meet the voices behind OBA" },
-      { label: "About the Podcast", href: "/podcast", description: "What the show is about" },
+      { label: "Speakers", href: "/podcast/speakers", description: "Everyone who has joined the show" },
     ],
   },
-  { label: "Reviews", href: "/reviews" },
   { label: "Marketing", href: "/msm" },
-  {
-    label: "Participate",
-    href: "/speak",
-    children: [
-      { label: "Become a Speaker", href: "/speak", description: "Lend your experience to the conversation" },
-      { label: "Partnerships", href: "/partnerships", description: "Support credible professional education" },
-      { label: "Membership", href: "/membership", description: "Free access to the full library" },
-    ],
-  },
+  { label: "Ask AI", href: "#ai-summary" },
+  { label: "Participate", href: "/speak" },
   { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { label: "Speakers", href: "/podcast/speakers" },
 ];
 
-export const footerNav: { title: string; links: NavLink[] }[] = [
+export const footerNav: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Resources",
     links: [
       { label: "Expert Insights Hub", href: "/resources" },
       { label: "Free Resources", href: "/resources/free-resources" },
-      { label: "Webinar Archive", href: "/resources/webinars" },
-      { label: "Webinar Replays", href: "/resources/webinars/replays" },
       { label: "Blog", href: "/blog" },
       { label: "Events", href: "/resources/events" },
-      { label: "Newsletter", href: "/resources/newsletter" },
     ],
   },
   {
@@ -179,17 +182,13 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
     links: [
       { label: "All Episodes", href: "/podcast/episodes" },
       { label: "Hosts", href: "/podcast/hosts" },
-      { label: "About the Show", href: "/podcast" },
     ],
   },
   {
     title: "Academy",
     links: [
       { label: "About", href: "/about" },
-      { label: "Reviews", href: "/reviews" },
       { label: "Become a Speaker", href: "/speak" },
-      { label: "Partnerships", href: "/partnerships" },
-      { label: "Membership", href: "/membership" },
       { label: "Marketing Analysis", href: "/msm" },
       { label: "Contact", href: "/contact" },
     ],

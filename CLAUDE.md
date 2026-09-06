@@ -55,7 +55,7 @@ the MDX/JSON files — invalid frontmatter fails the build. Optional `image` fie
 socials, `primaryCta` → `/speak`, `strategyMeetingUrl`), `aiSummary` (the footer "Get an AI
 summary" prompt sent to external AI chats), `primaryNav`, `footerNav`. Change navigation, the
 site-wide CTA, or the AI-summary prompt there, not in components. Header nav: Resources ·
-Podcast · Reviews · Marketing · Participate · About · Contact.
+Podcast · Marketing · Ask AI · Participate · About · Contact.
 
 **Component layers** (`src/components/`): `ui/` design-system primitives → `layout/`
 (SiteHeader/SiteFooter/MobileNav/Logo) → `marketing/` (Hero, CTASection, PageHero, DarkHero) →
@@ -63,25 +63,27 @@ Podcast · Reviews · Marketing · Participate · About · Contact.
 `forms/` → `home/` (homepage sections, split out of `src/app/page.tsx`). Podcast audio plays via
 the direct Libsyn MP3 URL through the lazy custom `LibsynPlayer`.
 
-**WebGL:** `home/HeroGlobe.tsx` is the site's only WebGL surface — a `three` globe bleeding off
-the homepage hero's bottom-right corner. It is loaded through `home/HeroGlobeMount.tsx`
-(`next/dynamic`, `ssr: false`) so `three` stays out of the server bundle, renders only at `lg`
-and up, pauses its rAF loop offscreen, and freezes under `prefers-reduced-motion`. Camera
+**WebGL:** `home/HeroGlobe.tsx` is the site's only WebGL surface — a `three` globe sitting whole
+in the gap to the right of the homepage hero copy (`GLOBE_BOX`; it used to bleed off the
+bottom-right corner). It is loaded through `home/HeroGlobeMount.tsx`
+(`next/dynamic`, `ssr: false`) so `three` stays out of the server bundle, renders only at `xl`
+and up — below that the copy column leaves no room beside it — pauses its rAF loop offscreen, and freezes under `prefers-reduced-motion`. Camera
 flights reuse framer-motion's `animate()` — do not add GSAP, and do not add OrbitControls.
 
 It is a **hollow dot shell** — deliberately no solid body, so the far hemisphere shows through.
 Nothing writes depth (`depthTest: false` everywhere); instead each layer fades itself out as it
 turns away, via `vFacing` (the view-space normal's z). That fade *is* the depth cue — don't
 remove it without adding an occluder back. Three layers, over one shared view-space light:
-6,500 points blanketing the whole sphere, 14 `QuadraticBezierCurve3` arcs, and pulsing endpoint
-markers.
+2,800 points blanketing the whole sphere, 14 `QuadraticBezierCurve3` arcs, and the pulsing rings
+on the five people pins. The arcs' own endpoint markers were removed — arcs simply fade out at
+their ends.
 
 `landmask.ts` does not filter the points — every point is drawn, and the mask only sets a
 per-point `aLand` flag. Every dot is the same white (`PARTICLE_COLOR`); the flag only raises
 opacity and size, so continents surface out of an even lattice while ocean dots stay a faint grid
-at `OCEAN_ALPHA`. The single splash of color is `MARKER_COLOR` on the pulsing endpoint rings and
-the city marker — keep color to those accents rather than the dot field. Arcs still start and end
-on land points only.
+at `OCEAN_ALPHA`. The globe is fully monochrome: the people pins pulse in the same
+`PIN_COLOR` white as the dot shell, so no saturated color appears anywhere on it. Arcs still start
+and end on land points only.
 
 Two constraints worth knowing before editing: arcs are `TubeGeometry`, not lines, because
 `gl.lineWidth` is clamped to 1px on every browser; and blending is `NormalBlending`, not
@@ -95,6 +97,32 @@ survives effect re-runs while the DOM resets and no portrait ever shows; and the
 is loose with the result clamped, since exact margins let each pin qualify for only ~2s per
 87s rotation. The globe has no controls, so the names are carried in an `sr-only` list.
 
+**Episode pages (`/podcast/episodes/[slug]`)** are the one part of the site built as brand
+artwork rather than site UI, per `design/brand-guidelines.md`. `EpisodeHero` stands on `PAGEBG`
+(the design system's dark *post* ground, not the site's ink-900 marketing ground) under the 18px
+`.dot-field`, with the hero lobe held to 35% so the ground and texture stay dominant. The hero's right
+column is `EpisodePortraits`, not the episode artwork: 4:5 tiles at radius 18 for whoever is on
+the episode (monogram fallback on `TILEBG` for guests, who have no headshots), always laid out as a
+**single row**, capped at four and omitted entirely when nobody is credited. The tiles divide the
+column rather than wrapping into it, so the hero's aside width scales with the count
+(`ASIDE` in `EpisodeHero`: 18/26/30/34rem at lg) — a fixed column is how a "bigger" layout ends up
+smaller, since four tiles in 22rem would be 76px each. Both maps must stay full literal class
+strings so Tailwind extracts them. Four-up only earns its row at lg and folds to 2x2 below.
+Each tile carries the person's **name**, set in Inter — a name is content, not a label, so mono
+would be wrong. Hosts use their own `avatar`; guests are free-text names with no image field, so
+`headshotFor()` resolves them by name out of `public/images/headshots/` (ch.6: lowercase,
+dash-separated, `first-last.jpg`), sharing `nameTokens()` in `src/lib/utils.ts` with the monogram
+so a filename and a monogram can never disagree about a name. **Matching is exact on the slug and
+must stay that way** — a fuzzy near-miss puts the wrong face on a named person, which is worse
+than no face. Drop a correctly-named file in that directory and the tile fills itself; a miss
+falls through to the monogram, which is a designed state. Because the tiles name everyone, the hero has **no byline**, and so no dimmed
+turn line: the h1 stands as a single claim in white. Do not restore a turn by splitting a title
+at render time; if one is wanted, add an authored `subtitle` to the episode frontmatter. Do not add an
+`EP n / total` counter: episode numbers run 1–124 across 75 episodes, so a fraction would be an
+invented figure. Nothing animates in; the only motion is the playhead and `animate-live-dot`,
+which is mounted solely while audio is actually playing. The page carries one CTA
+(`<CTASection secondary={null} />`) because episode pages are first-touch content.
+
 **Design system:** all tokens are in `src/app/globals.css` under `@theme` — Qoves-inspired
 near-monochrome (white canvas, cool-charcoal ink scale, muted steel accent, hairline borders, no
 saturated color). Fonts: Inter, IBM Plex Mono (eyebrow labels). Visual reference at `/styleguide`
@@ -107,8 +135,9 @@ live in `src/lib/jsonld.ts` (breadcrumb, FAQ, event, podcast series, person). OG
 generated at build time by `opengraph-image.tsx` route files (site root, blog post, episode)
 using the shared card/render helpers in `src/lib/og/`. RSS is `src/app/feed.xml`;
 `sitemap.ts`/`robots.ts` are in `src/app/`. Legacy WordPress URLs and live-site aliases
-(`/analyze` → `/msm`, `/marketing` → `/msm`, `/guest-speaker` → `/speak`, webinar paths) are
-301-redirected in `next.config.ts`. Legal pages: `/privacy`, `/terms`.
+(`/analyze` → `/msm`, `/marketing` → `/msm`, `/guest-speaker` → `/speak`) and the routes
+removed since (webinars, newsletter, `/faq`, `/podcast`, `/partnerships`, `/membership`,
+`/reviews`) are 301-redirected in `next.config.ts`. Legal pages: `/privacy`, `/terms`.
 
 ## Conventions & constraints
 
@@ -121,7 +150,37 @@ using the shared card/render helpers in `src/lib/og/`. RSS is `src/app/feed.xml`
 - **There is no auth.** Do not re-add `/login`, `/register`, or `/forgot-password`. Membership is
   account-free; the newsletter is the soft CTA.
 - `LibsynPlayer` plays direct Libsyn MP3s — keep `preload="none"` and its buffering/error/
-  no-audio states.
+  no-audio states. It is the **episode transport**: the 64-bar waveform *is* the seek control
+  (a transparent native `<input type="range">` over the bars supplies drag, arrow keys and
+  slider semantics; the bars are pure paint). Bar geometry takes `design/waveform.svg`'s 3px
+  bars on a 6px pitch and mirrors them about the centre line, so 160 flexed bars are thinned to
+  1-in-4 / 1-in-2 / all by breakpoint, which holds the rendered bar near 3px at every width. The
+  tiers address disjoint bar sets so they never depend on CSS emission order.
+
+  **The bars are audio-reactive, and the two channels are deliberately separate:** colour encodes
+  position (played/unplayed), height encodes live audio, so the bars can move without the seek
+  control losing its meaning. While playing, each bar is its seeded height scaled by the live
+  energy in the frequency band it maps to, read from a real `AnalyserNode` (fft 1024, folded into
+  32 log-spaced bands, swept 3x across the field). Paused, every bar eases back to the silhouette:
+  the track's identity when idle, its voice when playing. This is *within* ch.10, not an exception
+  — the rule forbids motion because a permanent pulse lies about state, and these bars are driven
+  by the audio actually decoding. `prefers-reduced-motion` drops the reactivity (a JS check — the
+  global CSS kill-switch cannot reach a rAF loop) and keeps the playhead, which is position.
+
+  Heights are written straight to the DOM as `scaleY` in the rAF loop: transform only, no layout,
+  no React render per frame. React owns `backgroundColor` and re-renders at `timeupdate` (~4Hz);
+  it also holds a *constant* `transform` in the style object, which its value-diff therefore never
+  rewrites — that constant is what makes the server and first client paint agree. Do not make that
+  transform dynamic; it would fight the loop.
+
+  Analysis needs a CORS-clean stream, so the element carries `crossOrigin="anonymous"` (Libsyn
+  serves `access-control-allow-origin: *` on both the redirect and the object). If that ever
+  stops, the load *errors* rather than going silent, and `onError` remounts a plain element via a
+  `key` change — losing the reactive bars, keeping the episode playable. A captured media element
+  can never be un-captured, hence the remount. The silhouette is seeded from the episode slug —
+  a stable per-episode fingerprint, not amplitude data, and it must never be labelled as audio
+  analysis. The field is inert until metadata loads, because `preload="none"` means there is
+  genuinely nothing to seek.
 
 ## Known stubs (intentional)
 
@@ -129,10 +188,30 @@ using the shared card/render helpers in `src/lib/og/`. RSS is `src/app/feed.xml`
   they validate client-side (vanilla React state) and show pending/success states, but submission
   is stubbed with `// TODO`. `ContactForm` variants: `contact` | `analyze` | `speaker` |
   `partnership`. Don't wire backends unless asked.
-- Webinars (`getAllWebinars()` reads `src/content/webinars/*.mdx`, a directory that does not
-  exist yet — the loader tolerates it), webinar replays (`/resources/webinars/replays`), and
-  reviews (`/reviews`) render honest empty states until real content exists. Events have a Fall
-  2026 series in `src/content/events.json` and still keep an empty-state fallback.
+- Events have a Fall 2026 series in `src/content/events.json` and still keep an empty-state
+  fallback.
+- **Deleted pages — do not re-add:** the webinar archive and replays
+  (`/resources/webinars`, and with them the webinar schema/loaders), the newsletter page
+  (`/resources/newsletter`), the FAQ page (`/faq`), the podcast hub (`/podcast`),
+  `/partnerships` + `/membership`, and the reviews page (`/reviews`).
+  All are 301-redirected in `next.config.ts`.
+  - `/podcast/episodes` is now the podcast landing page: it carries the `PodcastSeries` JSON-LD
+    every episode's `partOfSeries` points at, and the nav's Podcast item points there.
+  - Newsletter sign-up lives only in the footer band (`#newsletter`), which every "join the
+    newsletter" CTA targets; the general FAQs live only on the homepage (`#faq`,
+    `home/Faq.tsx`).
+  - **Partner conversion now runs through `/contact`**, which carries the
+    `ContactForm variant="partnership"` and `PARTNERSHIP_FAQS` in a `#partnership` section.
+    `docs/messaging-strategy.md` still names partner conversion a primary CTA — that path is
+    the contact page, not a partnerships page.
+  - **Reviews came down because there are no reviews** — the page was nothing but an honest
+    empty state, so it was pulled rather than shipped hollow; `/reviews` 301s to `/about`, and
+    About is a plain nav link again now that its dropdown has one item. The plumbing is kept and
+    unused so it can come back whole: `src/content/reviews.json`, `reviewSchema`,
+    `getAllReviews()` and `components/reviews/ReviewWall.tsx`. Restore the route only once
+    `reviews.json` holds real, attributed reviews.
+  - `PODCAST_FAQS` (`src/content/faqs.ts`) and `membershipFaqs` (`src/lib/faq-data.ts`) are kept
+    but unused.
 
 ## Messaging rules
 

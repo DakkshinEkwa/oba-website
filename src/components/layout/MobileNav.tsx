@@ -8,6 +8,7 @@ import { Menu, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/Button";
 import { primaryNav, siteConfig } from "@/lib/site";
+import { isPlainClick, jumpToHash } from "@/lib/scroll";
 
 export function MobileNav({ tone = "light" }: { tone?: "light" | "dark" }) {
   const [open, setOpen] = useState(false);
@@ -44,16 +45,35 @@ export function MobileNav({ tone = "light" }: { tone?: "light" | "dark" }) {
           <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Mobile">
             {primaryNav.map((item) => {
               const active = pathname === item.href || pathname.startsWith(item.href + "/");
+              const itemClassName =
+                "block rounded-md px-3 py-2.5 text-body-lg font-semibold text-ink-900 hover:bg-canvas-subtle";
               return (
                 <div key={item.label} className="py-1">
-                  <Link
-                    href={item.href}
-                    aria-current={active ? "page" : undefined}
-                    onClick={() => setOpen(false)}
-                    className="block rounded-md px-3 py-2.5 text-body-lg font-semibold text-ink-900 hover:bg-canvas-subtle"
-                  >
-                    {item.label}
-                  </Link>
+                  {item.href.startsWith("#") ? (
+                    <a
+                      href={item.href}
+                      className={itemClassName}
+                      onClick={(event) => {
+                        if (!isPlainClick(event)) return;
+                        event.preventDefault();
+                        setOpen(false);
+                        // Radix locks body scroll while the sheet is open, so
+                        // jump on the frame after it has unmounted.
+                        requestAnimationFrame(() => jumpToHash(item.href));
+                      }}
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      aria-current={active ? "page" : undefined}
+                      onClick={() => setOpen(false)}
+                      className={itemClassName}
+                    >
+                      {item.label}
+                    </Link>
+                  )}
                   {item.children ? (
                     <div className="ml-3 border-l border-line pl-3">
                       {item.children.map((child) => {
@@ -79,8 +99,8 @@ export function MobileNav({ tone = "light" }: { tone?: "light" | "dark" }) {
           </nav>
 
           <div className="flex flex-col gap-2 border-t border-line p-5">
-            <Button href={siteConfig.primaryCta.href} variant="primary" onClick={() => setOpen(false)}>
-              {siteConfig.primaryCta.label}
+            <Button href={siteConfig.headerCta.href} variant="primary" onClick={() => setOpen(false)}>
+              {siteConfig.headerCta.label}
             </Button>
           </div>
         </Dialog.Content>

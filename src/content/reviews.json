@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "placeholder-featured",
+    "quote": "PLACEHOLDER — replace with a real review. This entry exists so the page layout can be seen before genuine testimonials are collected. The featured slot takes the strongest quote, ideally one or two sentences about a specific decision the listener made differently.",
+    "name": "Placeholder name",
+    "role": "Placeholder role",
+    "practice": "Placeholder practice",
+    "featured": true,
+    "placeholder": true
+  },
+  {
+    "slug": "placeholder-two",
+    "quote": "PLACEHOLDER — replace with a real review. Shorter quotes work best in the grid below: one sentence naming what changed.",
+    "name": "Placeholder name",
+    "role": "Placeholder role",
+    "placeholder": true
+  },
+  {
+    "slug": "placeholder-three",
+    "quote": "PLACEHOLDER — replace with a real review. Attribute every quote to a named person and their role; unattributed praise is not proof.",
+    "name": "Placeholder name",
+    "role": "Placeholder role",
+    "placeholder": true
+  },
+  {
+    "slug": "placeholder-four",
+    "quote": "PLACEHOLDER — replace with a real review. Delete any entries left over once the real reviews are in; the page hides itself when the file is empty.",
+    "name": "Placeholder name",
+    "role": "Placeholder role",
+    "placeholder": true
+  }
+]

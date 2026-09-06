@@ -13,13 +13,13 @@ export function FeaturedEpisode({ featured }: { featured?: Episode }) {
   return (
     <section className="border-b border-line bg-canvas">
       <Container size="wide">
-        <div className="grid items-center gap-8 py-14 lg:grid-cols-[1fr_0.9fr] lg:gap-16">
+        <div className="grid items-center gap-8 py-16 sm:py-20 lg:py-28 lg:grid-cols-[1fr_0.9fr] lg:gap-16">
           <div>
             <Eyebrow>Latest conversation</Eyebrow>
-            <h2 className="mt-5 text-h2 font-light text-ink-900">
-              <Link href={`/podcast/episodes/${featured.slug}`} className="hover:text-ink-500">
-                {featured.title}
-              </Link>
+            <h2 className="mt-5 text-h2 font-light tracking-tight text-ink-900">
+              Rethinking eye care.
+              <br />
+              <span className="title-dim">Through an entrepreneurial lens</span>
             </h2>
             <p className="mt-3 font-mono text-eyebrow uppercase text-ink-400">
               {featured.episodeNumber ? `Episode ${featured.episodeNumber} · ` : ""}

@@ -170,3 +170,44 @@ export function paginate<T>(items: T[], page: number, perPage: number) {
     hasNext: current < totalPages,
   };
 }
+
+/** Honorifics and post-nominals that are not part of a person's identity. */
+const HONORIFIC = /^(dr|mr|mrs|ms|prof|md|do|phd|coe|coa|cpc|rn|facs)\.?$/i;
+
+/**
+ * The tokens that actually identify a person: honorifics and middle initials
+ * dropped, so "Dr. Lucian V. Del Priore" yields Lucian / Del / Priore. Guest
+ * names are free text in episode frontmatter, so this is what makes them
+ * comparable to anything else.
+ */
+export function nameTokens(name: string): string[] {
+  return name
+    .split(/[\s,]+/)
+    .filter(Boolean)
+    .filter((w) => !HONORIFIC.test(w))
+    .filter((w) => !/^[A-Za-z]\.$/.test(w));
+}
+
+/**
+ * Guidelines ch.6 file naming: lowercase, dash-separated, first-last.jpg.
+ *
+ * A hyphen inside a token is a name separator, not punctuation to strip, so
+ * "Amanda Cardwell-Carones" slugs to amanda-cardwell-carones and matches the
+ * file on disk. Accents fold to ASCII for the same reason. Everything else
+ * (apostrophes especially) is dropped without leaving a separator behind, so
+ * "Megan O'Dell" stays megan-odell.
+ */
+export function personSlug(name: string): string {
+  return nameTokens(name)
+    .map((w) =>
+      w
+        .toLowerCase()
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9-]/g, "")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, ""),
+    )
+    .filter(Boolean)
+    .join("-");
+}

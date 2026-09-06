@@ -35,7 +35,7 @@ export function HeroSection() {
               Episodes
             </Button>
             <Button href="/msm" variant="frosted" size="md" className="rounded-lg">
-              Strategy Call
+              Practice Audit
             </Button>
           </div>
         </div>
@@ -43,13 +43,19 @@ export function HeroSection() {
 
       {/* Bottom micro-label row with hairline dividers */}
       <Container size="wide" className="pointer-events-none relative z-10 pb-10">
-        <div className="grid max-w-2xl grid-cols-3 divide-x divide-white/15">
+        {/* From sm up, columns size to their own content rather than splitting
+            the row in equal thirds: the three labels are different lengths, so
+            equal columns left "Experience-led" floating a long way short of its
+            divider while "Ophthalmology-specific" nearly touched the next one.
+            Below sm it stays an even three-way grid — content sizing there just
+            squeezes the two short labels harder than the old layout did. */}
+        <div className="grid max-w-2xl grid-cols-3 divide-x divide-white/15 sm:flex sm:w-fit sm:max-w-3xl">
           {[
             { t: "Experience-led", s: "Hosted by operators and physicians" },
             { t: "Ophthalmology-specific", s: "Built on eye-care realities" },
             { t: "Non-promotional", s: "Conversations, not sales pitches" },
           ].map((m) => (
-            <div key={m.t} className="pr-6 pl-6 first:pl-0">
+            <div key={m.t} className="px-6 first:pl-0 last:pr-0">
               <p className="text-small text-white/90">{m.t}</p>
               <p className="mt-1 text-small text-white/45">{m.s}</p>
             </div>

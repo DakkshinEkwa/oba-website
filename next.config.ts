@@ -50,26 +50,36 @@ const nextConfig: NextConfig = {
     return [
       { source: "/podcast-show", destination: "/podcast/episodes", permanent: true },
       { source: "/podcast-show/:slug", destination: "/podcast/episodes/:slug", permanent: true },
-      { source: "/webinar-archive", destination: "/resources/webinars", permanent: true },
+      { source: "/webinar-archive", destination: "/resources", permanent: true },
       { source: "/expert-insights-hub", destination: "/resources", permanent: true },
-      { source: "/newsletter", destination: "/resources/newsletter", permanent: true },
+      { source: "/newsletter", destination: "/#newsletter", permanent: true },
       { source: "/events", destination: "/resources/events", permanent: true },
       { source: "/hosts", destination: "/podcast/hosts", permanent: true },
-      { source: "/about-podcast", destination: "/podcast", permanent: true },
+      { source: "/about-podcast", destination: "/podcast/episodes", permanent: true },
       { source: "/msm/ryan", destination: "/msm", permanent: true },
       // Legacy episode URL shape from the old live sitemap (/podcast/episode/<slug>).
       { source: "/podcast/episode", destination: "/podcast/episodes", permanent: true },
       { source: "/podcast/episode/:slug", destination: "/podcast/episodes/:slug", permanent: true },
-      // Auth routes removed with the account system; membership is the honest destination.
-      { source: "/register", destination: "/membership", permanent: true },
-      { source: "/login", destination: "/membership", permanent: true },
-      { source: "/forgot-password", destination: "/membership", permanent: true },
+      // Auth routes removed with the account system; the free library is the honest destination.
+      { source: "/register", destination: "/resources", permanent: true },
+      { source: "/login", destination: "/resources", permanent: true },
+      { source: "/forgot-password", destination: "/resources", permanent: true },
       // URL parity with the current live site (obacademy.org 2026 relaunch).
-      { source: "/webinars", destination: "/resources/webinars", permanent: true },
-      { source: "/webinars/replays", destination: "/resources/webinars/replays", permanent: true },
+      { source: "/webinars", destination: "/resources", permanent: true },
+      { source: "/webinars/replays", destination: "/resources", permanent: true },
       { source: "/guest-speaker", destination: "/speak", permanent: true },
       { source: "/marketing", destination: "/msm", permanent: true },
       { source: "/analyze", destination: "/msm", permanent: true },
+      // Pages removed from the site — redirected rather than left to 404.
+      { source: "/podcast", destination: "/podcast/episodes", permanent: true },
+      { source: "/faq", destination: "/#faq", permanent: true },
+      { source: "/resources/webinars", destination: "/resources", permanent: true },
+      { source: "/resources/webinars/replays", destination: "/resources", permanent: true },
+      { source: "/resources/webinars/:slug", destination: "/resources", permanent: true },
+      { source: "/resources/newsletter", destination: "/#newsletter", permanent: true },
+      { source: "/partnerships", destination: "/contact#partnership", permanent: true },
+      { source: "/membership", destination: "/resources", permanent: true },
+      { source: "/reviews", destination: "/about", permanent: true },
     ];
   },
 };

@@ -12,25 +12,24 @@ import { cn } from "@/lib/utils";
  * so the globe sits on --gradient-hero without introducing saturated color.
  * ------------------------------------------------------------------ */
 const PARTICLE_COLOR = "#eff3f5"; // --color-accent-50: continents read white
-const MARKER_COLOR = "#68a2e0"; // blue, reserved for the pulsing endpoint rings
+const PIN_COLOR = "#eff3f5"; // --color-accent-50: the people pins match the dot shell
 const ARC_BASE_COLOR = "#a4b6c0"; // --color-accent-300
 const ARC_PULSE_COLOR = "#eff3f5"; // --color-accent-50
 
-const PARTICLE_COUNT = 6500; // dots blanket the whole sphere, land and ocean alike
+const PARTICLE_COUNT = 2800; // dots blanket the whole sphere, land and ocean alike
 const OCEAN_ALPHA = 0.2; // ocean dots stay as a faint lattice; land reads on top of it
 const ARC_COUNT = 14;
 const ARC_SEGMENTS = 64;
-const ARC_RADIUS = 0.0013; // ~1.5px diameter at the 960px globe; gl.lineWidth is clamped to 1px, so arcs are tubes
+const ARC_RADIUS = 0.0024; // ~1.2px diameter at the reference globe; gl.lineWidth is clamped to 1px, so arcs are tubes
 const ARC_LIFT = 1.012; // keep tube endpoints clear of the body surface
-const MARKER_SIZE = 34; // sprite px for the pulsing endpoint rings
 const MARKER_SPEED = 0.5; // ring expansions per second
 const RADIUS = 1;
 const CAMERA_Z = 3.05;
 
 /** View-space light: fixed relative to the camera, so the lit side stays put while
- *  the continents rotate under it. The sphere's centre sits off the hero's
- *  bottom-right corner, so the on-screen cap is its upper-left, and the light aims
- *  there. With no solid body there is no terminator — this only shades the dots. */
+ *  the continents rotate under it. The whole sphere is on screen, so this is an
+ *  ordinary key from the upper left, front. With no solid body there is no
+ *  terminator — this only shades the dots. */
 const LIGHT_DIR = new THREE.Vector3(-0.5, 0.45, 0.74).normalize();
 
 const AMBIENT_Y_SPEED = 0.0012; // rad/frame at 60fps
@@ -41,9 +40,33 @@ const MAX_TILT = Math.PI / 3;
 const DEG2RAD = Math.PI / 180;
 
 /** Canvas and label overlay must share one box, but the scrim sits between them
- *  in the stack, so they are separate elements with identical geometry. */
+ *  in the stack, so they are separate elements with identical geometry.
+ *
+ *  The whole sphere sits beside the hero copy rather than bleeding off the
+ *  bottom-right corner: the camera already frames it with ~10% margin inside a
+ *  square box, so positioning the box on screen is all it takes to show it whole.
+ *
+ *  Sizing stays fluid, never breakpoint-stepped, so a laptop gets the desktop
+ *  composition scaled down rather than a differently cropped globe. The copy —
+ *  `max-w-2xl` inside `--container-wide` — ends at ~54–57% of the viewport at
+ *  every width from 1280 up; the globe takes 34% of what is left, sitting clear
+ *  of both the copy and the right edge. It hangs slightly below the hero's
+ *  midline so it reads as anchored to the copy rather than floating beside it.
+ *
+ *  Below `xl` that gap closes — the copy column takes ~69% of a 1024px viewport —
+ *  so the globe does not render there at all rather than crowd the headline. */
 const GLOBE_BOX =
-  "absolute -right-[26%] -bottom-[48%] aspect-square w-[86%] max-w-[760px] xl:-right-[16%] xl:max-w-[960px] 2xl:max-w-[1180px]";
+  "absolute top-[52%] right-[3%] aspect-square w-[34%] -translate-y-1/2";
+
+/** Canvas width the sprite sizes below were tuned at: the globe box as it renders
+ *  on a 1920px desktop. gl_PointSize is in device px and does not scale with the
+ *  canvas, so without this the dots read chunky on a small canvas and thin on a
+ *  large one even when the framing matches. Clamped so a narrow laptop keeps dots
+ *  big enough to survive antialiasing. */
+const SPRITE_REFERENCE_WIDTH = 653;
+const SPRITE_SCALE_MIN = 0.94; // floors the dot at ~3.2px, where antialiasing still holds it
+const SPRITE_SCALE_MAX = 1.2;
+const PARTICLE_SIZE = 3.4; // sprite px for the dot shell
 
 /** Pinned to the globe. As it turns, whichever pin is closest to facing the
  *  camera shows its portrait; the rest stay dark. Coordinates are the named
@@ -56,7 +79,7 @@ const PEOPLE = [
   { name: "Naren Arulrajah", lat: 43.65, lon: -79.38, image: "/images/hosts/naren-arulrajah.jpg" },
 ];
 
-const PIN_SIZE = 46; // sprite px for the people pins — larger than the arc markers
+const PIN_SIZE = 29; // sprite px for the pulsing people pins
 const PIN_VISIBLE = 0.1; // min facing dot before a pin can own the card
 const PIN_HYSTERESIS = 0.12; // extra facing required to steal the card
 const CARD_MARGIN_X = 52; // half the avatar; used to fade before it clips
@@ -64,6 +87,7 @@ const CARD_MARGIN_TOP = 100; // the avatar stacks upward from its pin
 const CARD_SLACK = 48; // a pin just off the visible edge can still be considered
 const CARD_EDGE_FADE = 48; // px of side/top inset over which the portrait eases out
 const CARD_EDGE_BOTTOM = 16; // avatar sits bottom-4 above the pin; don't dim southern pins
+const PORTRAIT_OVERHANG = 96; // px a portrait may extend past the globe box
 const CARD_FADE_IN = 0.55;
 const CARD_FADE_OUT = 0.35;
 
@@ -179,7 +203,6 @@ function buildArcGeometry(points: Float32Array, count: number) {
   const speeds: number[] = [];
   const progress: number[] = [];
   const indices: number[] = [];
-  const endpoints: number[] = [];
   let vertexOffset = 0;
 
   const total = points.length / 3;
@@ -206,8 +229,6 @@ function buildArcGeometry(points: Float32Array, count: number) {
       .multiplyScalar(0.5)
       .normalize()
       .multiplyScalar(RADIUS * (1 + 0.32 * chord));
-
-    endpoints.push(start.x, start.y, start.z, end.x, end.y, end.z);
 
     const curve = new THREE.QuadraticBezierCurve3(start, control, end);
     const tube = new THREE.TubeGeometry(curve, ARC_SEGMENTS, ARC_RADIUS, 6, false);
@@ -242,18 +263,7 @@ function buildArcGeometry(points: Float32Array, count: number) {
   geometry.setAttribute("aSpeed", new THREE.BufferAttribute(new Float32Array(speeds), 1));
   geometry.setIndex(indices);
 
-  // Pulsing rings sit at the arc endpoints, one phase offset each.
-  const markerGeometry = new THREE.BufferGeometry();
-  markerGeometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(endpoints), 3));
-  markerGeometry.setAttribute(
-    "aOffset",
-    new THREE.BufferAttribute(
-      Float32Array.from({ length: endpoints.length / 3 }, () => Math.random()),
-      1,
-    ),
-  );
-
-  return { geometry, markerGeometry };
+  return geometry;
 }
 
 /* ------------------------------------------------------------------ *
@@ -444,7 +454,7 @@ export default function HeroGlobe() {
       uniforms: {
         uColor: { value: new THREE.Color(PARTICLE_COLOR) },
         uOceanAlpha: { value: OCEAN_ALPHA },
-        uSize: { value: 3.9 },
+        uSize: { value: PARTICLE_SIZE },
         uDpr: { value: dpr },
         uLightDir: lightUniform,
       },
@@ -459,7 +469,7 @@ export default function HeroGlobe() {
     globe.add(particles);
 
     // Arcs
-    const { geometry: arcGeometry, markerGeometry } = buildArcGeometry(landOnly, ARC_COUNT);
+    const arcGeometry = buildArcGeometry(landOnly, ARC_COUNT);
     const arcMaterial = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
@@ -477,26 +487,7 @@ export default function HeroGlobe() {
     arcs.renderOrder = 1;
     globe.add(arcs);
 
-    // Endpoint markers
-    const markerMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        uTime: { value: 0 },
-        uSpeed: { value: MARKER_SPEED },
-        uSize: { value: MARKER_SIZE },
-        uDpr: { value: dpr },
-        uColor: { value: new THREE.Color(MARKER_COLOR) },
-      },
-      vertexShader: MARKER_VERT,
-      fragmentShader: MARKER_FRAG,
-      transparent: true,
-      depthWrite: false,
-      depthTest: false,
-    });
-    const markers = new THREE.Points(markerGeometry, markerMaterial);
-    markers.renderOrder = 2;
-    globe.add(markers);
-
-    // People pins — same pulsing ring, larger, so they outrank the arc endpoints.
+    // People pins — a pulsing ring at each pinned contributor.
     const pinVectors = PEOPLE.map((person) => latLonToVector3(person.lat, person.lon, ARC_LIFT));
     const pinGeometry = new THREE.BufferGeometry();
     pinGeometry.setAttribute(
@@ -516,7 +507,7 @@ export default function HeroGlobe() {
         uSpeed: { value: MARKER_SPEED },
         uSize: { value: PIN_SIZE },
         uDpr: { value: dpr },
-        uColor: { value: new THREE.Color(MARKER_COLOR) },
+        uColor: { value: new THREE.Color(PIN_COLOR) },
       },
       vertexShader: MARKER_VERT,
       fragmentShader: MARKER_FRAG,
@@ -568,16 +559,17 @@ export default function HeroGlobe() {
     let fade = 0;
     let hiding = false;
 
-    // The canvas bleeds past the hero, so most of it is never on screen. Cards
-    // may only be placed inside this box, in canvas-local pixels.
+    // Where a portrait may be placed, in canvas-local pixels: the globe box grown
+    // by PORTRAIT_OVERHANG (nothing clips it, and the sphere already sits ~10%
+    // inside the box), then cut back to whatever of that is actually on screen.
     let visible = { x0: 0, y0: 0, x1: 0, y1: 0 };
     const updateVisible = () => {
       const r = host.getBoundingClientRect();
       visible = {
-        x0: Math.max(0, -r.left),
-        y0: Math.max(0, -r.top),
-        x1: Math.min(r.width, window.innerWidth - r.left),
-        y1: Math.min(r.height, window.innerHeight - r.top),
+        x0: Math.max(-PORTRAIT_OVERHANG, -r.left),
+        y0: Math.max(-PORTRAIT_OVERHANG, -r.top),
+        x1: Math.min(r.width + PORTRAIT_OVERHANG, window.innerWidth - r.left),
+        y1: Math.min(r.height + PORTRAIT_OVERHANG, window.innerHeight - r.top),
       };
     };
 
@@ -587,6 +579,16 @@ export default function HeroGlobe() {
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
+      // Point sprites are sized in pixels, so they have to be re-tuned to the
+      // canvas or the dot weight differs between a laptop and a desktop even
+      // though the globe is framed identically.
+      const spriteScale = clamp(
+        w / SPRITE_REFERENCE_WIDTH,
+        SPRITE_SCALE_MIN,
+        SPRITE_SCALE_MAX,
+      );
+      particleMaterial.uniforms.uSize.value = PARTICLE_SIZE * spriteScale;
+      pinMaterial.uniforms.uSize.value = PIN_SIZE * spriteScale;
       updateVisible();
       lastX = Number.NaN; // force a redraw at the new size
     };
@@ -623,7 +625,6 @@ export default function HeroGlobe() {
       } else {
         elapsed += delta;
         arcMaterial.uniforms.uTime.value = elapsed;
-        markerMaterial.uniforms.uTime.value = elapsed;
         pinMaterial.uniforms.uTime.value = elapsed;
         if (!dragging) {
           velocity.x *= DRAG_DAMPING;
@@ -753,8 +754,6 @@ export default function HeroGlobe() {
       particleMaterial.dispose();
       arcGeometry.dispose();
       arcMaterial.dispose();
-      markerGeometry.dispose();
-      markerMaterial.dispose();
       pinGeometry.dispose();
       pinMaterial.dispose();
       renderer.dispose();
@@ -764,8 +763,8 @@ export default function HeroGlobe() {
   }, []);
 
   return (
-    <div className="pointer-events-none absolute inset-0 hidden lg:block">
-      {/* Oversized sphere bleeding off the hero's bottom-right corner. */}
+    <div className="pointer-events-none absolute inset-0 hidden xl:block">
+      {/* Whole sphere, parked in the gap to the right of the hero copy. */}
       <div
         ref={canvasHostRef}
         aria-hidden="true"
@@ -785,7 +784,7 @@ export default function HeroGlobe() {
         <div ref={labelRef} className="absolute top-0 left-0 opacity-0 will-change-transform">
           <span
             aria-hidden="true"
-            className="absolute block h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#68a2e0] shadow-[0_0_12px_rgba(104,162,224,0.95)]"
+            className="absolute block h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#eff3f5] shadow-[0_0_12px_rgba(239,243,245,0.75)]"
           />
           {/* All five are mounted so their photos are already decoded when a pin
               swings to the front; only the active one is opaque. */}

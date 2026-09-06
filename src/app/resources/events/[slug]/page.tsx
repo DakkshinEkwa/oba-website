@@ -76,7 +76,7 @@ export default async function EventDetailPage({
         <h1 className="mt-3 text-h1 font-light tracking-tight text-ink-900">{event.title}</h1>
         <p className="mt-5 max-w-prose text-body-lg text-ink-500">{PANEL_LEDE}</p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button href="/resources/newsletter" variant="primary" size="lg">
+          <Button href="#newsletter" variant="primary" size="lg">
             Join the Newsletter
           </Button>
           <Button href="/resources/events" variant="outline" size="lg">

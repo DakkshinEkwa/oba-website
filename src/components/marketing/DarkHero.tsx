@@ -22,6 +22,13 @@ type DarkHeroProps = {
   proof?: React.ReactNode;
   /** Optional bottom row (proof-by-numbers stat band). */
   footer?: React.ReactNode;
+  /**
+   * Measure of the hero's own container. Defaults to "wide" (1240px), which is
+   * what the cinematic `size="full"` heroes want. Interior pages whose sections
+   * below run at the 1160px default should pass "default", or the hero's text
+   * edge sits 40px outboard of every section beneath it on wide screens.
+   */
+  containerSize?: "wide" | "default";
   /** CTA row, rendered under the lede. */
   children?: React.ReactNode;
 };
@@ -49,6 +56,7 @@ export function DarkHero({
   asideWidth = "narrow",
   proof,
   footer,
+  containerSize = "wide",
   children,
 }: DarkHeroProps) {
   const isFull = size === "full";
@@ -73,7 +81,7 @@ export function DarkHero({
       />
 
       <Container
-        size="wide"
+        size={containerSize}
         className={cn(
           "relative",
           isFull
@@ -112,7 +120,7 @@ export function DarkHero({
       </Container>
 
       {footer ? (
-        <Container size="wide" className="relative pb-10">
+        <Container size={containerSize} className="relative pb-10">
           {footer}
         </Container>
       ) : null}

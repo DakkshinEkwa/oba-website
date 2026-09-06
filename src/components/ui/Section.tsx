@@ -3,7 +3,7 @@ import { Container } from "./Container";
 import { Eyebrow } from "./Eyebrow";
 
 type SectionProps = Omit<React.ComponentProps<"section">, "children"> & {
-  tone?: "canvas" | "subtle" | "ink" | "accent";
+  tone?: "canvas" | "subtle" | "ink" | "accent" | "chip";
   containerSize?: "wide" | "default" | "narrow";
   spacing?: "tight" | "default" | "loose";
   /** Render children edge-to-edge without the inner Container. */
@@ -16,6 +16,16 @@ const tones = {
   subtle: "bg-canvas-subtle text-ink-700",
   ink: "bg-ink-900 text-ink-200",
   accent: "bg-accent-900 text-accent-50",
+  /**
+   * CHIPBG — the brand palette's "chip and light-well fill" (guidelines ch.1).
+   * A light band that reads as a deliberate well rather than another grey
+   * section: pair it with `dot-field-light` and hairline `border-y` edges,
+   * which is what separates it from the neighbouring `canvas`.
+   *
+   * Do not place it directly against `subtle` (#f4f6f7) — the two are three
+   * values apart and read as one continuous surface.
+   */
+  chip: "bg-chip-bg text-ink-700",
 };
 
 const spacings = {

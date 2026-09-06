@@ -41,11 +41,7 @@ export function EpisodesArchive({ page }: { page: number }) {
       />
       <DarkHero
         size="band"
-        breadcrumbs={[
-          { label: "Home", href: "/" },
-          { label: "Podcast", href: "/podcast" },
-          { label: "Episodes" },
-        ]}
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Episodes" }]}
         eyebrow="The Ophthalmology Business Podcast"
         eyebrowDot
         title="Every conversation,"

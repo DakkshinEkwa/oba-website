@@ -65,7 +65,12 @@ export function NewsletterForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
         <button
           type="submit"
           disabled={submitting}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-pill bg-ink-900 px-6 font-medium text-white transition-colors hover:bg-ink-700 disabled:opacity-50"
+          className={cn(
+            "inline-flex h-12 items-center justify-center gap-2 rounded-pill px-6 font-medium transition-colors disabled:opacity-50",
+            onLight
+              ? "bg-white text-ink-900 hover:bg-canvas-subtle focus-visible:outline-white"
+              : "bg-ink-900 text-white hover:bg-ink-700",
+          )}
         >
           {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
           {submitting ? "Subscribing…" : "Subscribe"}

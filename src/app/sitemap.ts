@@ -2,7 +2,6 @@ import type { MetadataRoute } from "next";
 import {
   getAllEpisodes,
   getAllBlogPosts,
-  getAllWebinars,
   getAllEvents,
 } from "@/lib/content";
 import { EPISODES_PER_PAGE } from "@/components/content/EpisodesArchive";
@@ -20,20 +19,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/about",
     "/speak",
-    "/partnerships",
     "/contact",
     "/msm",
-    "/membership",
     "/resources",
     "/resources/free-resources",
-    "/resources/newsletter",
     "/resources/events",
-    "/resources/webinars",
-    "/resources/webinars/replays",
-    "/podcast",
     "/podcast/episodes",
     "/podcast/hosts",
-    "/reviews",
+    "/podcast/speakers",
     "/privacy",
     "/terms",
     "/blog",
@@ -51,7 +44,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Archive pages genuinely change when their newest item changes.
   const derivedLastMod: Record<string, string | undefined> = {
     "": newestOverall,
-    "/podcast": newestEpisode,
     "/podcast/episodes": newestEpisode,
     "/blog": newestPost,
   };
@@ -91,10 +83,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.6,
     });
-  }
-
-  for (const w of getAllWebinars()) {
-    entries.push({ url: `${base}/resources/webinars/${w.slug}`, changeFrequency: "monthly", priority: 0.5 });
   }
 
   for (const e of getAllEvents()) {

@@ -14,35 +14,39 @@ const aiBrandIcons = {
   Grok: GrokIcon,
 } as const;
 
-/** Light, hairline-ruled footer ending in a giant wordmark (Qoves-style). */
+/** Dark cinematic footer on --gradient-hero, hairline-ruled bands. */
 export function SiteFooter() {
   return (
-    <footer className="border-t border-line bg-canvas text-ink-500">
-      {/* Newsletter band */}
-      <div className="border-b border-line">
+    <footer className="relative overflow-hidden border-t border-white/10 bg-ink-900 text-white/65">
+      <div aria-hidden className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
+      <div aria-hidden className="absolute inset-0 opacity-25" style={{ background: "var(--gradient-hero-glow)" }} />
+
+      {/* Newsletter band — the site's only sign-up surface, and the target of
+          every "join the newsletter" CTA now that /resources/newsletter is gone. */}
+      <div id="newsletter" className="relative scroll-mt-24 border-b border-white/10">
         <Container size="wide">
           <div className="grid gap-8 py-14 lg:grid-cols-2 lg:items-center">
             <div className="max-w-md">
-              <h2 className="text-h3 font-normal text-ink-900">
+              <h2 className="text-h3 font-normal text-white">
                 Insight for ophthalmology practice leaders
               </h2>
-              <p className="mt-2 text-body text-ink-500">
+              <p className="mt-2 text-body text-white/65">
                 New conversations, practical articles, and event invitations, straight to your inbox.
               </p>
             </div>
             <div className="lg:w-full lg:max-w-md lg:justify-self-end">
-              <NewsletterForm />
+              <NewsletterForm tone="light" />
             </div>
           </div>
         </Container>
       </div>
 
       {/* Link columns */}
-      <Container size="wide">
+      <Container size="wide" className="relative">
         <div className="grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div className="max-w-xs">
-            <Logo />
-            <p className="mt-4 text-small text-ink-400">{siteConfig.description}</p>
+            <Logo tone="light" />
+            <p className="mt-4 text-small text-white/45">{siteConfig.description}</p>
             <div className="mt-5 flex items-center gap-2">
               <SocialLink href={siteConfig.socials.facebook} label="Facebook">
                 <FacebookIcon className="size-4" />
@@ -61,13 +65,13 @@ export function SiteFooter() {
 
           {footerNav.map((col) => (
             <div key={col.title}>
-              <h3 className="font-mono text-eyebrow uppercase text-ink-400">{col.title}</h3>
+              <h3 className="font-mono text-eyebrow uppercase text-white/45">{col.title}</h3>
               <ul className="mt-4 space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-small text-ink-500 transition-colors hover:text-ink-900"
+                      className="text-small text-white/65 transition-colors hover:text-white focus-visible:outline-white"
                     >
                       {link.label}
                     </Link>
@@ -80,9 +84,9 @@ export function SiteFooter() {
       </Container>
 
       {/* AI summary band */}
-      <div className="border-t border-line">
+      <div id="ai-summary" className="relative scroll-mt-(--header-offset) border-t border-white/10">
         <Container size="wide">
-          <div className="flex flex-col items-center gap-4 py-8 text-small text-ink-500 sm:flex-row sm:justify-center sm:gap-3">
+          <div className="flex flex-col items-center gap-4 py-8 text-small text-white/65 sm:flex-row sm:justify-center sm:gap-3">
             <p className="flex items-center gap-2">
               <SparkleIcon className="size-4" />
               {aiSummary.label}
@@ -98,8 +102,7 @@ export function SiteFooter() {
                       aria-label={`${aiSummary.label} with ${provider.name}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex size-10 items-center justify-center rounded-md border border-white/15 text-white transition hover:border-white/35 hover:brightness-110 focus-visible:outline-white"
-                      style={{ background: "var(--gradient-hero)" }}
+                      className="inline-flex size-10 items-center justify-center rounded-md border border-white/15 bg-white/10 text-white transition hover:border-white/35 hover:bg-white/20 focus-visible:outline-white"
                     >
                       <Icon className="size-5" />
                     </a>
@@ -112,9 +115,9 @@ export function SiteFooter() {
       </div>
 
       {/* Legal bar */}
-      <div className="border-t border-line">
+      <div className="relative border-t border-white/10">
         <Container size="wide">
-          <div className="flex flex-col gap-3 py-6 text-small text-ink-400 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 py-6 text-small text-white/45 sm:flex-row sm:items-center sm:justify-between">
             <p>
               © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
             </p>
@@ -122,16 +125,16 @@ export function SiteFooter() {
               <p>
                 {siteConfig.address.line1}, {siteConfig.address.line2}
               </p>
-              <span aria-hidden className="text-ink-300">
+              <span aria-hidden className="text-white/25">
                 ·
               </span>
-              <Link href="/privacy" className="transition-colors hover:text-ink-900">
+              <Link href="/privacy" className="transition-colors hover:text-white focus-visible:outline-white">
                 Privacy
               </Link>
-              <span aria-hidden className="text-ink-300">
+              <span aria-hidden className="text-white/25">
                 ·
               </span>
-              <Link href="/terms" className="transition-colors hover:text-ink-900">
+              <Link href="/terms" className="transition-colors hover:text-white focus-visible:outline-white">
                 Terms
               </Link>
             </div>
@@ -157,7 +160,7 @@ function SocialLink({
       aria-label={label}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex size-9 items-center justify-center rounded-pill border border-line text-ink-400 transition-colors hover:border-line-strong hover:text-ink-900"
+      className="inline-flex size-9 items-center justify-center rounded-pill border border-white/15 text-white/65 transition-colors hover:border-white/35 hover:text-white focus-visible:outline-white"
     >
       {children}
     </a>

@@ -10,11 +10,12 @@ import type { Episode, BlogPost } from "@/lib/schemas";
 export function LatestContent({ episodes, posts }: { episodes: Episode[]; posts: BlogPost[] }) {
   return (
     <>
-      <Section tone="subtle" spacing="default">
+      <Section tone="subtle" spacing="default" className="border-t border-line">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeader
             eyebrow="The podcast"
-            title="Latest from the show"
+            title="Rethinking eye care."
+            titleDim="Through an entrepreneurial lens"
             className="max-w-xl"
           />
           <Button href="/podcast/episodes" variant="link">
@@ -30,25 +31,25 @@ export function LatestContent({ episodes, posts }: { episodes: Episode[]; posts:
             />
           </div>
         ) : (
-          <div className="panel-grid mt-10">
+          <div className="event-grid mt-10">
             {episodes.map((ep) => (
-              <EpisodeCard key={ep.slug} episode={ep} variant="panel" />
+              <EpisodeCard key={ep.slug} episode={ep} variant="slider" />
             ))}
           </div>
         )}
       </Section>
 
       {posts.length > 0 ? (
-        <Section spacing="default">
+        <Section spacing="default" className="border-t border-line">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeader eyebrow="Insights" title="From the blog" className="max-w-xl" />
             <Button href="/blog" variant="link">
               All articles <ArrowRight className="size-4" aria-hidden />
             </Button>
           </div>
-          <div className="panel-grid mt-10">
+          <div className="event-grid mt-10">
             {posts.map((post) => (
-              <BlogCard key={post.slug} post={post} variant="panel" />
+              <BlogCard key={post.slug} post={post} variant="slider" />
             ))}
           </div>
         </Section>

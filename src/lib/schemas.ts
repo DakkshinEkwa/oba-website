@@ -53,17 +53,22 @@ export const hostSchema = z.object({
     .default({}),
 });
 
-export const webinarSchema = z.object({
+/**
+ * A listener or contributor testimonial.
+ *
+ * `placeholder` marks an entry as scaffolding rather than a real review. The
+ * page renders those with a visible notice, so unreplaced copy can never pass
+ * itself off as genuine proof — testimonials are the one content type where a
+ * convincing stand-in is worse than an empty section.
+ */
+export const reviewSchema = z.object({
   slug: z.string().min(1),
-  title: z.string().min(1),
-  date: z.string().optional(),
-  presenters: z.array(z.string()).default([]),
-  excerpt: z.string().default(""),
-  thumbnail: z.string().optional(),
-  replayUrl: z.string().optional(),
-  embedUrl: z.string().optional(),
-  isReplayAvailable: z.boolean().default(true),
-  sourceUrl: z.string().url().optional(),
+  quote: z.string().min(1),
+  name: z.string().min(1),
+  role: z.string().min(1),
+  practice: z.string().optional(),
+  featured: z.boolean().default(false),
+  placeholder: z.boolean().default(false),
 });
 
 export const freeResourceCategorySchema = z.enum(["guide", "template", "checklist"]);
@@ -91,13 +96,38 @@ export const eventSchema = z.object({
   image: z.string().optional(),
 });
 
+export const transcriptSegmentSchema = z.object({
+  startSec: z.number().nonnegative(),
+  endSec: z.number().nonnegative(),
+  speaker: z.string().min(1),
+  text: z.string().min(1),
+});
+
+export const transcriptSpeakerSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().optional(),
+});
+
+export const transcriptSchema = z.object({
+  slug: z.string().min(1),
+  status: z.enum(["machine", "reviewed"]),
+  language: z.string().default("en"),
+  model: z.string().optional(),
+  generatedAt: z.string(),
+  audioUrl: z.string().url().optional(),
+  speakers: z.array(transcriptSpeakerSchema).default([]),
+  segments: z.array(transcriptSegmentSchema),
+});
+
 export type EpisodeMeta = z.infer<typeof episodeSchema>;
 export type BlogPostMeta = z.infer<typeof blogPostSchema>;
 export type Host = z.infer<typeof hostSchema>;
-export type Webinar = z.infer<typeof webinarSchema>;
 export type Event = z.infer<typeof eventSchema>;
 export type FreeResourceCategory = z.infer<typeof freeResourceCategorySchema>;
 export type FreeResource = z.infer<typeof freeResourceSchema>;
+export type Review = z.infer<typeof reviewSchema>;
+export type Transcript = z.infer<typeof transcriptSchema>;
+export type TranscriptSegment = z.infer<typeof transcriptSegmentSchema>;
 
 /** A content record combines validated frontmatter with the raw Markdown body. */
 export type Episode = EpisodeMeta & { body: string };

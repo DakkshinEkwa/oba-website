@@ -1,0 +1,2 @@
+slug,title,episodeNumber,publishedAt,excerpt,audioUrl,thumbnailUrl,guests,hostSlugs,tags,featured,showNotes
+example-episode-title,Example Episode Title,76,2026-09-06,One-sentence excerpt for the archive card.,https://traffic.libsyn.com/example/oba76.mp3,https://example.com/thumb.jpg,Guest Name,sarah-duval,operations,FALSE,"Show notes in Markdown."

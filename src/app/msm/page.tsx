@@ -1,30 +1,14 @@
-import {
-  Search,
-  LineChart,
-  Target,
-  ShieldCheck,
-  MonitorSmartphone,
-  Star,
-  TrendingUp,
-  Clock,
-  ClipboardList,
-  FileSearch,
-  UserCheck,
-  Zap,
-  BadgeCheck,
-} from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { IconCard } from "@/components/ui/IconCard";
-import { ChecklistItem } from "@/components/ui/ChecklistItem";
+import { Container } from "@/components/ui/Container";
 import { FaqAccordion } from "@/components/ui/Accordion";
-import { Button } from "@/components/ui/Button";
 import { DarkHero } from "@/components/marketing/DarkHero";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { AnimatedStat } from "@/components/marketing/AnimatedStat";
 import { siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/og/metadata";
 import { faqJsonLd } from "@/lib/jsonld";
+import { msmFaqs as faqs } from "@/lib/faq-data";
 
 export const metadata = pageMetadata({
   title: "Free Marketing Analysis for Ophthalmology Practices",
@@ -33,98 +17,18 @@ export const metadata = pageMetadata({
   path: "/msm",
 });
 
-const heroChecklist = [
+const auditCovers = [
   {
-    icon: Search,
-    title: "Full digital presence audit",
-    body: "Website, local search visibility, Google Business Profile, reviews, and social presence. We tell you exactly what's working and what isn't.",
+    title: "Visibility",
+    body: "Where you rank for the searches patients actually make, and which practices in your market outrank you.",
   },
   {
-    icon: Target,
-    title: "Competitive analysis",
-    body: "Which practices in your market outrank you, what they're doing well, and where you can take the lead.",
+    title: "Conversion",
+    body: "Whether your website turns visitors into booked consultations, or quietly loses them on the way.",
   },
   {
-    icon: TrendingUp,
-    title: "Customized growth roadmap",
-    body: "A prioritized, actionable plan built for your practice, your market, and your growth stage, not a generic template.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "No sales pitch. No pressure.",
-    body: "A genuine strategy session. If we're a good fit, great, but there's no obligation to work with us.",
-  },
-];
-
-const steps = [
-  {
-    icon: ClipboardList,
-    title: "Submit your request",
-    body: "The short form above: your practice details, website, and biggest marketing challenge. Takes about two minutes.",
-    meta: "~2 minutes",
-  },
-  {
-    icon: FileSearch,
-    title: "We do the homework",
-    body: "Our team researches your website, local search rankings, reviews, and top competitors in your market before we even meet.",
-    meta: "Research first",
-  },
-  {
-    icon: UserCheck,
-    title: "Your strategy session",
-    body: "A focused call with an Ekwa advisor who walks you through the findings and your prioritized action plan.",
-    meta: "Advisor-led call",
-  },
-];
-
-const focusAreas = [
-  {
-    icon: Search,
-    title: "Google visibility",
-    body: "Where you rank for the high-value searches in your market (“cataract surgeon near me,” LASIK, premium lens options) and who outranks you.",
-  },
-  {
-    icon: MonitorSmartphone,
-    title: "Website conversion",
-    body: "Whether your site turns visitors into booked consultations: speed, mobile experience, and the click-to-consultation journey.",
-  },
-  {
-    icon: Star,
-    title: "Reviews & reputation",
-    body: "How your ratings, review volume, and responses compare to the practices competing for your patients.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Growth opportunities",
-    body: "The specific gaps worth fixing first, prioritized by revenue impact, so you know exactly where to start.",
-  },
-];
-
-const sessionOutcomes = [
-  {
-    icon: Search,
-    title: "Where you're losing patients online",
-    body: "The specific gaps in your digital presence that are costing you new-patient inquiries right now.",
-  },
-  {
-    icon: LineChart,
-    title: "Your exact keyword opportunities",
-    body: "The searches your local market makes that your practice isn't ranking for yet, and how to capture them.",
-  },
-  {
-    icon: Target,
-    title: "How your competitors are winning",
-    body: "A real breakdown of what the top-ranked practices in your area are doing, and how to outperform them.",
-  },
-  {
-    icon: Zap,
-    title: "Your 90-day quick-win plan",
-    body: "Three to five specific actions you can take in the next 90 days to start booking more consultations.",
-  },
-  {
-    icon: TrendingUp,
-    title: "A 12-month growth roadmap",
-    body: "A long-term plan that builds sustainable patient flow and local authority for your practice in your market.",
+    title: "Roadmap",
+    body: "A prioritized plan for your market and your stage, ordered by revenue impact rather than effort.",
   },
 ];
 
@@ -134,39 +38,6 @@ const stats = [
   { n: "1", l: "Dedicated account manager per practice" },
 ];
 
-const ekwaBullets = [
-  "Exclusively focused on medical practice marketing, including ophthalmology.",
-  "No long-term contracts required.",
-  "A dedicated account manager for every practice.",
-  "Transparent reporting: you always know what we're doing.",
-  "Full-service: SEO, paid search, social, web design & content.",
-];
-
-const faqs = [
-  {
-    question: "Who actually performs the analysis?",
-    answer:
-      "Ekwa Marketing, the practice-marketing firm led by OBA's founder, Naren Arulrajah. It works with medical practices, including ophthalmology. This is a commercial service offered alongside OBA, not part of OBA's educational programming.",
-  },
-  {
-    question: "Is this really free?",
-    answer: "Yes. The analysis is complimentary and there is no obligation to buy anything.",
-  },
-  {
-    question: "How long does it take?",
-    answer: "The review takes a few business days, after which an advisor walks you through the findings.",
-  },
-  {
-    question: "What do you need from me?",
-    answer:
-      "Just your name, your practice website, and a contact email. The more context you share, the more tailored the analysis.",
-  },
-  {
-    question: "Will this be promoted inside OBA's content?",
-    answer:
-      "No. OBA's panels, podcasts, and webinars stay non-promotional by design. This service is never promoted inside the academy's conversations.",
-  },
-];
 
 export default function MsmPage() {
   const faqJsonLdData = faqJsonLd(faqs);
@@ -182,176 +53,120 @@ export default function MsmPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Marketing" }]}
         eyebrow="A service from Ekwa Marketing"
         eyebrowDot
-        title="The only strategy meeting your"
-        titleDim="ophthalmology practice needs"
-        lede="A complimentary, no-obligation review of your digital marketing from Ekwa Marketing, the practice-marketing firm led by OBA's founder. Know what's working, what isn't, and what to fix first."
+        title={
+          <>
+            Where your practice is losing
+            <br />
+          </>
+        }
+        titleDim="patients online"
+        lede="A free review of your website, search visibility, and reviews. From Ekwa Marketing, the practice-marketing firm led by OBA's founder."
         aside={
-          <div className="rounded-[20px] border border-white/10 p-6 sm:p-7">
+          <div className="rounded-[20px] border border-white/10 p-4 sm:p-5">
             <Eyebrow tone="onDark" className="text-[0.625rem]">
               Pick a time
             </Eyebrow>
-            <h2 className="mt-3 text-h4 font-normal text-white">Book your free strategy meeting</h2>
+            <h2 className="mt-2.5 text-h4 font-normal text-white">Book your free practice audit</h2>
             <p className="mt-1.5 text-small font-light text-white/70">
               Choose a slot that works. Most practices meet within the week.
             </p>
             <iframe
               src={`${siteConfig.strategyMeetingUrl}?embed=true`}
-              title="Book your free strategy meeting"
+              title="Book your free practice audit"
               allow="payment"
               loading="lazy"
-              className="mt-5 block h-[520px] w-full rounded-xl border border-white/15"
+              className="mt-4 block h-[420px] w-full rounded-xl border border-white/15"
             />
           </div>
         }
       />
 
       <Section spacing="default">
-        <div id="request" className="scroll-mt-28">
-          <SectionHeader
-            eyebrow="No cost, no obligation"
-            title="What the session includes"
-            lede="A complimentary review of your digital presence, followed by a focused session with an Ekwa advisor. Here's what you get."
-          />
-          <div className="mt-10 grid items-start gap-10 lg:grid-cols-2">
-            <div>
-              <ul className="space-y-3">
-                {heroChecklist.map((c) => (
-                  <ChecklistItem key={c.title} icon={c.icon}>
-                    <span className="font-semibold text-ink-800">{c.title}.</span> {c.body}
-                  </ChecklistItem>
-                ))}
-              </ul>
-              <div className="mt-6 flex items-start gap-3 rounded-lg border border-line bg-canvas-subtle p-5">
-                <Clock className="mt-0.5 size-5 shrink-0 text-accent-600" aria-hidden />
-                <p className="text-body text-ink-600">
-                  <span className="font-semibold text-ink-800">4–5 hours of preparation.</span>{" "}
-                  The Ekwa team invests 4–5 hours researching your practice, your market, and
-                  your competitors before your call.
-                </p>
-              </div>
-            </div>
-            <div className="rounded-xl border border-line bg-canvas p-6 sm:p-8">
-              <h3 className="text-h3 font-normal">Book your free strategy meeting</h3>
-              <p className="mt-1 text-body text-ink-500">
-                About two minutes, no back-and-forth.
-              </p>
-              <div className="mt-6">
-                <ContactForm variant="analyze" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      <Section tone="subtle" spacing="default">
-        <SectionHeader
-          eyebrow="How it works"
-          title="From request to roadmap in a few business days"
-          align="center"
-        />
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {steps.map((s) => (
-            <IconCard
-              key={s.title}
-              icon={s.icon}
-              title={s.title}
-              body={s.body}
-              meta={
-                <span className="font-mono text-eyebrow uppercase text-ink-500">{s.meta}</span>
-              }
-            />
-          ))}
-        </div>
-      </Section>
-
-      <Section id="review" spacing="default" className="scroll-mt-24">
         <SectionHeader
           eyebrow="What we review"
-          title="A complete picture of your digital presence"
-          lede="Before the meeting, our team researches your practice the way a prospective patient would. In the session, we walk you through what we found."
+          title="What a practice audit"
+          titleDim="actually looks at."
+          lede="Before we meet, we research your practice the way a prospective patient would. In the session, we walk you through what we found."
         />
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          {focusAreas.map((a) => (
-            <IconCard key={a.title} icon={a.icon} title={a.title} body={a.body} />
+        <div className="mt-14 grid divide-y divide-line border-y border-line md:grid-cols-3 md:divide-x md:divide-y-0">
+          {auditCovers.map((a, i) => (
+            <div key={a.title} className="px-0 py-10 md:px-8 md:first:pl-0 md:last:pr-0">
+              <span className="font-mono text-eyebrow text-ink-300">[{i + 1}]</span>
+              <h3 className="mt-4 text-h4 font-normal">{a.title}</h3>
+              <p className="mt-3 text-body text-ink-500">{a.body}</p>
+            </div>
           ))}
         </div>
       </Section>
 
-      <Section tone="subtle" spacing="default">
-        <SectionHeader
-          eyebrow="In your session"
-          title="What you'll learn"
-          lede="Every session ends with specific answers to the questions that matter most for your practice."
+      {/* Request panel on the one gradient OBA permits — the hero lobe, STEEL→INK900
+          at the fixed stops (brand ch.1: "any other gradient is not OBA"). The 18px
+          dot field sits *under* the glass, which is what the backdrop blur acts on;
+          over a bare gradient the blur would be invisible. */}
+      <section className="relative overflow-hidden bg-ink-900 py-16 sm:py-20 lg:py-28">
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{ background: "var(--gradient-hero)" }}
         />
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          {sessionOutcomes.map((o, i) => (
-            <IconCard
-              key={o.title}
-              icon={o.icon}
-              title={o.title}
-              body={o.body}
-              className={i === sessionOutcomes.length - 1 ? "md:col-span-2" : undefined}
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-30"
+          style={{ background: "var(--gradient-hero-glow)" }}
+        />
+        <div aria-hidden className="dot-field absolute inset-0" />
+        <Container size="narrow" className="relative">
+          <div id="request" className="scroll-mt-28">
+            <SectionHeader
+              tone="light"
+              align="center"
+              eyebrow="No cost, no obligation"
+              title="Request your"
+              titleDim="practice audit"
+              lede="Two minutes. Your practice, your website, and what you want fixed first."
             />
-          ))}
-        </div>
-      </Section>
+            <div className="mt-10 rounded-(--radius-brand) border border-white/12 bg-white/[0.07] p-8 backdrop-blur-xl sm:p-10 lg:p-12">
+              <ContactForm variant="analyze" tone="onDark" />
+            </div>
+          </div>
+        </Container>
+      </section>
 
-      <Section tone="ink" spacing="default">
+      {/* CHIPBG light well with the 18px dot field (guidelines ch.5). The band
+          sits between the dark form above and the white FAQ below, so the
+          hairline edges plus the texture are what give it its own footing. */}
+      <Section
+        tone="chip"
+        spacing="default"
+        className="dot-field-light border-y border-line"
+      >
         <SectionHeader
-          tone="light"
           align="center"
           eyebrow="The team behind it"
-          title="Marketing that medical practices trust"
-          lede="Ekwa Marketing has spent more than 16 years helping medical practices grow. Here's what that experience means for your practice."
+          title="Marketing that medical"
+          titleDim="practices trust."
+          lede="Ekwa Marketing has spent more than 16 years helping medical practices grow."
+          // SectionHeader's eyebrow and lede both default to ink-500, which
+          // measures 4.39:1 on CHIPBG — under AA at the eyebrow's 12px and at
+          // the lede's 18px floor. ink-600 takes both to 6.5:1.
+          className="[&>span:first-child]:text-ink-600 [&>p]:text-ink-600"
         />
-        <dl className="mt-12 grid grid-cols-1 divide-y divide-white/15 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+        <dl className="mt-12 grid grid-cols-1 divide-y divide-line sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           {stats.map((s) => (
             <div key={s.l} className="px-6 py-10 text-center">
-              <dt className="text-h1 font-light tracking-tight text-white">
+              <dt className="text-h1 font-light tracking-tight text-ink-900">
                 <AnimatedStat value={s.n} />
               </dt>
-              <dd className="mt-1 text-small text-white/65">{s.l}</dd>
+              {/* ink-600, not ink-500: the paler grey measures 4.4:1 on CHIPBG. */}
+              <dd className="mt-1 text-small text-ink-600">{s.l}</dd>
             </div>
           ))}
         </dl>
       </Section>
 
-      <Section spacing="default">
-        <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
-          <div>
-            <SectionHeader
-              eyebrow="Who we are"
-              title="The team behind your growth"
-              lede="Powered by Ekwa Marketing, the practice-marketing firm led by OBA's founder, Naren Arulrajah. We help medical practices, including ophthalmology, build stronger digital presences."
-            />
-            <ul className="mt-8 space-y-3">
-              {ekwaBullets.map((b) => (
-                <ChecklistItem key={b} icon={BadgeCheck}>
-                  {b}
-                </ChecklistItem>
-              ))}
-            </ul>
-          </div>
-          <div className="rounded-xl border border-line bg-canvas-subtle p-6 sm:p-8">
-            <Eyebrow>A note on transparency</Eyebrow>
-            <p className="mt-4 text-body text-ink-600">
-              This is a commercial service offered alongside OBA; it is not part of the
-              academy&apos;s educational content, and no OBA conversation promotes it. OBA&apos;s
-              panels, podcasts, and webinars stay non-promotional by design.
-            </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <Button href="https://www.ekwa.com" variant="primary" size="md">
-                Explore Ekwa Marketing
-              </Button>
-              <Button href="/about" variant="outline" size="md">
-                How OBA stays non-promotional
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      <Section tone="subtle" spacing="default" containerSize="narrow">
+      {/* Canvas, not subtle: #f4f6f7 against the CHIPBG band above would read as
+          one continuous surface. */}
+      <Section tone="canvas" spacing="default" containerSize="narrow">
         <SectionHeader eyebrow="Questions" title="Frequently asked" align="center" />
         <div className="mt-10">
           <FaqAccordion items={faqs} />

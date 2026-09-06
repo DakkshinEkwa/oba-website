@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { Section } from "@/components/ui/Section";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
-import { LibsynPlayer } from "@/components/content/LibsynPlayer";
+import { EpisodeHero } from "@/components/content/EpisodeHero";
 import { Markdown } from "@/components/content/Markdown";
 import { EpisodeCard } from "@/components/content/EpisodeCard";
+import { TranscriptPanel } from "@/components/content/TranscriptPanel";
 import { CTASection } from "@/components/marketing/CTASection";
-import { getAllEpisodes, getEpisodeBySlug, getHostBySlug, getRelatedEpisodes } from "@/lib/content";
-import { formatDate, isoDuration, metaDescription } from "@/lib/utils";
+import {
+  getAllEpisodes,
+  getEpisodeBySlug,
+  getHostBySlug,
+  getRelatedEpisodes,
+  getTranscriptBySlug,
+} from "@/lib/content";
+import { isoDuration, metaDescription } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/og/metadata";
 import { person, PODCAST_SERIES_ID } from "@/lib/jsonld";
@@ -48,6 +53,7 @@ export default async function EpisodePage({ params }: { params: Promise<{ slug: 
   if (!ep) notFound();
 
   const related = getRelatedEpisodes(slug, 3);
+  const transcript = getTranscriptBySlug(slug);
   const hosts = ep.hostSlugs
     .map((s) => getHostBySlug(s))
     .filter((h): h is Host => Boolean(h));
@@ -89,65 +95,63 @@ export default async function EpisodePage({ params }: { params: Promise<{ slug: 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Section spacing="tight" containerSize="narrow">
-        <Breadcrumbs
-          items={[
-            { label: "Home", href: "/" },
-            { label: "Podcast", href: "/podcast" },
-            { label: "Episodes", href: "/podcast/episodes" },
-            { label: ep.title },
-          ]}
-        />
-        <div className="mt-6 flex items-center gap-2 font-mono text-eyebrow uppercase text-ink-400">
-          {ep.episodeNumber ? <span>Episode {ep.episodeNumber}</span> : null}
-          {ep.episodeNumber ? <span aria-hidden>·</span> : null}
-          <time dateTime={ep.publishedAt}>{formatDate(ep.publishedAt)}</time>
-        </div>
-        <h1 className="mt-3 text-h1 font-light tracking-tight text-ink-900">{ep.title}</h1>
 
-        {ep.image ? (
-          <div className="relative mt-8 aspect-video overflow-hidden rounded-xl border border-line">
-            <Image
-              src={ep.image}
-              alt={ep.title}
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, 760px"
-              className="object-cover"
-            />
-          </div>
-        ) : null}
+      <EpisodeHero episode={ep} hosts={hosts} />
 
-        <div className="mt-8">
-          <LibsynPlayer audioUrl={ep.audioUrl} title={ep.title} episodeNumber={ep.episodeNumber} />
-        </div>
-
-        <div className="mt-10">
-          <Eyebrow>Show notes</Eyebrow>
-          <div className="mt-4">
+      <section className="bg-canvas py-16 sm:py-20 lg:py-24">
+        <Container>
+          <p className="font-mono text-eyebrow uppercase text-ink-500">Show notes</p>
+          <div className="mt-6 border-t border-line pt-8">
             <Markdown>{ep.body}</Markdown>
           </div>
-        </div>
 
-        <div className="mt-10 border-t border-line pt-8">
-          <Button href="/podcast/episodes" variant="ghost">
-            <ArrowLeft className="size-4" aria-hidden /> All episodes
-          </Button>
-        </div>
-      </Section>
+          {ep.tags.length ? (
+            <div className="mt-12 border-t border-line pt-8">
+              <p className="font-mono text-eyebrow uppercase text-ink-500">Topics</p>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {ep.tags.map((t) => (
+                  <li
+                    key={t}
+                    className="rounded-pill border border-line px-3 py-1 text-small text-ink-600"
+                  >
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {transcript ? (
+            <TranscriptPanel title={ep.title} slug={ep.slug} transcript={transcript} />
+          ) : null}
+
+          <div className="mt-16 border-t border-line pt-8">
+            <Button href="/podcast/episodes" variant="ghost">
+              <ArrowLeft className="size-4" aria-hidden /> All episodes
+            </Button>
+          </div>
+        </Container>
+      </section>
 
       {related.length > 0 ? (
         <Section tone="subtle" spacing="default">
-          <h2 className="text-h2 font-light">More episodes</h2>
-          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <p className="font-mono text-eyebrow uppercase text-ink-500">Keep listening</p>
+          <h2 className="mt-4 text-h2 font-light tracking-tight">
+            More from the podcast
+          </h2>
+          <div className="panel-grid mt-10">
             {related.map((r) => (
-              <EpisodeCard key={r.slug} episode={r} />
+              <EpisodeCard key={r.slug} episode={r} variant="panel" />
             ))}
           </div>
         </Section>
       ) : null}
 
-      <CTASection />
+      {/* One ask. The episode page is first-touch content, so the next episode
+          above is the smallest next commitment and the band carries the single
+          macro CTA — its usual "Browse Episodes" secondary would be a second
+          ask for something the reader has just been offered. */}
+      <CTASection secondary={null} />
     </>
   );
 }

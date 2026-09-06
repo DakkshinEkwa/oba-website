@@ -62,7 +62,7 @@ export default function EventsPage() {
             icon={CalendarDays}
             title="No events are currently scheduled"
             body="Newsletter subscribers hear about new panels first. In the meantime, the conversation library is open."
-            action={{ label: "Join the Newsletter", href: "/resources/newsletter" }}
+            action={{ label: "Join the Newsletter", href: "#newsletter" }}
           />
         ) : (
           <>

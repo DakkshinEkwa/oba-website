@@ -9,39 +9,6 @@ import type { FaqItem } from "@/components/ui/Accordion";
  * someone would actually ask them, since these blocks exist to be quoted.
  */
 
-export const SPEAK_FAQS: FaqItem[] = [
-  {
-    question: "Who can speak on the Ophthalmology Business Podcast?",
-    answer:
-      "Anyone with firsthand experience of a business problem in eye care: practice owners and partners, administrators and operations leaders, physicians and subspecialists, and industry experts who work closely with practices. What matters is that you have made the decision being discussed, not that you hold a particular title.",
-  },
-  {
-    question: "Does it cost anything to be a guest?",
-    answer:
-      "No. Speaking is never purchased and there is no fee in either direction. Contributors are invited for their experience, and a commercial relationship with OBA neither helps nor hinders an invitation.",
-  },
-  {
-    question: "What is actually involved in recording an episode?",
-    answer:
-      "A conversation with one of the hosts, recorded remotely. There is no script and no slide deck. You will know the subject and the questions the host wants to explore beforehand, and the discussion follows wherever your experience leads.",
-  },
-  {
-    question: "Can I promote my company or product on the episode?",
-    answer:
-      "No. Conversations are editorial and non-promotional by design. Your role, company, and expertise are introduced so listeners understand your perspective, but the discussion stays on the problem and how you approached it.",
-  },
-  {
-    question: "What makes a good episode topic?",
-    answer:
-      "A specific decision with real trade-offs: what you chose, what it cost, what you would do differently. Topics that work well include premium conversion, office-based surgery, co-management, private equity, staffing, and building a subspecialty service line.",
-  },
-  {
-    question: "How do I put myself forward as a speaker?",
-    answer:
-      "Share your area of expertise through the form on the speaker page. Describe the problem you have navigated and what you learned; a member of the OBA team will follow up to discuss whether it fits an upcoming conversation.",
-  },
-];
-
 export const PARTNERSHIP_FAQS: FaqItem[] = [
   {
     question: "What does a partnership with OBA involve?",
@@ -71,7 +38,7 @@ export const PARTNERSHIP_FAQS: FaqItem[] = [
   {
     question: "How does a partnership conversation start?",
     answer:
-      "Through the form on the partnerships page. Describe your organization and what you would want to support, and the OBA team will follow up to talk through whether the standards fit both sides.",
+      "Through the partnership form on the contact page. Describe your organization and what you would want to support, and the OBA team will follow up to talk through whether the standards fit both sides.",
   },
 ];
 
@@ -89,7 +56,9 @@ export const ABOUT_FAQS: FaqItem[] = [
   {
     question: "What is OBA's relationship with Ekwa Marketing?",
     answer:
-      "OBA was founded by Naren Arulrajah, who is also CEO of Ekwa Marketing, a practice-marketing firm. Ekwa provides the complimentary marketing analysis offered on the marketing page and authored the free downloadable resources. Those are commercial services offered alongside OBA, and they are never promoted inside the academy's conversations.",
+      // Self-contained on purpose: this answer is extracted into FAQPage JSON-LD
+      // and can surface in search results detached from the page around it.
+      "OBA was founded by Naren Arulrajah, who is also CEO of the practice-marketing firm Ekwa Marketing. Ekwa provides the complimentary analysis offered on the marketing page and authored the free downloadable guides. Both are labeled as commercial services and are never promoted inside the academy's conversations.",
   },
   {
     question: "Does it cost anything to access OBA's content?",

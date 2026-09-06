@@ -38,7 +38,7 @@ export default function HostsPage() {
       />
       <DarkHero
         size="band"
-        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Podcast", href: "/podcast" }, { label: "Hosts" }]}
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Podcast", href: "/podcast/episodes" }, { label: "Hosts" }]}
         eyebrow="The people behind the show"
         eyebrowDot
         title="Hosts & regular"

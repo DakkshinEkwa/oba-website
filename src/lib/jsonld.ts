@@ -9,7 +9,7 @@ import { siteConfig } from "@/lib/site";
 /** Stable node ids so every entity on the site joins one graph. */
 export const ORG_ID = `${siteConfig.url}/#organization`;
 export const WEBSITE_ID = `${siteConfig.url}/#website`;
-export const PODCAST_SERIES_ID = `${siteConfig.url}/podcast#series`;
+export const PODCAST_SERIES_ID = `${siteConfig.url}/podcast/episodes#series`;
 
 /**
  * Topics OBA demonstrably covers, drawn from the episode catalogue rather than
@@ -202,14 +202,14 @@ export function eventJsonLd(event: Event) {
   };
 }
 
-/** Full PodcastSeries entity for the podcast hub page. */
+/** Full PodcastSeries entity for the episode archive, the podcast hub page. */
 export function podcastSeriesJsonLd(hosts: Host[], description: string) {
   return {
     "@context": "https://schema.org",
     "@type": "PodcastSeries",
     "@id": PODCAST_SERIES_ID,
     name: "The Ophthalmology Business Podcast",
-    url: `${siteConfig.url}/podcast`,
+    url: `${siteConfig.url}/podcast/episodes`,
     description,
     inLanguage: "en",
     genre: "Business",
