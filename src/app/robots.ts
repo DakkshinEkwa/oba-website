@@ -22,6 +22,11 @@ const AI_CRAWLERS = [
   // Perplexity
   "PerplexityBot",
   "Perplexity-User",
+  // Apple: Applebot is the crawler that actually fetches pages (Siri, Spotlight
+  // and Apple Intelligence retrieval); Applebot-Extended is only the AI opt-in
+  // token. Listing the token without the crawler opts in to a fetch that never
+  // happens, so both are named.
+  "Applebot",
   // Google / Apple AI grounding opt-in tokens
   "Google-Extended",
   "Applebot-Extended",

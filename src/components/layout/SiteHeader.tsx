@@ -27,6 +27,8 @@ const DARK_HERO_ROUTES = [
   /^\/about$/,
   /^\/speak$/,
   /^\/resources\/events$/,
+  // Single-segment only, so it matches a panel page but not the index above.
+  /^\/resources\/events\/[^/]+$/,
   /^\/msm$/,
 ];
 

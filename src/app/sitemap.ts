@@ -88,7 +88,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
   for (const e of getAllEvents()) {
     entries.push({
       url: `${base}/resources/events/${e.slug}`,
+      // `startDate` is the real, authored date this page is about — not invented,
+      // which is the only bar `lastModified` has to clear here.
+      lastModified: e.startDate,
       changeFrequency: "monthly",
+      priority: 0.5,
+    });
+  }
+
+  /**
+   * The agent index. It is a real, indexable text document with no `noindex`,
+   * and until now it was reachable only by a crawler guessing the well-known
+   * filename — nothing on the site linked it. The OKF bundle and the `/md`
+   * mirrors stay out: they carry `X-Robots-Tag: noindex` and are alternate
+   * representations of pages already listed above, not separate documents.
+   */
+  for (const path of ["/llms.txt", "/llms-full.txt"]) {
+    entries.push({
+      url: `${base}${path}`,
+      lastModified: newestOverall,
+      changeFrequency: "weekly",
       priority: 0.5,
     });
   }

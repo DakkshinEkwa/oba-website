@@ -12,7 +12,7 @@ jobs:
   publish:
     if: ${{ secrets.EPISODE_SHEET_CSV_URL != '' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,37 +20,12 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - name: Import new rows from Google Sheet
+      # Transcripts are authored by hand in the same sheet and written by this
+      # step, so there is no separate transcription job.
+      - name: Import new rows and transcripts from Google Sheet
         env:
           EPISODE_SHEET_CSV_URL: ${{ secrets.EPISODE_SHEET_CSV_URL }}
         run: npx tsx scripts/publish/from-sheet.ts
-      - name: Count imported episodes
-        id: imported
-        run: |
-          file="scripts/publish/.cache/imported-slugs.json"
-          if [ -f "$file" ]; then
-            echo "count=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$file','utf8')).length)")" >> "$GITHUB_OUTPUT"
-          else
-            echo "count=0" >> "$GITHUB_OUTPUT"
-          fi
-      - uses: actions/setup-python@v5
-        if: steps.imported.outputs.count != '0'
-        with:
-          python-version: "3.11"
-      - name: Install WhisperX
-        if: steps.imported.outputs.count != '0'
-        continue-on-error: true
-        run: |
-          pip install -U torch torchaudio --index-url https://download.pytorch.org/whl/cpu
-          pip install -U whisperx
-      - name: Transcribe newly imported episodes
-        if: steps.imported.outputs.count != '0'
-        continue-on-error: true
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          WHISPER_MODEL: small
-          WHISPER_COMPUTE: int8
-        run: npx tsx scripts/publish/transcribe.ts
       - name: Commit published content
         run: |
           git config user.name "github-actions[bot]"

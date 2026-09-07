@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "publish:episodes": "tsx scripts/publish/from-sheet.ts",
-    "publish:transcripts": "tsx scripts/publish/transcribe.ts"
+    "publish:episodes": "tsx scripts/publish/from-sheet.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
@@ -46,6 +45,7 @@
     "eslint-config-next": "16.2.10",
     "p-limit": "^7.3.0",
     "playwright": "^1.61.1",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "topojson-client": "^3.1.0",
     "tsx": "^4.23.0",

@@ -7,7 +7,7 @@ const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
       "font-size": [
-        { text: ["display", "h1", "h2", "h3", "lede", "body-lg", "body", "small", "eyebrow"] },
+        { text: ["display", "h1", "h2", "h3", "h4", "lede", "body-lg", "body", "small", "eyebrow", "micro"] },
       ],
     },
   },
@@ -210,4 +210,18 @@ export function personSlug(name: string): string {
     )
     .filter(Boolean)
     .join("-");
+}
+
+/**
+ * A person's monogram — the first letters of the two identifying tokens.
+ *
+ * Shares `nameTokens()` with the headshot resolver on purpose: a monogram and
+ * a filename must never disagree about who a name refers to. Used by every
+ * portrait tile that can fall through to the designed no-photo state.
+ */
+export function initials(name: string): string {
+  return nameTokens(name)
+    .slice(0, 2)
+    .map((w) => w[0]!.toUpperCase())
+    .join("");
 }

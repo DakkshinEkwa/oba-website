@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { OG_BG, OG_SIZE } from "./size";
+import { OG_GRADIENT, OG_SIZE } from "./size";
 
 export function BrandOgCard({ logoSrc }: { logoSrc: string }) {
   return (
@@ -10,7 +10,7 @@ export function BrandOgCard({ logoSrc }: { logoSrc: string }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: OG_BG,
+        background: OG_GRADIENT,
         padding: 80,
       }}
     >
@@ -56,7 +56,7 @@ export function DocumentOgCard({
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        background: OG_BG,
+        background: OG_GRADIENT,
         padding: 80,
       }}
     >

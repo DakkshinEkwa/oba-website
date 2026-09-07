@@ -32,16 +32,23 @@ export function TranscriptPanel({
         <CopyMarkdownButton markdown={markdown} />
       </div>
       <ol className="mt-6 space-y-5">
-        {transcript.segments.map((seg, i) => (
-          <li key={`${seg.startSec}-${i}`}>
+        {transcript.segments.map((seg, i) => {
+          const at = formatTimestamp(seg.startSec);
+          return (
+          <li key={`${seg.startSec ?? "t"}-${i}`}>
             <p className="font-mono text-eyebrow uppercase text-ink-400">
-              {formatTimestamp(seg.startSec)}
-              <span aria-hidden> · </span>
+              {at ? (
+                <>
+                  {at}
+                  <span aria-hidden> · </span>
+                </>
+              ) : null}
               {speakerLabel(transcript, seg.speaker)}
             </p>
             <p className="mt-1 text-body text-ink-700">{seg.text}</p>
           </li>
-        ))}
+          );
+        })}
       </ol>
     </section>
   );

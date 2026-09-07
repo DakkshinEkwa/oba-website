@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { cn, nameTokens } from "@/lib/utils";
+import { cn, initials } from "@/lib/utils";
 import { headshotFor } from "@/lib/content";
 import type { Host } from "@/lib/schemas";
 
@@ -70,13 +70,4 @@ export function EpisodePortraits({ people }: { people: Person[] }) {
       ))}
     </ul>
   );
-}
-
-/** First letters of the two identifying tokens — sharing nameTokens() with the
- *  headshot resolver, so a monogram and a filename never disagree on a name. */
-function initials(name: string): string {
-  return nameTokens(name)
-    .slice(0, 2)
-    .map((w) => w[0]!.toUpperCase())
-    .join("");
 }

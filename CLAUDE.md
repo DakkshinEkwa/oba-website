@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+> **Start with [`HANDOVER.md`](HANDOVER.md).** It carries the current state of the project, what is
+> safe to change, what will bite you, and who owns the open items. This file covers conventions;
+> `HANDOVER.md` covers where things actually stand.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 `AGENTS.md` is the condensed sibling of this file (for OpenCode). Keep the two in sync when
@@ -26,6 +30,9 @@ Gotchas:
 ```bash
 npx tsx scripts/scrape/episodes.ts   # → src/content/episodes/*.mdx + public/images/episodes
 npx tsx scripts/scrape/blog.ts       # → src/content/blog/*.mdx + public/images/blog
+
+# Sheet sync: new episodes AND transcripts for already-published ones.
+EPISODE_SHEET_CSV_URL="<csv export url>" npm run publish:episodes
 ```
 
 `scripts/generate-landmask.ts` is the same kind of one-off tool: it rasterizes Natural Earth
@@ -35,6 +42,28 @@ to change resolution or source data. Its `world-atlas` / `topojson-client` deps 
 
 ```bash
 npx tsx scripts/generate-landmask.ts
+```
+
+`scripts/generate-brand-icons.ts` is likewise one-off: it derives every square brand raster from
+the committed logo — the app icons (`src/app/icon.png`, `apple-icon.png`), the manifest icons,
+`oba-logo-square.png` (Organization JSON-LD), and `podcast-artwork.png` (the feed's
+`itunes:image`). The logo is a 3.59:1 lockup, so anything square uses the **eye glyph alone**; only
+`oba-logo-square.png` keeps the full lockup. The script locates the glyph by finding the alpha
+gutter at runtime and throws if it moves, so a logo swap fails loudly rather than cropping wrong.
+
+**Ground: the white mark on the hero gradient**, the same tile the OG cards use — `heroGradientSvg()`
+reproduces `--gradient-hero` as an SVG (the CSS ellipse becomes an SVG circle scaled about its
+centre), so the icons stand on the ground the CSS paints. Sources follow from that: glyph crops read
+`oba-logo-white.png`, and the glyph box is derived from that same file so the gutter assertion guards
+the artwork actually being cropped. The one exception is `oba-logo-square.png` — the full colour
+lockup on white, because Google renders `Organization.logo` on light knowledge-panel cards.
+sharp has no ICO encoder, so `src/app/favicon.ico` is packed separately from the `.icon-src/` PNGs
+(16/32/48 only — ImageMagick writes ICO entries as raw BMP, and a 256px entry costs 270KB for a
+size no browser reads).
+
+```bash
+npx tsx scripts/generate-brand-icons.ts
+magick public/images/.icon-src/{16,32,48}.png src/app/favicon.ico
 ```
 
 ## Architecture
@@ -97,6 +126,119 @@ survives effect re-runs while the DOM resets and no portrait ever shows; and the
 is loose with the result clamped, since exact margins let each pin qualify for only ~2s per
 87s rotation. The globe has no controls, so the names are carried in an `sr-only` list.
 
+**Panel pages (`/resources/events/[slug]`) are a content-driven template.** One route renders
+every entry in `events.json` at whatever depth its content supports: each section is switched on
+by its own field and renders nothing when that field is empty, so a bare `slug`/`title`/
+`startDate` entry gets the short honest page it always had, while a fully described event gets a
+registration landing page. Adding or upgrading a panel is editing JSON — never a code change per
+event. The optional "landing-page layer" in `eventSchema` is `startDateTime`, `startTime`,
+`format`, `lede`, `aboutTitle`, `about[]`, `topics[]`, `audience[]`, `panelists[]` and
+`registrationNote`. **Nothing is invented to fill a gap** — an event with no announced panelists
+shows no panelist section rather than a placeholder, which is the same rule the rest of the site
+follows.
+
+`registrationUrl` is always an **outbound link** and this page never posts a form: signups live
+on the registration host (`reg.obacademy.org`), which owns the list, so repointing an event is
+one JSON field. `FeaturedEventCard` deliberately links to the panel page and *not* straight to
+`registrationUrl` — the panel page is the landing page, and it carries the register link itself.
+A panel whose start instant is behind the build drops both register CTAs (`isPast`, computed
+from the module-level `BUILT_AT_MS`, because a render must stay pure).
+
+`EventCountdown` is the site's only clock. It is a
+`useSyncExternalStore` subscription to one shared 1s interval: `getServerSnapshot` returns 0, so
+the static HTML and the first client paint both render em-dash placeholders and the real figures
+arrive after hydration — a countdown computed at build time would be wrong the moment the page
+was cached. **The per-second tick is not an exception to the no-motion rule** — it is the value
+changing, which is why `prefers-reduced-motion` is deliberately not consulted here (the
+alternative is a clock that lies). The digit grid is `aria-hidden` with one `sr-only` sentence
+beside it; a live region on a per-second clock would make the page unusable. Past the start
+instant it renders a line, not a row of zeroes, and it does so live.
+
+**Both content sections speak the homepage's design language, not their own.** The topics band is
+`ProblemAreas`' pattern — hairlines drawn in the grid (`divide-y divide-line border-y border-line`)
+rather than on cards, bracketed mono counters (`[1]`), and a centred two-tone `SectionHeader`, the
+way every homepage content band is set. It runs two columns where the homepage runs four, because
+these topics are ~40 words against its ~15 and four would set them at a 28-character measure. The
+cell padding is `odd:pl-0 / even:pr-0`, not `first:/last:` — the homepage band is a single row of
+four, this one wraps to 2x2, where every odd cell is in column one.
+
+`EventPanelists` is `StatBento`'s light tile — `rounded-2xl`, hairline border, the
+`accent-50 → accent-100` gradient — on a `bento-grid`, so the separator hairlines fall in the gaps
+instead of on the cards. `bento-cell` only works inside `bento-grid`, whose `overflow: hidden`
+clips the half-gap that would otherwise poke past the last row. The content inside is
+`SpeakerCard`'s: a square `rounded-xl` portrait beside the name, which is the light-ground people
+idiom everywhere on this site (`HostCard` uses the same square) — the 4:5 `--radius-tile` portrait
+belongs to the dark episode hero and is a borrowed accent here. A slate version of this tile was
+tried and reverted: these sit in a light `Section`, and a dark band of four cards took the page
+over.
+
+**The tile ground is what lets these be a grid at all.** Panel bios vary in length by a factor of
+two, and an earlier pass laid them out as bare text blocks in a grid: the short ones left holes and
+the section read as ragged, which is why it briefly became a divided list. A filled tile turns the
+same height-matching into the bento's own rhythm. Don't strip the tile ground and keep the grid.
+
+**The tiles disclose, the way `SpeakerCard` does**: a tile shows the person and expands to the
+bio. `headshotFor()` reads the filesystem, so the split is `EventPanelists` (server: resolves each
+name to a headshot path) → `EventPanelistGrid` (`"use client"`: the tiles and the open state). The
+disclosure is hand-rolled rather than Radix for `SpeakerCard`'s reason — the bio is content and has
+to stay in the static HTML whether the tile is open or not, so collapsed content is clipped by a
+`0fr` grid row (animatable, unlike `height: auto`) and marked `inert`, which takes it out of the
+tab order and the accessibility tree without removing it from the document. The `Plus` that turns
+45° is `FaqAccordion`'s. A button's content model is phrasing content, so the heading sits outside
+it (`h3 > button`) and the lines inside are spans; a panelist with **no bio** has nothing to
+disclose and gets a plain header with the real `h3`/`p` elements, not a dead button.
+
+Open state lives in the grid, not the tile, because opening one tile opens its whole row —
+otherwise the bento is left with one tall card beside a short one, which is the raggedness the tile
+ground exists to prevent. That needs the column count, which only CSS knows, so the grid classes
+and the `(min-width: 640px)` query mirroring them are declared together and must change together;
+a breakpoint change closes whatever was open, since a row index means something else at a
+different column count. Nothing is open on first paint, so SSR and hydration agree.
+
+The bio sits in its own inset pane rather than loose under a hairline: `rounded-(--radius-md)
+border-line bg-canvas`, the site's inset-cell treatment on a light ground (`EventCountdown`'s digit
+cells), and white on the tile's pale steel is what makes the disclosed content read as a second
+surface inside the card. The pane stretches to the tile's bottom padding — the disclosure wrapper
+is `flex-auto` and the pane `flex-1` — because a row opens as one band and its tiles are
+height-matched to the longest bio, so without it the shorter card ends in a band of bare steel
+below a floating edge. `flex-auto`, not `flex-1`: a basis of 0 would drop the bio out of the tile's
+intrinsic height and collapse it to the header. Closed, the `0fr` row takes none of that space and
+the bio stays clipped at zero.
+
+Portrait size is deliberate rather than timid, for the reason `HostCard` already documents: the
+source headshots were shot against unrelated backgrounds (white studio, office, flat charcoal,
+one saturated magenta), so they never read as one set, and **the larger the face, the louder the
+background behind it**; `object-top` keeps the crop on the face. Panelists carry no image field —
+they resolve by name through the same exact-match `headshotFor()` the episode portraits use, so
+dropping `first-last.jpg` into `public/images/headshots/` is the whole of "adding a photo", and a
+miss falls through to `SpeakerCard`'s frosted slate monogram, the one fallback that still reads on
+a pale tile.
+
+**The hero follows the registration page's order**, in this site's materials rather than its:
+eyebrow → `EventFactsStrip` (Date / Time / Format / Location as frosted chips, so the facts land
+*before* the claim) → h1 → lede → `EventHeroPanelists` (face, name, role — the line-up is the offer
+on a panel page, so it is not made scroll-bound) → `EventCountdown` → `EventRegisterCard` holding
+the right half. `DarkHero` gained two optional props for this: `meta` (a row between the eyebrow
+and the h1) and `asideAlign="start"` — plus an `lg:mt-28` on the aside itself, because the copy
+column starts a breadcrumb row lower and a top-aligned card would otherwise float above the eyebrow
+it should sit level with.
+
+`EventRegisterCard` holds the slot the registration page gives its sign-up form. This site never
+posts that form — the list lives on `reg.obacademy.org` — so the card carries the ask instead:
+what it costs, what you get (`registrationNote`, authored), and the button. **Nothing about seats
+or scarcity is invented.** The hero's own action row therefore keeps only "All Panels": a second
+Register button beside the card would be the same ask twice in one viewport. A past panel renders
+no card at all rather than a dead button. It takes the bento radius and the top sheen but keeps a
+flat `ink-800` fill rather than `--gradient-hero`: the hero behind it is already that gradient, and
+a gradient tile on a gradient ground loses its edge. (The `StatBento` slate tile can use the
+gradient because it sits on white.)
+
+Every one of those pieces is conditional, so the six bare title+date events still render the short
+honest page they always had: no chips (the strip needs a second fact to be worth a row), no
+line-up, no clock, no card. `EventHeroPanelists` is a two-column grid rather than a wrapped flex
+row — names and roles vary in length by a factor of two, and a flex row broke unevenly, one person
+on one line and two sharing the next.
+
 **Episode pages (`/podcast/episodes/[slug]`)** are the one part of the site built as brand
 artwork rather than site UI, per `design/brand-guidelines.md`. `EpisodeHero` stands on `PAGEBG`
 (the design system's dark *post* ground, not the site's ink-900 marketing ground) under the 18px
@@ -132,12 +274,49 @@ saturated color). Fonts: Inter, IBM Plex Mono (eyebrow labels). Visual reference
 **SEO / metadata:** every page's `metadata` goes through `pageMetadata()` in
 `src/lib/og/metadata.ts` (title, description, canonical, OG, Twitter). Structured data helpers
 live in `src/lib/jsonld.ts` (breadcrumb, FAQ, event, podcast series, person). OG images are
-generated at build time by `opengraph-image.tsx` route files (site root, blog post, episode)
-using the shared card/render helpers in `src/lib/og/`. RSS is `src/app/feed.xml`;
+generated at build time by `opengraph-image.tsx` route files (site root, blog post, episode,
+event) using the shared card/render helpers in `src/lib/og/`. Both cards are the white lockup on
+`OG_GRADIENT` — `--gradient-hero` transcribed into `src/lib/og/size.ts`, which satori renders
+verbatim. `OG_BG` is that gradient's terminal stop and remains the value wherever only a flat colour
+is possible (`theme-color`, the manifest, the opaque flatten behind generated rasters). A page that wants its segment's
+own card must pass `image: "route"` to `pageMetadata()` — otherwise the site-wide brand card
+wins, since Next merges the file-convention image only when `openGraph.images` is absent.
+Two pages deliberately sit outside this: `/styleguide` uses `pageMetadata`'s `noindex`, and
+`not-found.tsx` hand-rolls its metadata because `pageMetadata` always sets a canonical and a 404
+must have none. Icons (`icon.png`, `apple-icon.png`, `favicon.ico`), `manifest.ts` and the
+`theme-color` viewport export complete the set; their rasters come from
+`scripts/generate-brand-icons.ts`. RSS is `src/app/feed.xml`;
 `sitemap.ts`/`robots.ts` are in `src/app/`. Legacy WordPress URLs and live-site aliases
 (`/analyze` → `/msm`, `/marketing` → `/msm`, `/guest-speaker` → `/speak`) and the routes
 removed since (webinars, newsletter, `/faq`, `/podcast`, `/partnerships`, `/membership`,
 `/reviews`) are 301-redirected in `next.config.ts`. Legal pages: `/privacy`, `/terms`.
+
+**The agent layer (`src/lib/agent/`) is the machine-readable half of the site**, and it is generated
+from `src/content` the same way the pages are, so it cannot drift from them. Surfaces:
+`llms.txt`, `llms-full.txt`, the OKF bundle (`/okf/*`, 94 cross-linked Markdown files), a plain-
+Markdown mirror of every episode and post at `<path>/md`, and a full transcript at
+`/podcast/episodes/<slug>/transcript.md` for episodes that have one. Everything flows through the
+`AgentItem` shape in `src/lib/agent/content.ts`.
+
+**`AgentItem` is a public contract — extend it, never reshape it.** Crawlers cache and diff these
+files, so every observable field is a commitment; every field added after v1 is optional for that
+reason. Any *new* machine surface must be generated from `AgentItem` rather than hand-maintained.
+
+Two things there are load-bearing and easy to break. `pageMetadata()` must keep restating
+`alternates.types`: Next replaces `alternates` wholesale rather than merging it, so the root layout's
+RSS link is dropped from any page that sets its own canonical — which is every page, and it silently
+shipped that way. And `episodeItems()` / `okfBundle()` are rebuilt once per generated file, so
+transcript text and the bundle are memoized; removing that re-serializes the whole catalogue hundreds
+of times per build.
+
+**Transcripts are authored by hand in the episode Google Sheet**, never generated locally — WhisperX
+was evaluated and dropped. Paste the text into a `transcript` column and run `npm run publish:episodes`;
+`scripts/publish/transcript-text.ts` accepts the usual export shapes (`[00:12] Name: text`,
+`12:34 Name: text`, or bare `Name: text`) and timestamps are optional throughout. The importer syncs
+transcripts **independently of whether the episode already exists**, because all 75 are already
+published. `transcriptStatus` defaults to `reviewed`; set `machine` for un-read-through ASR output —
+the panel prints the distinction, and these are words attributed to named physicians.
+`docs/ai-seo.md` is the living record of this layer; `docs/seo-audit.md` covers classical search.
 
 ## Conventions & constraints
 
@@ -189,7 +368,9 @@ removed since (webinars, newsletter, `/faq`, `/podcast`, `/partnerships`, `/memb
   is stubbed with `// TODO`. `ContactForm` variants: `contact` | `analyze` | `speaker` |
   `partnership`. Don't wire backends unless asked.
 - Events have a Fall 2026 series in `src/content/events.json` and still keep an empty-state
-  fallback.
+  fallback. Only the Sept 17 OD-partnerships panel carries the full landing-page layer; the other
+  six are title + date, which the template renders honestly as a short page. They are not stubs
+  waiting to be filled with invented copy — fill them when the real details exist.
 - **Deleted pages — do not re-add:** the webinar archive and replays
   (`/resources/webinars`, and with them the webinar schema/loaders), the newsletter page
   (`/resources/newsletter`), the FAQ page (`/faq`), the podcast hub (`/podcast`),
@@ -226,7 +407,8 @@ sections honestly. Consult that doc before writing or changing any site copy.
 ## Audit status
 
 `docs/ui-audit.md` catalogs accessibility/design findings and `docs/seo-audit.md` the SEO ones;
-most remediation is committed (see `tasks/todo.md`). Two open items:
+most remediation is committed. `docs/ui-audit.md` is **stale** — re-verify before working it.
+Two open items:
 - **Nav dropdown keyboard access is intentionally deferred** — `SiteHeader` uses the legacy CSS
   hover-only menu (`group-hover`); submenus are not keyboard-reachable and the trigger has no
   `aria-expanded`. Don't "fix" this without confirming it's wanted.

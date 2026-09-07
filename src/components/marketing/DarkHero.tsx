@@ -18,6 +18,10 @@ type DarkHeroProps = {
   aside?: React.ReactNode;
   /** Wider aside column for embeds that need horizontal room (e.g. booking calendars). */
   asideWidth?: "narrow" | "wide";
+  /** Vertical placement of the aside. "start" when the copy column is much taller. */
+  asideAlign?: "center" | "start";
+  /** Optional row between the eyebrow and the h1 (e.g. an event's date/time/format chips). */
+  meta?: React.ReactNode;
   /** Optional content rendered directly under the lede, before children/CTA (e.g. waveform + stat row). */
   proof?: React.ReactNode;
   /** Optional bottom row (proof-by-numbers stat band). */
@@ -54,6 +58,8 @@ export function DarkHero({
   size = "full",
   aside,
   asideWidth = "narrow",
+  asideAlign = "center",
+  meta,
   proof,
   footer,
   containerSize = "wide",
@@ -92,10 +98,12 @@ export function DarkHero({
         <div
           className={cn(
             "min-w-0",
+            aside && "grid gap-12",
+            aside && (asideAlign === "start" ? "items-start" : "items-center"),
             aside &&
               (asideWidth === "wide"
-                ? "grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)]"
-                : "grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]"),
+                ? "lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)]"
+                : "lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]"),
           )}
         >
           <div className="max-w-2xl min-w-0 animate-fade-up">
@@ -105,7 +113,13 @@ export function DarkHero({
                 {eyebrow}
               </Eyebrow>
             ) : null}
-            <h1 className="mt-8 text-h1 font-light tracking-tight text-white">
+            {meta ? <div className="mt-8">{meta}</div> : null}
+            <h1
+              className={cn(
+                "text-h1 font-light tracking-tight text-white",
+                meta ? "mt-6" : "mt-8",
+              )}
+            >
               {title}
               {titleDim ? <span className="text-white/45"> {titleDim}</span> : null}
             </h1>

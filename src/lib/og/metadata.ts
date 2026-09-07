@@ -20,6 +20,8 @@ export function pageMetadata({
   tags,
   image = "brand",
   noindex = false,
+  markdown,
+  llmsIndex = false,
 }: {
   title: string;
   description: string;
@@ -38,6 +40,15 @@ export function pageMetadata({
    */
   image?: "brand" | "route";
   noindex?: boolean;
+  /**
+   * Path to this page's plain-Markdown mirror (the `/md` route convention), e.g.
+   * "/podcast/episodes/<slug>/md". Advertised as <link rel="alternate"
+   * type="text/markdown">, which is the only machine-discoverable pointer those
+   * routes have — nothing else in the site links an individual one.
+   */
+  markdown?: string;
+  /** Advertise /llms.txt from this page. Site-level, so only the homepage sets it. */
+  llmsIndex?: boolean;
 }): Metadata {
   const url = path === "/" ? siteConfig.url : `${siteConfig.url}${path}`;
   const images = image === "brand" ? [brandImage] : undefined;
@@ -45,7 +56,19 @@ export function pageMetadata({
   return {
     title,
     description,
-    alternates: { canonical: path },
+    /**
+     * `types` must be restated here, not inherited. Next replaces `alternates`
+     * wholesale rather than merging it, so the root layout's RSS link was being
+     * dropped from every page that called this helper — i.e. all of them.
+     */
+    alternates: {
+      canonical: path,
+      types: {
+        "application/rss+xml": `${siteConfig.url}/feed.xml`,
+        ...(markdown ? { "text/markdown": `${siteConfig.url}${markdown}` } : {}),
+        ...(llmsIndex ? { "text/plain": `${siteConfig.url}/llms.txt` } : {}),
+      },
+    },
     ...(noindex ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       type,

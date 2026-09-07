@@ -13,6 +13,7 @@ import {
   getAllFreeResources,
 } from "@/lib/content";
 import { pageMetadata } from "@/lib/og/metadata";
+import { pageJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Expert Insights Hub",
@@ -58,6 +59,20 @@ export default function ResourcesPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            pageJsonLd({
+              type: "CollectionPage",
+              name: "Expert Insights Hub",
+              description:
+                "Podcasts, articles, guides, and events: every OB Academy resource for growing your ophthalmology practice, in one place.",
+              path: "/resources",
+            }),
+          ),
+        }}
+      />
       <DarkHero
         size="band"
         containerSize="default"

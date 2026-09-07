@@ -24,6 +24,7 @@ export function GET() {
   const stats = getEpisodeStats();
   const hosts = getAllHosts();
   const episodes = episodeItems();
+  const transcribed = episodes.filter((e) => e.alternates?.transcript).length;
   const articles = articleItems();
   const panels = panelItems();
   const resources = resourceItems();
@@ -72,6 +73,9 @@ ${notesForAiSystems().map((n) => `- ${n}`).join("\n")}
 - [RSS feed](${abs("/feed.xml")}): the podcast feed.
 - [Sitemap](${abs("/sitemap.xml")}): every indexable URL.
 - Every episode and article also serves plain Markdown at its path + \`/md\`, e.g. ${abs("/blog")}/<slug>/md.
+  Each page also declares that mirror as \`<link rel="alternate" type="text/markdown">\`.
+- Episodes with a published transcript serve the full verbatim text at their path + \`/transcript.md\`.
+  ${transcribed} of ${stats.count} episodes have one so far; llms-full.txt links each individually.
 `;
 
   return new Response(body, {

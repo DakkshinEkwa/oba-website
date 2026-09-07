@@ -39,7 +39,12 @@ function itemDocument(item: AgentItem, siblings: AgentItem[]): string {
     .filter((s) => s.kind === item.kind && s.slug !== item.slug)
     .slice(0, 5);
 
-  return [
+  /**
+   * Sections are `string | null`, and only `null` is dropped. An earlier version
+   * filtered on `!== ""`, which also deleted every intended blank line — so all
+   * 93 files shipped with the frontmatter, heading and body run together.
+   */
+  const sections: (string | null)[] = [
     frontmatter([
       ["type", OKF_TYPE[item.kind]],
       ["title", yaml(item.title)],
@@ -51,17 +56,39 @@ function itemDocument(item: AgentItem, siblings: AgentItem[]): string {
     "",
     `# ${item.title}`,
     "",
-    item.people.length ? `People: ${item.people.join(", ")}\n` : "",
+    // A markdown list, not a comma-join: names carry their own commas
+    // ("Sarah Duval, COE, COA"), so a joined line cannot be split back apart.
+    item.people.length
+      ? ["## People", "", ...item.people.map((p) => `- ${p}`), ""].join("\n")
+      : null,
+    metaList(item),
     (item.body ?? item.description).trim(),
     "",
     related.length
       ? ["## Related", "", ...related.map((r) => `- [${r.title}](./${fileName(r)})`), ""].join("\n")
-      : "",
+      : null,
     `[Back to index](./index.md)`,
     "",
-  ]
-    .filter((s) => s !== "")
-    .join("\n");
+  ];
+
+  return sections.filter((s): s is string => s !== null).join("\n");
+}
+
+/**
+ * Machine pointers an agent would otherwise have to guess: the audio file, the
+ * plain-Markdown mirror, and the full transcript when one exists. Rendered as a
+ * list so each is a separate, parseable line.
+ */
+function metaList(item: AgentItem): string | null {
+  const lines = [
+    item.audioUrl ? `- Audio: ${item.audioUrl}` : null,
+    item.fileUrl ? `- Download: ${abs(item.fileUrl)}` : null,
+    item.alternates?.markdown ? `- Markdown: ${abs(item.alternates.markdown)}` : null,
+    item.alternates?.transcript
+      ? `- Full transcript: ${abs(item.alternates.transcript)}`
+      : null,
+  ].filter((l): l is string => l !== null);
+  return lines.length ? ["## Source", "", ...lines, ""].join("\n") : null;
 }
 
 /** Bundle index: lets an agent see the shape before opening each file. */
@@ -108,13 +135,22 @@ function indexDocument(items: AgentItem[]): string {
   ].join("\n");
 }
 
-/** The whole bundle as a path → file-contents map. */
+/**
+ * The whole bundle as a path → file-contents map.
+ *
+ * Memoized: the route calls this once per generated file, so without the cache a
+ * build would re-serialize all 94 documents 94 times.
+ */
+let _bundle: Map<string, string> | null = null;
+
 export function okfBundle(): Map<string, string> {
+  if (_bundle) return _bundle;
   const items = allAgentItems();
   const files = new Map<string, string>();
   files.set("index.md", indexDocument(items));
   for (const item of items) {
     files.set(fileName(item), itemDocument(item, items));
   }
+  _bundle = files;
   return files;
 }

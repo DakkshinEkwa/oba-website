@@ -17,6 +17,14 @@ const nextConfig: NextConfig = {
   /**
    * Note: headers() requires a Node/Vercel-style host. On a pure static host
    * (e.g. GitHub Pages) these are dropped and must be set at the host instead.
+   *
+   * **The same is true of redirects() below, and that is the far more damaging
+   * half.** Every legacy WordPress URL the old site had indexed is preserved by
+   * a 301 in that map; on a static host all of them silently become 404s, and
+   * the `X-Robots-Tag: noindex` on the /okf and /md mirrors disappears too,
+   * turning ~180 alternate representations into indexable duplicate content.
+   * Deployment target is Vercel for exactly this reason — see docs/seo-audit.md
+   * F-01. Do not switch hosts without re-homing both maps.
    */
   async headers() {
     return [
@@ -83,5 +91,27 @@ const nextConfig: NextConfig = {
     ];
   },
 };
+
+/**
+ * Tripwire, not decoration.
+ *
+ * `output: "export"` produces a static bundle that silently discards both
+ * `redirects()` and `headers()` above. Nothing errors, nothing warns, and the
+ * build looks clean — you only find out when every legacy WordPress URL 404s in
+ * production and ~180 machine-readable mirrors lose their `noindex` and start
+ * competing with the pages they mirror.
+ *
+ * That failure is invisible locally and expensive to diagnose remotely, so it
+ * fails the build here instead. If a static host is genuinely required, the two
+ * maps must be re-homed onto that host first (see docs/deployment.md) — then
+ * remove this guard deliberately, not to make an error go away.
+ */
+if ((nextConfig as { output?: string }).output === "export") {
+  throw new Error(
+    "next.config.ts: output:'export' drops all 28 redirects() and every headers() rule, " +
+      "including X-Robots-Tag: noindex on /okf and /md. Re-home them on the host first. " +
+      "See docs/deployment.md.",
+  );
+}
 
 export default nextConfig;

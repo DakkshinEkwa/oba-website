@@ -41,7 +41,17 @@ export function EpisodesArchive({ page }: { page: number }) {
       />
       <DarkHero
         size="band"
-        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Episodes" }]}
+        breadcrumbs={
+          page <= 1
+            ? [{ label: "Home", href: "/" }, { label: "Episodes" }]
+            : // Pages 2+ used to emit page 1's trail verbatim, so every paginated
+              // page claimed to *be* the archive root. Name the page instead.
+              [
+                { label: "Home", href: "/" },
+                { label: "Episodes", href: "/podcast/episodes" },
+                { label: `Page ${page}` },
+              ]
+        }
         eyebrow="The Ophthalmology Business Podcast"
         eyebrowDot
         title="Every conversation,"

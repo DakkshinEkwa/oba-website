@@ -15,7 +15,12 @@ import { siteConfig } from "@/lib/site";
 const homeTitle = `${siteConfig.name} | The Business of Eye Care`;
 
 export const metadata = {
-  ...pageMetadata({ title: homeTitle, description: siteConfig.description, path: "/" }),
+  ...pageMetadata({
+    title: homeTitle,
+    description: siteConfig.description,
+    path: "/",
+    llmsIndex: true,
+  }),
   // The root layout sets a "%s · OB Academy" template; the homepage title is the
   // brand line itself, so it must opt out of the suffix.
   title: { absolute: homeTitle },
