@@ -61,6 +61,33 @@ sharp has no ICO encoder, so `src/app/favicon.ico` is packed separately from the
 (16/32/48 only — ImageMagick writes ICO entries as raw BMP, and a 256px entry costs 270KB for a
 size no browser reads).
 
+**The favicon is the one icon not cropped from the logo.** The glyph is four concentric bands —
+ring 262→312, ring 165→212, iris r114, at a ~50px stroke on a 778px glyph — so at 16–48px each
+band lands on ~1px and they fill in; `brand-guidelines.md` ch.8 says the same thing from the other
+side ("minimum on screen 1250 px wide"). `MARK` in the script is a purpose-drawn small-size
+version: every figure was *measured* off `oba-logo-white.png` (eye centre, both ring bands, the
+iris, the two circular edges the lash sweep runs between, and the pupil being a circle internally
+tangent to the iris — hence a notch that opens outward, not a hole), and the reduction is three
+moves only — drop the inner ring, open the remaining stroke 50→72, grow the iris 114→176. Nothing
+is re-typeset and no curve is invented, which is what keeps it inside ch.8's "use the file" rule.
+The **pupil is dropped at 16px** because the notch there eats enough of the iris that the disc
+reads as a "C"; 32 and 48 keep it, and Next declares the `.ico` as `sizes="48x48"`, so that is the
+entry most browsers actually pick. Everything larger — `icon.png`, `apple-icon.png`, the manifest
+icons, `podcast-artwork.png` — still carries the **full four-band glyph**, which is legible at
+those sizes; do not "unify" them onto the simplified mark without deciding that as a brand change.
+The script also writes `scripts/assets/oba-eye-mark.svg` from those same constants — the mark's
+first vector original, since `brand-guidelines.md` records that none exists. It is a build input
+and is deliberately **not served**, so it cannot be mistaken for the logo.
+
+The favicon tile is the **only** icon with rounded corners (`MARK_RADIUS`, 1/8 — whole pixels at
+all three ICO sizes: 16→2, 32→4, 48→6; a fractional radius at 16px spends its entire corner on
+antialiasing and reads as grime). It is therefore also the only icon that **keeps its alpha
+channel** — the corners must be transparent because the tile sits on browser chrome whose colour
+is unknown. Everything else stays square and opaque, each for its own reason: iOS masks
+`apple-icon.png` into its own ~22% superellipse and would clip a pre-rounded tile twice, Android
+crops the maskable manifest icon, and `podcast-artwork.png` / `oba-logo-square.png` are read as
+flat artwork by the podcast directories and Google.
+
 ```bash
 npx tsx scripts/generate-brand-icons.ts
 magick public/images/.icon-src/{16,32,48}.png src/app/favicon.ico
