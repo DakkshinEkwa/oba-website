@@ -1,54 +1,37 @@
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Button } from "@/components/ui/Button";
+import { EventRegisterForm } from "@/components/forms/EventRegisterForm";
 import type { Event } from "@/lib/schemas";
 
 /**
- * The hero aside: the registration card.
+ * The hero aside: the registration card, holding the same slot the
+ * registration page gives its sign-up form — eyebrow, title, sub-line, form.
  *
- * The registration page runs its sign-up form here, in the right half of the
- * hero, and the page is laid out around that card. This site does not post the
- * form — the list lives on `reg.obacademy.org`, so `registrationUrl` is an
- * outbound link and repointing an event is one JSON field — so the card holds
- * the same slot with the ask itself: what it costs, what you get, and the
- * button. Everything in it is authored copy from `events.json`; nothing about
- * seats or scarcity is invented.
+ * **White, not slate.** A form is the one thing on this page a visitor has to
+ * work in rather than read, and the light controls are the ones the rest of the
+ * site's forms use; a white card also lifts the ask off the gradient instead of
+ * asking it to compete with it — which is exactly what the registration page
+ * does with the same card. Its hairline is `line`, not `white/10`: the border
+ * belongs to the card's own light surface now.
  *
- * Flat `ink-800` rather than `--gradient-hero`: the hero behind it is already
- * that gradient, and a gradient card on a gradient ground loses its edge. The
- * page mounts this only when there is somewhere to register — a panel whose
- * start instant is behind the build renders no card at all rather than a dead
- * button.
+ * `registrationUrl` remains the record of where the list actually lives, and
+ * the form's payload is shaped to match that host (see `EventRegisterForm`);
+ * submission itself is stubbed, as every form on this site is.
+ *
+ * The page mounts this only when there is somewhere to register — a panel whose
+ * start instant is behind the build renders no card at all rather than a form
+ * for something that already happened.
  */
-export function EventRegisterCard({ event, href }: { event: Event; href: string }) {
+export function EventRegisterCard({ event }: { event: Event }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-ink-800 p-6 sm:p-8">
-      <span
-        aria-hidden
-        className="absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-white/[0.06] to-transparent"
-      />
-      <div className="relative">
-        <Eyebrow tone="onDark" dot>
-          Save your seat
-        </Eyebrow>
-        <p className="mt-5 text-h4 font-normal leading-tight text-white">Reserve your free spot</p>
-        {event.registrationNote ? (
-          <p className="mt-4 text-small leading-relaxed text-white/60">{event.registrationNote}</p>
-        ) : null}
+    <div className="rounded-2xl border border-line bg-canvas p-6 sm:p-8">
+      <Eyebrow dot>Save your seat</Eyebrow>
+      <p className="mt-5 text-h4 font-normal leading-tight text-ink-900">Reserve your free spot</p>
+      {event.registrationNote ? (
+        <p className="mt-3 text-small leading-relaxed text-ink-500">{event.registrationNote}</p>
+      ) : null}
 
-        <Button
-          href={href}
-          variant="onDark"
-          size="lg"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-7 w-full"
-        >
-          Register Free
-        </Button>
-
-        {/* The registration itself happens on another host; saying so is
-            plainer than a lock icon and a promise about spam. */}
-        <p className="mt-4 text-micro text-white/40">Registration opens on reg.obacademy.org.</p>
+      <div className="mt-7">
+        <EventRegisterForm />
       </div>
     </div>
   );

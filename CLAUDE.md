@@ -187,7 +187,10 @@ rather than on cards, bracketed mono counters (`[1]`), and a centred two-tone `S
 way every homepage content band is set. It runs two columns where the homepage runs four, because
 these topics are ~40 words against its ~15 and four would set them at a 28-character measure. The
 cell padding is `odd:pl-0 / even:pr-0`, not `first:/last:` — the homepage band is a single row of
-four, this one wraps to 2x2, where every odd cell is in column one.
+four, this one wraps to 2x2, where every odd cell is in column one. The **vertical** rule is drawn
+per cell rather than with `divide-x`, which on a wrapped grid gives every cell but the last a right
+edge — hanging a hairline off the band's right side at the end of row one. Each column-one cell
+that has a neighbour draws it instead: `i % 2 === 0 && i + 1 < topics.length`.
 
 `EventPanelists` is `StatBento`'s light tile — `rounded-2xl`, hairline border, the
 `accent-50 → accent-100` gradient — on a `bento-grid`, so the separator hairlines fall in the gaps
@@ -241,24 +244,48 @@ dropping `first-last.jpg` into `public/images/headshots/` is the whole of "addin
 miss falls through to `SpeakerCard`'s frosted slate monogram, the one fallback that still reads on
 a pale tile.
 
-**The hero follows the registration page's order**, in this site's materials rather than its:
-eyebrow → `EventFactsStrip` (Date / Time / Format / Location as frosted chips, so the facts land
-*before* the claim) → h1 → lede → `EventHeroPanelists` (face, name, role — the line-up is the offer
-on a panel page, so it is not made scroll-bound) → `EventCountdown` → `EventRegisterCard` holding
-the right half. `DarkHero` gained two optional props for this: `meta` (a row between the eyebrow
-and the h1) and `asideAlign="start"` — plus an `lg:mt-28` on the aside itself, because the copy
-column starts a breadcrumb row lower and a top-aligned card would otherwise float above the eyebrow
-it should sit level with.
+**The hero takes the registration page's parts in this site's materials**, ordered claim-first:
+eyebrow → h1 → `EventFactsStrip` (Date / Time / Format / Location as frosted chips) →
+`EventCountdown` → lede → `EventHeroPanelists` (face, name, role — the line-up is the offer on a
+panel page, so it is not made scroll-bound) → `EventRegisterCard` holding the right half with the
+registration form in it. The chips and the clock ride `DarkHero`'s `titleMeta` slot (added for
+this: a row between the h1 and the lede), the line-up its `proof` slot. Both are passed `null`
+rather than an empty wrapper when the event has nothing to put in them — an element that renders
+nothing still gets its slot's `mt-8`.
 
-`EventRegisterCard` holds the slot the registration page gives its sign-up form. This site never
-posts that form — the list lives on `reg.obacademy.org` — so the card carries the ask instead:
-what it costs, what you get (`registrationNote`, authored), and the button. **Nothing about seats
-or scarcity is invented.** The hero's own action row therefore keeps only "All Panels": a second
-Register button beside the card would be the same ask twice in one viewport. A past panel renders
-no card at all rather than a dead button. It takes the bento radius and the top sheen but keeps a
-flat `ink-800` fill rather than `--gradient-hero`: the hero behind it is already that gradient, and
-a gradient tile on a gradient ground loses its edge. (The `StatBento` slate tile can use the
-gradient because it sits on white.)
+The chips are an equal-column grid, not a wrapped flex row: the three came to 542px against a
+536px copy column, so "Format" dropped to a second line by six pixels, and narrower still below
+`lg`. Equal columns hold them in one row at every width, with the value wrapping inside its own
+chip and the grid matching heights — which is how the countdown row directly beneath them is set.
+
+**This hero carries no breadcrumbs**, deliberately: the copy column is long and the trail cost it
+~200px of vertical space at the top. Nothing else depended on them — this page emits no
+`BreadcrumbList` JSON-LD — so removing the row removed the whole feature rather than leaving markup
+disagreeing with the page. `DarkHero` gained `titleSize="h2"` for the same reason it gained
+`asideAlign="start"`: a wide form aside narrows the copy column, and the display step set this
+title at four lines where `text-h2` sets it at two.
+
+`EventRegisterCard` holds the slot the registration page gives its sign-up form, and now carries
+the form itself (`forms/EventRegisterForm`): the same nine fields in the same order — first/last
+name, email, phone, job title, practice name, the two yes/no selects (text reminder, practice
+owner) and the question for the panel — then the submit, the security line and the
+Moderated Q&A / Replay included / Practical playbooks tags. **Submission is stubbed like every
+other form on this site.** The live page POSTs `{event_key, first_name, last_name, email, phone,
+job_title, practice_name, text_reminder, practice_owner, question, source_id}` as `no-cors` JSON to
+a Google Apps Script endpoint, so wiring it is that POST plus an `eventKey` on the event; the
+payload shape is recorded in the component. `registrationUrl` stays the record of where the list
+lives. **Nothing about seats or scarcity is invented** — no ticker, no "limited seats", no emoji;
+the reg page's lock and arrow are lucide icons here.
+
+Because the form is the ask, the hero has **no action row** (the "All Panels" button was removed)
+and a registerable panel ends after the panelists — **no closing CTA band**. A panel with nowhere
+to register still gets the site's standing contributor `CTASection`, which is then the only ask on
+the page. **The card is white**, at the bento radius on a `line` hairline, with the light form controls the
+rest of the site's forms use, one step down on `canvas-subtle` so the fields read against the white
+card, carrying the registration page's own placeholders: a form is the one thing on this page a visitor works in rather than
+reads, and a white card lifts it off the gradient instead of asking it to compete — which is what
+the registration page does with the same card. The aside runs `asideWidth="wide"` — nine fields do
+not fit a 26rem column.
 
 Every one of those pieces is conditional, so the six bare title+date events still render the short
 honest page they always had: no chips (the strip needs a second fact to be worth a row), no
@@ -267,7 +294,7 @@ row — names and roles vary in length by a factor of two, and a flex row broke 
 on one line and two sharing the next.
 
 **Episode pages (`/podcast/episodes/[slug]`)** are the one part of the site built as brand
-artwork rather than site UI, per `design/brand-guidelines.md`. `EpisodeHero` stands on `PAGEBG`
+artwork rather than site UI, per `brand-guidelines.md`. `EpisodeHero` stands on `PAGEBG`
 (the design system's dark *post* ground, not the site's ink-900 marketing ground) under the 18px
 `.dot-field`, with the hero lobe held to 35% so the ground and texture stay dominant. The hero's right
 column is `EpisodePortraits`, not the episode artwork: 4:5 tiles at radius 18 for whoever is on
@@ -358,7 +385,7 @@ the panel prints the distinction, and these are words attributed to named physic
 - `LibsynPlayer` plays direct Libsyn MP3s — keep `preload="none"` and its buffering/error/
   no-audio states. It is the **episode transport**: the 64-bar waveform *is* the seek control
   (a transparent native `<input type="range">` over the bars supplies drag, arrow keys and
-  slider semantics; the bars are pure paint). Bar geometry takes `design/waveform.svg`'s 3px
+  slider semantics; the bars are pure paint). Bar geometry takes `ui/Waveform.tsx`'s 3px
   bars on a 6px pitch and mirrors them about the centre line, so 160 flexed bars are thinned to
   1-in-4 / 1-in-2 / all by breakpoint, which holds the rendered bar near 3px at every width. The
   tiers address disjoint bar sets so they never depend on CSS emission order.
@@ -390,7 +417,7 @@ the panel prints the distinction, and these are words attributed to named physic
 
 ## Known stubs (intentional)
 
-- All forms (contact, newsletter, speaker, partnership, marketing analysis) are styled UI shells:
+- All forms (contact, newsletter, speaker, partnership, marketing analysis, panel registration) are styled UI shells:
   they validate client-side (vanilla React state) and show pending/success states, but submission
   is stubbed with `// TODO`. `ContactForm` variants: `contact` | `analyze` | `speaker` |
   `partnership`. Don't wire backends unless asked.

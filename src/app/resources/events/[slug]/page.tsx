@@ -2,16 +2,15 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Check } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/Section";
-import { Button } from "@/components/ui/Button";
 import { DarkHero } from "@/components/marketing/DarkHero";
 import { CTASection } from "@/components/marketing/CTASection";
 import { EventCountdown } from "@/components/content/EventCountdown";
-import { EventFactsStrip } from "@/components/content/EventFactsStrip";
+import { EventFactsStrip, hasEventFacts } from "@/components/content/EventFactsStrip";
 import { EventHeroPanelists } from "@/components/content/EventHeroPanelists";
 import { EventRegisterCard } from "@/components/content/EventRegisterCard";
 import { EventPanelists } from "@/components/content/EventPanelists";
 import { getAllEvents, getEventBySlug } from "@/lib/content";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { pageMetadata } from "@/lib/og/metadata";
 import { eventJsonLd } from "@/lib/jsonld";
 
@@ -88,13 +87,12 @@ export default async function EventDetailPage({
   const startsAt = event.startDateTime ?? `${event.startDate}T23:59:59Z`;
   const isPast = new Date(startsAt).getTime() < BUILT_AT_MS;
 
+  // The clock only runs toward a start instant that is still ahead.
+  const showCountdown = Boolean(event.startDateTime) && !isPast;
+
   // A past panel never shows a register link: the form on the other end is
   // either closed or would take a signup for something that already happened.
   const registerHref = isPast ? undefined : event.registrationUrl;
-
-  // The hero's proof block: who is on the panel, and how long until it starts.
-  // Both are conditional, so a bare title+date event still gets a clean hero.
-  const hasProof = event.panelists.length > 0 || Boolean(event.startDateTime);
 
   return (
     <>
@@ -106,50 +104,35 @@ export default async function EventDetailPage({
       <DarkHero
         size="band"
         containerSize="default"
-        breadcrumbs={[
-          { label: "Home", href: "/" },
-          { label: "Resources", href: "/resources" },
-          { label: "Events", href: "/resources/events" },
-          { label: event.title },
-        ]}
         eyebrow={`${event.isVirtual ? "Live virtual panel" : "Live panel"}${
           registerHref ? " · Free to attend" : ""
         }`}
         eyebrowDot
-        /* The registration page's order, in this site's materials: the facts
-           land before the claim, the line-up and the clock under it, and the
-           ask holds the right half of the hero. */
-        meta={<EventFactsStrip event={event} />}
         title={event.title}
-        lede={event.lede || PANEL_LEDE}
-        proof={
-          hasProof ? (
-            <div className="space-y-8">
-              <EventHeroPanelists panelists={event.panelists} />
-              {event.startDateTime && !isPast ? (
+        /* One step down from the cinematic h1: the registration form takes a
+           wide aside, and a panel title set at the display step wrapped to four
+           lines in what is left. */
+        titleSize="h2"
+        /* The claim, then the facts it is offering: chips directly under the
+           title, the clock directly under those. */
+        titleMeta={
+          hasEventFacts(event) || showCountdown ? (
+            <div className="space-y-6">
+              <EventFactsStrip event={event} />
+              {showCountdown && event.startDateTime ? (
                 <EventCountdown target={event.startDateTime} tone="dark" />
               ) : null}
             </div>
           ) : null
         }
-        /* `mt-28` at lg only: the copy column starts a breadcrumb row lower
-           than the aside, so a top-aligned card would float above the
-           eyebrow it should sit level with. */
-        aside={
-          registerHref ? (
-            <div className="lg:mt-28">
-              <EventRegisterCard event={event} href={registerHref} />
-            </div>
-          ) : null
+        lede={event.lede || PANEL_LEDE}
+        proof={
+          event.panelists.length > 0 ? <EventHeroPanelists panelists={event.panelists} /> : null
         }
+        aside={registerHref ? <EventRegisterCard event={event} /> : null}
+        asideWidth="wide"
         asideAlign="start"
-      >
-        {/* No second Register button when the card carries it: that would be
-            the same ask twice in one viewport. */}
-        <Button href="/resources/events" variant="frosted" size="lg">
-          All Panels
-        </Button>
-      </DarkHero>
+      />
 
       {event.topics.length > 0 ? (
         <Section spacing="loose">
@@ -166,13 +149,26 @@ export default async function EventDetailPage({
               measure. Numbered rather than titled: they read as complete
               thoughts already, and a headline per topic would be an invention
               over copy the panel has actually committed to. */}
-          <ol className="mt-14 grid divide-y divide-line border-y border-line sm:grid-cols-2 sm:divide-x">
+          {/* `divide-x` is wrong on a wrapped grid: it draws a right edge on
+              every cell but the last, so cell [2] — the end of row one — got a
+              hairline hanging off the band's right edge. The vertical rule is
+              therefore drawn per cell, on column-one cells that actually have a
+              neighbour to their right. `divide-y` is fine as-is: its extra rule
+              under the last full row lands exactly on the container's own
+              bottom border. */}
+          <ol className="mt-14 grid divide-y divide-line border-y border-line sm:grid-cols-2">
             {event.topics.map((topic, i) => (
               /* odd/even, not first/last: `ProblemAreas` is a single row of
                  four, so first/last is enough there. This wraps to 2x2, where
                  every odd cell is in column one and every even cell in
                  column two. */
-              <li key={topic} className="px-0 py-10 sm:px-8 sm:odd:pl-0 sm:even:pr-0">
+              <li
+                key={topic}
+                className={cn(
+                  "px-0 py-10 sm:px-8 sm:odd:pl-0 sm:even:pr-0",
+                  i % 2 === 0 && i + 1 < event.topics.length && "sm:border-r sm:border-line",
+                )}
+              >
                 <span aria-hidden className="font-mono text-eyebrow text-ink-300">
                   [{i + 1}]
                 </span>
@@ -242,23 +238,11 @@ export default async function EventDetailPage({
         </Section>
       ) : null}
 
-      {/* One ask. Registration where there is a link to register; otherwise the
-          site's standing contributor CTA, which is what this page had before. */}
-      {registerHref ? (
-        <CTASection
-          eyebrow="Save your seat"
-          title="Ready to join"
-          titleDim="the conversation?"
-          body={
-            event.registrationNote ??
-            "Registration is complimentary. Bring the question you want the panel to answer."
-          }
-          primary={{ label: "Register Free", href: registerHref }}
-          secondary={null}
-        />
-      ) : (
-        <CTASection secondary={null} />
-      )}
+      {/* A registerable panel ends after the panel itself: the ask is the form
+          in the hero, and a second CTA band under it was the same ask twice.
+          A panel with nowhere to register keeps the site's standing
+          contributor CTA, which is the only ask that page has. */}
+      {registerHref ? null : <CTASection secondary={null} />}
     </>
   );
 }

@@ -14,6 +14,15 @@ import { formatDate } from "@/lib/utils";
  * Every chip is conditional, and the strip renders nothing when an event
  * carries only a date — six of the seven events in `events.json` do.
  */
+/**
+ * One fact is just the date the eyebrow already carries, so the strip needs a
+ * second to be worth a row. Exported because the page has to know whether the
+ * block exists before it wraps it in spacing.
+ */
+export function hasEventFacts(event: Event) {
+  return [event.startTime, event.format, event.location].filter(Boolean).length > 0;
+}
+
 export function EventFactsStrip({ event }: { event: Event }) {
   const facts: { label: string; value: React.ReactNode }[] = [
     { label: "Date", value: <time dateTime={event.startDate}>{formatDate(event.startDate)}</time> },
@@ -22,14 +31,22 @@ export function EventFactsStrip({ event }: { event: Event }) {
     ...(event.location ? [{ label: "Location", value: event.location }] : []),
   ];
 
-  if (facts.length < 2) return null;
+  if (!hasEventFacts(event)) return null;
 
   return (
-    <dl className="flex flex-wrap gap-3">
+    // A grid, not a wrapped flex row: the three chips came to 542px against a
+    // 536px copy column, so "Format" dropped to a second line by six pixels —
+    // and narrower still below lg. Equal columns keep them one row at every
+    // width, with the value wrapping inside its own chip and the grid matching
+    // the heights, which is how the countdown row directly below it is set.
+    <dl
+      className="grid gap-2 sm:gap-3"
+      style={{ gridTemplateColumns: `repeat(${facts.length}, minmax(0, 1fr))` }}
+    >
       {facts.map((fact) => (
         <div
           key={fact.label}
-          className="rounded-(--radius-md) border border-white/15 bg-white/[0.06] px-4 py-2.5 backdrop-blur-md"
+          className="rounded-(--radius-md) border border-white/15 bg-white/[0.06] px-3 py-2.5 backdrop-blur-md sm:px-4"
         >
           <dt className="font-mono text-micro uppercase tracking-wide text-white/45">
             {fact.label}
