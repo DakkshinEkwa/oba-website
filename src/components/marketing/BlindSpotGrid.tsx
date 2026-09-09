@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
+import { useCanHover } from "@/lib/use-can-hover";
 
 /**
  * `visual-field-grid` from the brand asset library, inlined rather than loaded
@@ -83,6 +84,7 @@ export function BlindSpotGrid({
   className?: string;
 }) {
   const reduceMotion = usePrefersReducedMotion();
+  const canHover = useCanHover();
   const [active, setActive] = useState(false);
   // False is the unplotted lattice; the sweep is what turns it back on. Kept
   // separate from `active` so the blank state gets a paint of its own before
@@ -91,8 +93,12 @@ export function BlindSpotGrid({
   const [sweeping, setSweeping] = useState(false);
   const [cycle, setCycle] = useState(0);
 
+  // A touch device never fires the hover this normally gates on, so it falls
+  // back to running continuously rather than sitting on the still plot.
+  const hovering = active || !canHover;
+
   useEffect(() => {
-    if (!active || reduceMotion) return;
+    if (!hovering || reduceMotion) return;
     let cancelled = false;
     let blankFrame = 0;
     let armFrame = 0;
@@ -117,11 +123,11 @@ export function BlindSpotGrid({
       cancelAnimationFrame(armFrame);
       window.clearTimeout(timer);
     };
-  }, [active, reduceMotion]);
+  }, [hovering, reduceMotion]);
 
   // Idle and reduced motion both rest on the finished plot; only a live sweep
   // ever shows the lattice.
-  const running = active && !reduceMotion;
+  const running = hovering && !reduceMotion;
   const blank = running && !sweeping;
 
   return (

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
+import { useCanHover } from "@/lib/use-can-hover";
 import { cn } from "@/lib/utils";
 
 /**
@@ -80,14 +81,19 @@ export function EpisodeExpandMark({
   className?: string;
 }) {
   const reduceMotion = usePrefersReducedMotion();
+  const canHover = useCanHover();
   const [active, setActive] = useState(false);
   const [index, setIndex] = useState(0);
 
+  // A touch device never fires the hover/focus this normally gates on, so it
+  // falls back to running continuously rather than sitting static.
+  const running = active || !canHover;
+
   useEffect(() => {
-    if (reduceMotion || !active || episodes.length === 0) return;
+    if (reduceMotion || !running || episodes.length === 0) return;
     const id = setInterval(() => setIndex((i) => (i + 1) % episodes.length), STEP_MS);
     return () => clearInterval(id);
-  }, [active, reduceMotion, episodes.length]);
+  }, [running, reduceMotion, episodes.length]);
 
   if (episodes.length === 0) return null;
 

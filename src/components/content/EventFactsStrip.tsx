@@ -36,12 +36,16 @@ export function EventFactsStrip({ event }: { event: Event }) {
   return (
     // A grid, not a wrapped flex row: the three chips came to 542px against a
     // 536px copy column, so "Format" dropped to a second line by six pixels —
-    // and narrower still below lg. Equal columns keep them one row at every
-    // width, with the value wrapping inside its own chip and the grid matching
-    // the heights, which is how the countdown row directly below it is set.
+    // and narrower still below lg. Equal columns keep them one row from sm up,
+    // with the value wrapping inside its own chip and the grid matching the
+    // heights, which is how the countdown row directly below it is set. Below
+    // sm there isn't room for a row at all, so chips stack one per line —
+    // `gridTemplateColumns` is an inline style and always wins over a Tailwind
+    // class, so the responsive switch has to happen through a custom property
+    // instead of a plain `sm:grid-cols-N` utility.
     <dl
-      className="grid gap-2 sm:gap-3"
-      style={{ gridTemplateColumns: `repeat(${facts.length}, minmax(0, 1fr))` }}
+      className="grid grid-cols-1 gap-2 sm:grid-cols-[var(--fact-cols)] sm:gap-3"
+      style={{ "--fact-cols": `repeat(${facts.length}, minmax(0, 1fr))` } as React.CSSProperties}
     >
       {facts.map((fact) => (
         <div

@@ -21,7 +21,7 @@ export function HeroSection() {
         <div className="pointer-events-auto max-w-2xl pb-24">
           <p className="text-small text-white/60">The Ophthalmology Business Academy</p>
           <h1 className="mt-6 text-h1 font-light tracking-tight text-white">
-            <span className="whitespace-nowrap">Where practice strategy</span>
+            <span className="sm:whitespace-nowrap">Where practice strategy</span>
             <br />
             {" "}
             <span className="text-white/45">meets execution.</span>
@@ -30,7 +30,7 @@ export function HeroSection() {
             Personalized business education for ophthalmologists: strategies, expert
             interviews, and training built on what actually grows practices.
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-row items-start gap-3">
             <Button href="/podcast/episodes" variant="onDark" size="md">
               Episodes
             </Button>
@@ -47,15 +47,18 @@ export function HeroSection() {
             the row in equal thirds: the three labels are different lengths, so
             equal columns left "Experience-led" floating a long way short of its
             divider while "Ophthalmology-specific" nearly touched the next one.
-            Below sm it stays an even three-way grid — content sizing there just
-            squeezes the two short labels harder than the old layout did. */}
-        <div className="grid max-w-2xl grid-cols-3 divide-x divide-white/15 sm:flex sm:w-fit sm:max-w-3xl">
+            Below sm there's no room for three columns at all, so it stacks into
+            a single list with a horizontal hairline between rows instead. */}
+        <div className="grid max-w-2xl grid-cols-1 divide-y divide-white/15 sm:flex sm:w-fit sm:max-w-3xl sm:divide-x sm:divide-y-0">
           {[
             { t: "Experience-led", s: "Hosted by operators and physicians" },
             { t: "Ophthalmology-specific", s: "Built on eye-care realities" },
             { t: "Non-promotional", s: "Conversations, not sales pitches" },
           ].map((m) => (
-            <div key={m.t} className="px-6 first:pl-0 last:pr-0">
+            <div
+              key={m.t}
+              className="py-3 first:pt-0 last:pb-0 sm:px-6 sm:py-0 sm:first:pl-0 sm:first:pt-0 sm:last:pr-0 sm:last:pb-0"
+            >
               <p className="text-small text-white/90">{m.t}</p>
               <p className="mt-1 text-small text-white/45">{m.s}</p>
             </div>

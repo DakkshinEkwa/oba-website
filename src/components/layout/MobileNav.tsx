@@ -4,11 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Menu, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/Button";
 import { primaryNav, siteConfig } from "@/lib/site";
 import { isPlainClick, jumpToHash } from "@/lib/scroll";
+import { cn } from "@/lib/utils";
 
 export function MobileNav({ tone = "light" }: { tone?: "light" | "dark" }) {
   const [open, setOpen] = useState(false);
@@ -25,12 +26,31 @@ export function MobileNav({ tone = "light" }: { tone?: "light" | "dark" }) {
           }
           aria-label={open ? "Close menu" : "Open menu"}
         >
-          {open ? <X className="size-6" aria-hidden /> : <Menu className="size-6" aria-hidden />}
+          <span className="relative flex size-6 items-center justify-center" aria-hidden>
+            <span
+              className={cn(
+                "absolute left-0 h-0.5 w-6 rounded-full bg-current transition-all duration-300 ease-out",
+                open ? "top-1/2 -translate-y-1/2 rotate-45" : "top-[6px] rotate-0",
+              )}
+            />
+            <span
+              className={cn(
+                "absolute left-0 top-1/2 h-0.5 w-6 -translate-y-1/2 rounded-full bg-current transition-opacity duration-200 ease-out",
+                open ? "opacity-0" : "opacity-100",
+              )}
+            />
+            <span
+              className={cn(
+                "absolute left-0 h-0.5 w-6 rounded-full bg-current transition-all duration-300 ease-out",
+                open ? "top-1/2 -translate-y-1/2 -rotate-45" : "top-[16px] rotate-0",
+              )}
+            />
+          </span>
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-ink-900/40 backdrop-blur-sm data-[state=open]:animate-fade-up" />
-        <Dialog.Content className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-canvas shadow-lg focus-visible:outline-2 focus-visible:outline-accent-600">
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-ink-900/40 backdrop-blur-sm data-[state=open]:animate-fade-up data-[state=closed]:animate-fade-out" />
+        <Dialog.Content className="fixed inset-y-0 left-0 z-50 flex w-full max-w-sm flex-col bg-canvas shadow-lg focus-visible:outline-2 focus-visible:outline-accent-600 data-[state=open]:animate-slide-in-left data-[state=closed]:animate-slide-out-left">
           <div className="flex h-18 items-center justify-between border-b border-line px-5">
             <Logo />
             <Dialog.Close

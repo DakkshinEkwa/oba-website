@@ -53,60 +53,69 @@ export function StatBento() {
   return (
     <div className="bento-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">
       {/* Headline tile — slate, spans the full height of the grid */}
-      <div
-        className="bento-cell relative flex min-h-[400px] flex-col justify-between rounded-2xl border border-white/10 p-9 sm:col-span-2 sm:p-11 lg:col-span-1 lg:row-span-2 lg:min-h-0"
-        style={{ background: "var(--gradient-hero)" }}
-      >
+      <div className="bento-stack-item">
         <div
-          aria-hidden
-          className="absolute inset-0 rounded-2xl opacity-25"
-          style={{ background: "var(--gradient-hero-glow)" }}
-        />
-        <div className="relative z-10">
-          <p className="text-display font-light tracking-tight text-white">
-            <AnimatedStat value={`${stats.count}+`} />
+          className="bento-cell relative flex min-h-[400px] flex-col justify-between rounded-2xl border border-white/10 p-9 sm:col-span-2 sm:p-11 lg:col-span-1 lg:row-span-2 lg:min-h-0"
+          style={{ background: "var(--gradient-hero)" }}
+        >
+          <div
+            aria-hidden
+            className="absolute inset-0 rounded-2xl opacity-25"
+            style={{ background: "var(--gradient-hero-glow)" }}
+          />
+          <div className="relative z-10">
+            <p className="text-display font-light tracking-tight text-white">
+              <AnimatedStat value={`${stats.count}+`} />
+            </p>
+            <p className="mt-3 text-body-lg text-white/60">Recorded conversations</p>
+          </div>
+          <p className="relative z-10 text-h3 font-light tracking-tight text-white">
+            The business of eye care,{" "}
+            <span className="text-white/45">discussed by the people who run it.</span>
           </p>
-          <p className="mt-3 text-body-lg text-white/60">Recorded conversations</p>
         </div>
-        <p className="relative z-10 text-h3 font-light tracking-tight text-white">
-          The business of eye care,{" "}
-          <span className="text-white/45">discussed by the people who run it.</span>
-        </p>
       </div>
 
-      <HostsTile hosts={hosts} hostCount={stats.hostCount} className={tileClass} />
+      <div className="bento-stack-item">
+        <HostsTile hosts={hosts} hostCount={stats.hostCount} className={tileClass} />
+      </div>
 
       {/* Convening — the number counts the years out; the caption keeps the claim */}
-      <div className={tileClass}>
-        <div className="flex flex-1 items-center justify-center">
-          {/* Baseline-aligned so the unit sits on the figure's line, not its box. */}
-          <p className="flex items-baseline gap-2 font-light tracking-tight text-ink-900">
-            <span className="text-display">
-              <AnimatedStat value={`${yearsRunning}+`} />
-            </span>
-            <span className="text-h3 text-ink-400">years</span>
+      <div className="bento-stack-item">
+        <div className={tileClass}>
+          <div className="flex flex-1 items-center justify-center">
+            {/* Baseline-aligned so the unit sits on the figure's line, not its box. */}
+            <p className="flex items-baseline gap-2 font-light tracking-tight text-ink-900">
+              <span className="text-display">
+                <AnimatedStat value={`${yearsRunning}+`} />
+              </span>
+              <span className="text-h3 text-ink-400">years</span>
+            </p>
+          </div>
+          <p className="mt-6 text-balance text-body-lg text-ink-900">Convening leaders</p>
+          <p className="mt-2 text-balance text-body text-ink-400">
+            {`A standing conversation since ${stats.firstYear}, not a campaign.`}
           </p>
         </div>
-        <p className="mt-6 text-balance text-body-lg text-ink-900">Convening leaders</p>
-        <p className="mt-2 text-balance text-body text-ink-400">
-          {`A standing conversation since ${stats.firstYear}, not a campaign.`}
-        </p>
       </div>
 
       {/* Every card it opens is ophthalmology */}
-      <EpisodeExpandMark
-        episodes={cardEpisodes}
-        title="100% ophthalmology-specific"
-        sub="Built on eye-care realities."
-        className={tileClass}
-      />
+      <div className="bento-stack-item">
+        <EpisodeExpandMark
+          episodes={cardEpisodes}
+          title="100% ophthalmology-specific"
+          sub="Built on eye-care realities."
+          className={tileClass}
+        />
+      </div>
       {/* Blind spots — the field test finds what the practice can't see */}
-      <BlindSpotGrid
-        title="Blind spots, mapped"
-        sub="What a practice can’t see from the inside."
-        className={tileClass}
-      />
-
+      <div className="bento-stack-item">
+        <BlindSpotGrid
+          title="Blind spots, mapped"
+          sub="What a practice can’t see from the inside."
+          className={tileClass}
+        />
+      </div>
     </div>
   );
 }

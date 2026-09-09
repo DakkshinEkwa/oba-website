@@ -56,7 +56,7 @@ export function NewsletterForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
           aria-invalid={status === "error"}
           aria-describedby={status === "error" ? "nl-email-error" : undefined}
           className={cn(
-            "h-12 flex-1 rounded-pill border px-5 text-body focus:outline-none focus:ring-2 focus:ring-accent-500/40",
+            "h-12 min-h-12 flex-1 appearance-none rounded-md border px-5 py-0 leading-none text-body focus:outline-none focus:ring-2 focus:ring-accent-500/40 lg:rounded-pill",
             onLight
               ? "border-white/20 bg-white/10 text-white placeholder:text-white/50"
               : "border-line-strong bg-canvas text-ink-900 placeholder:text-ink-300",
@@ -66,7 +66,7 @@ export function NewsletterForm({ tone = "dark" }: { tone?: "dark" | "light" }) {
           type="submit"
           disabled={submitting}
           className={cn(
-            "inline-flex h-12 items-center justify-center gap-2 rounded-pill px-6 font-medium transition-colors disabled:opacity-50",
+            "inline-flex h-12 min-h-12 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-pill px-6 font-medium transition-colors disabled:opacity-50",
             onLight
               ? "bg-white text-ink-900 hover:bg-canvas-subtle focus-visible:outline-white"
               : "bg-ink-900 text-white hover:bg-ink-700",

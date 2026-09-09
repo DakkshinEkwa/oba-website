@@ -730,6 +730,48 @@
   animation: fade-up 0.6s var(--ease-out) both;
 }
 
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@utility animate-fade-out {
+  animation: fade-out 0.25s var(--ease-in-out) both;
+}
+
+/* Mobile nav sheet — slides in from the left edge rather than cutting in, and
+   Radix's Presence waits for this animation before unmounting on close, so
+   the exit reverses it instead of vanishing instantly. */
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@utility animate-slide-in-left {
+  animation: slide-in-left 0.35s var(--ease-out) both;
+}
+
+@utility animate-slide-out-left {
+  animation: slide-out-left 0.3s var(--ease-in-out) both;
+}
+
 /* Hosts page — staggered entrance: cards fade up in sequence on load so the
    info appears gradually. Scoped to .hosts-reveal so the HostCard grids on
    /about and /podcast stay untouched. The global reduced-motion kill-switch
@@ -867,6 +909,74 @@
   bottom: 0;
   right: calc(var(--bento-gap) / -2 - 0.5px);
   width: 1px;
+}
+
+/* Stat bento on mobile — below sm there's no row/column left to build a grid
+   out of, so the five tiles stack: each one sticks a little lower than the
+   last, so scrolling past it slides the next tile up over it like a physical
+   deck instead of just listing them. Pure `position: sticky`, no scroll-
+   jacking and no added scroll distance (unlike `.audience-pin` below, which
+   inflates its wrapper's height — this doesn't), so it isn't gated behind
+   `prefers-reduced-motion`, the same way the site's own sticky header isn't.
+   The grid's `overflow: hidden` exists only to clip the grid-gap hairlines,
+   which don't apply once this is a plain block stack, so both come off
+   together. Unlayered on purpose, same as the rest of this block: plain CSS
+   outranks Tailwind's `relative`/`overflow-hidden` utilities on the cells
+   without needing `@layer components`.
+
+   `.bento-stack-item` wraps each tile (`StatBento.tsx`) purely so the sticky
+   slot and the visible card can be two different boxes: `display: contents`
+   by default means the wrapper never exists as a box at sm+, so the card's
+   own `sm:col-span-2 lg:row-span-2` etc. still place *it* directly in the
+   grid untouched. Only below sm does the wrapper become a real, sticky box —
+   with `padding-top` ahead of the card inside it, so the tile underneath
+   keeps peeking through a strip of bare canvas rather than butting flush
+   against the one on top. */
+.bento-stack-item {
+  display: contents;
+}
+
+@media (max-width: 639px) {
+  .bento-grid {
+    display: block;
+    overflow: visible;
+  }
+
+  .bento-cell::before,
+  .bento-cell::after {
+    content: none;
+  }
+
+  .bento-cell {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .bento-stack-item {
+    display: block;
+    position: sticky;
+    top: calc(var(--header-offset) + 0.5rem);
+    padding-top: 0.75rem;
+  }
+
+  .bento-stack-item:first-child {
+    padding-top: 0;
+  }
+
+  .bento-stack-item:nth-child(2) {
+    top: calc(var(--header-offset) + 1.25rem);
+  }
+
+  .bento-stack-item:nth-child(3) {
+    top: calc(var(--header-offset) + 2rem);
+  }
+
+  .bento-stack-item:nth-child(4) {
+    top: calc(var(--header-offset) + 2.75rem);
+  }
+
+  .bento-stack-item:nth-child(5) {
+    top: calc(var(--header-offset) + 3.5rem);
+  }
 }
 
 /* Audiences — the section pins to the viewport while its four cards advance,
