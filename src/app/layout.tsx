@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, IBM_Plex_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { siteConfig } from "@/lib/site";
 import { siteGraphJsonLd } from "@/lib/jsonld";
+import { OG_BG } from "@/lib/og/size";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -19,6 +20,13 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
   weight: ["500", "600"],
 });
+
+// Tints the Android address bar and task switcher. manifest.ts declares the same
+// colour for the installed/home-screen case. Note: `manifest` itself is emitted by
+// Next from src/app/manifest.ts — do not add metadata.manifest here or it doubles up.
+export const viewport: Viewport = {
+  themeColor: OG_BG,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),

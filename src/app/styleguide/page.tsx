@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -7,12 +6,16 @@ import { Card, CardBody } from "@/components/ui/Card";
 import { Field, Input, Textarea, Select } from "@/components/ui/Field";
 import { FaqAccordion } from "@/components/ui/Accordion";
 import { Prose } from "@/components/ui/Prose";
+import { pageMetadata } from "@/lib/og/metadata";
 
-export const metadata: Metadata = {
+// Internal page, but routed through pageMetadata() like every other page so it stops
+// inheriting the homepage's og:title/og:description/og:url from the root layout.
+export const metadata = pageMetadata({
   title: "Style Guide",
-  robots: { index: false },
-  alternates: { canonical: "/styleguide" },
-};
+  description: "Internal reference for OBA's design tokens, type scale, and component states.",
+  path: "/styleguide",
+  noindex: true,
+});
 
 const inkSwatches = [
   { cls: "bg-ink-900", label: "ink-900", light: false },

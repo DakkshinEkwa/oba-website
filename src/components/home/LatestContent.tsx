@@ -14,8 +14,7 @@ export function LatestContent({ episodes, posts }: { episodes: Episode[]; posts:
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeader
             eyebrow="The podcast"
-            title="Rethinking eye care."
-            titleDim="Through an entrepreneurial lens"
+            title="Latest from the show"
             className="max-w-xl"
           />
           <Button href="/podcast/episodes" variant="link">

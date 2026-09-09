@@ -16,7 +16,9 @@ export function FeaturedEventCard({ event }: { event: Event }) {
   const [style, setStyle] = useState<React.CSSProperties>({});
   const [glow, setGlow] = useState({ x: 50, y: 50, opacity: 0 });
   const actionLabel = event.registrationUrl ? "Reserve" : "Details";
-  const href = event.registrationUrl ?? `/resources/events/${event.slug}`;
+  // Always the panel page, never the registration host directly: the page is
+  // the landing page now, and it carries the register link itself.
+  const href = `/resources/events/${event.slug}`;
 
   function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     const rect = frameRef.current?.getBoundingClientRect();

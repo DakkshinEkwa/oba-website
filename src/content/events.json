@@ -3,8 +3,58 @@
     "slug": "building-od-partnerships-that-actually-drive-patient-volume",
     "title": "Building OD Partnerships That Actually Drive Patient Volume",
     "startDate": "2026-09-17",
+    "startDateTime": "2026-09-17T16:00:00Z",
+    "startTime": "12:00 PM EDT",
     "isVirtual": true,
-    "image": "/images/events/building-od-partnerships.webp"
+    "format": "Live panel + moderated Q&A",
+    "image": "/images/events/building-od-partnerships.webp",
+    "registrationUrl": "https://reg.obacademy.org/Sept-17/",
+    "registrationNote": "Complimentary to attend. The replay is sent to everyone who registers.",
+    "excerpt": "What creates trust between ODs and ophthalmologists, where referral handoffs break down, and what referring providers expect beyond clinical outcomes.",
+    "lede": "A referral growth panel on how ophthalmology practices build stronger, more productive partnerships with referring optometrists — and turn those relationships into a consistent source of patient volume.",
+    "aboutTitle": "Turn OD relationships into reliable patient volume",
+    "about": [
+      "Join the Ophthalmology Business Academy for a referral growth panel exploring how ophthalmology practices can build stronger, more productive partnerships with referring optometrists — and turn those relationships into a consistent source of patient volume.",
+      "This discussion will examine what actually creates trust between ODs and ophthalmologists, where referral handoffs commonly break down, and what referring providers expect from their ophthalmology partners beyond strong clinical outcomes. Panelists will also explore practical strategies such as clearer communication, faster reporting, referral liaisons, education, co-management, and digital referral systems to help practices strengthen relationships, reduce patient leakage, and build a more reliable referral network."
+    ],
+    "topics": [
+      "The fear of patient poaching exists on both sides — the behaviours, agreements, and communication practices that create genuine trust between ophthalmologists and referring optometrists.",
+      "Who should own each stage of the referral handoff, and what practices should track to identify delays, patient leakage, and breakdowns in communication.",
+      "Beyond strong clinical outcomes — what a referring optometrist needs from an ophthalmology partner: faster access, clearer updates, reliable patient return, or direct physician communication.",
+      "CE dinners, referral liaisons, digital referral systems, and faster reporting — which activities genuinely strengthen relationships and influence referral behaviour."
+    ],
+    "audience": [
+      "You own, lead, or manage an ophthalmology practice",
+      "Referral volume is inconsistent and hard to predict",
+      "Patients leak out of the OD-to-MD handoff and never return",
+      "You want a co-management relationship ODs genuinely trust",
+      "You're investing in liaisons, CE events, or referral tech and want them to pay off"
+    ],
+    "panelists": [
+      {
+        "name": "Chris Bonsall",
+        "role": "Vice President of Revenue Generation",
+        "org": "Navigate Patient Solutions",
+        "bio": "Chris Bonsall helps lead Navigate Patient Solutions, where he works with ophthalmology practices to improve the patient experience before cataract evaluations. His team focuses on preparing and educating patients earlier in their care journey. By improving communication and disrupting traditional education methods, they help reduce fear and anxiety surrounding cataract surgery. That same earlier-touch philosophy shapes how he approaches the OD-to-MD referral handoff."
+      },
+      {
+        "name": "Sean Hanlon",
+        "role": "Founder & Chief Commercial Officer",
+        "org": "CoFi",
+        "bio": "Sean is the Founder and Chief Commercial Officer of CoFi, a multi-party payments platform used by more than 17,000 optometrists and ophthalmologists and processing hundreds of millions of dollars in ophthalmic surgery payments annually. Previously, he co-founded Turf, helping ophthalmology practices understand their optometric referral markets and strengthen compliant referral and co-management relationships — personally meeting with more than 1,000 optometrists along the way. Sean is a recognized expert on ophthalmic co-management and regularly speaks at major industry meetings including AECOS, ASCRS, ASOA, and AAO."
+      },
+      {
+        "name": "Amanda Cardwell Carones",
+        "role": "Founder & Executive Director",
+        "org": "Ophthalpreneurs®",
+        "bio": "Amanda brings 25 years of MedTech experience, including 23 years in patient-pay ophthalmology, working with clinicians, industry leaders, and global eye-health organizations. She specializes in helping practices and manufacturers translate complex clinical information into patient-friendly communication that builds trust and supports premium technology adoption. Her work focuses on patient communication, workflow optimization, education, and practice growth. She is also the founder of Ophthalpreneurs®, a global community focused on advancing leadership, communication, and innovation in ophthalmology."
+      },
+      {
+        "name": "Christine Lapointe",
+        "role": "Independent Consultant",
+        "bio": "Christine Lapointe is an accomplished healthcare executive, consultant, speaker, and published author with more than 34 years of experience spanning ophthalmology, aesthetics, medical devices, business development, sales, marketing, and professional education. She has helped organizations and private practices navigate growth, technology adoption, strategic planning, team development, and the evolving patient experience, working with leading organizations including Johnson & Johnson, STAAR Surgical, Bausch + Lomb, Bascom Palmer Eye Institute, and Vanderbilt. Known for combining business expertise with a strong focus on relationships and human connection, Christine is also a certified yoga instructor and meditation teacher who brings mindfulness principles into healthcare through her Meditation Sedation approach. As a global speaker and educator, she helps teams and organizations strengthen leadership, communication, patient experience, and sustainable growth."
+      }
+    ]
   },
   {
     "slug": "building-a-profitable-service-line-without-losing-patient-trust",

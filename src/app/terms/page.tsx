@@ -3,6 +3,7 @@ import { Section } from "@/components/ui/Section";
 import { Prose } from "@/components/ui/Prose";
 import { siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/og/metadata";
+import { pageJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Terms of Use",
@@ -14,6 +15,20 @@ export const metadata = pageMetadata({
 export default function TermsPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            pageJsonLd({
+              type: "WebPage",
+              name: "Terms of Use",
+              description:
+                "The terms that govern your use of the Ophthalmology Business Academy website.",
+              path: "/terms",
+            }),
+          ),
+        }}
+      />
       <PageHero
         eyebrow="Terms"
         title="Terms of Use"

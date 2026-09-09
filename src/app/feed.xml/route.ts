@@ -33,20 +33,26 @@ function itunesDuration(seconds?: number): string {
  * Podcast RSS 2.0 feed generated from the episode library at build time.
  * Exposed as /feed.xml and advertised via <link rel="alternate"> in the layout.
  *
- * NOT YET SUBMITTABLE to Apple Podcasts or Spotify: <itunes:image> must be a
- * square 1400-3000px JPEG/PNG, and the only artwork in the repo is the 1200x630
- * OG card. That is an asset gap, not a code gap — see PODCAST_ARTWORK below.
- * <enclosure length> is likewise omitted until durationSec/byte sizes are
- * backfilled, since a wrong length is worse than an absent one.
+ * <itunes:image> now points at a 3000x3000 opaque PNG, which satisfies Apple's
+ * requirement (square, 1400-3000px, RGB, .png/.jpg URL) and Spotify's >=1400. A
+ * metadata route could not have served this: those URLs carry a ?<contenthash>
+ * and no file extension, and directories key show artwork on the URL.
+ *
+ * <enclosure length> and <itunes:duration> are emitted per episode wherever the
+ * publish pipeline has measured them off the real MP3 (`audioBytes`,
+ * `durationSec`), and omitted otherwise — a wrong length is worse than none.
+ * Submission to Apple/Spotify needs those backfilled across the catalogue.
  */
-const PODCAST_ARTWORK = `${siteConfig.url}/opengraph-image`;
+const PODCAST_ARTWORK = `${siteConfig.url}/images/podcast-artwork.png`;
 export function GET() {
   const episodes = getAllEpisodes();
   const items = episodes
     .map((ep) => {
       const url = `${siteConfig.url}/podcast/episodes/${ep.slug}`;
       const enclosure = ep.audioUrl
-        ? `<enclosure url="${escapeXml(ep.audioUrl)}" type="audio/mpeg" />`
+        ? `<enclosure url="${escapeXml(ep.audioUrl)}" type="audio/mpeg"${
+            ep.audioBytes ? ` length="${ep.audioBytes}"` : ""
+          } />`
         : "";
       const duration = itunesDuration(ep.durationSec);
       const summary = metaDescription(ep);
@@ -58,9 +64,10 @@ export function GET() {
       <pubDate>${rfc822(ep.publishedAt)}</pubDate>
       <description>${escapeXml(summary)}</description>
       <itunes:summary>${escapeXml(summary)}</itunes:summary>
-      <itunes:explicit>false</itunes:explicit>${
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>${
         ep.episodeNumber ? `\n      <itunes:episode>${ep.episodeNumber}</itunes:episode>` : ""
-      }
+      }${ep.image ? `\n      <itunes:image href="${escapeXml(`${siteConfig.url}${ep.image}`)}" />` : ""}
       ${enclosure}${duration ? `<itunes:duration>${duration}</itunes:duration>` : ""}
     </item>`;
     })
@@ -74,6 +81,13 @@ export function GET() {
     <link>${escapeXml(siteConfig.url)}</link>
     <description>${escapeXml(siteConfig.description)}</description>
     <language>en-us</language>
+    <copyright>${escapeXml(`© ${new Date().getUTCFullYear()} ${siteConfig.name}`)}</copyright>
+    <generator>Next.js</generator>
+    <image>
+      <url>${escapeXml(PODCAST_ARTWORK)}</url>
+      <title>${escapeXml("The Ophthalmology Business Podcast")}</title>
+      <link>${escapeXml(siteConfig.url)}</link>
+    </image>
     <lastBuildDate>${rfc822(episodes[0]?.publishedAt ?? new Date().toISOString())}</lastBuildDate>
     <itunes:author>${escapeXml(siteConfig.name)}</itunes:author>
     <itunes:type>episodic</itunes:type>

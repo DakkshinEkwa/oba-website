@@ -16,7 +16,7 @@ import {
   getRelatedEpisodes,
   getTranscriptBySlug,
 } from "@/lib/content";
-import { isoDuration, metaDescription } from "@/lib/utils";
+import { isoDuration, metaDescription, personSlug } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/og/metadata";
 import { person, PODCAST_SERIES_ID } from "@/lib/jsonld";
@@ -44,6 +44,7 @@ export async function generateMetadata({
     section: "The Ophthalmology Business Podcast",
     ...(ep.tags.length ? { tags: ep.tags } : {}),
     image: "route",
+    markdown: `/podcast/episodes/${slug}/md`,
   });
 }
 
@@ -67,6 +68,7 @@ export default async function EpisodePage({ params }: { params: Promise<{ slug: 
     inLanguage: "en",
     description: metaDescription(ep),
     url: `${siteConfig.url}/podcast/episodes/${ep.slug}`,
+    ...(ep.image ? { image: `${siteConfig.url}${ep.image}` } : {}),
     ...(ep.episodeNumber ? { episodeNumber: ep.episodeNumber } : {}),
     ...(ep.audioUrl
       ? {
@@ -80,10 +82,27 @@ export default async function EpisodePage({ params }: { params: Promise<{ slug: 
         }
       : {}),
     ...(ep.guests.length
-      ? { actor: ep.guests.map((g) => ({ "@type": "Person", name: g })) }
+      ? {
+          actor: ep.guests.map((g) => ({
+            "@type": "Person",
+            // Same id the speakers page mints, so one person credited on four
+            // episodes is one entity in the graph rather than four loose names.
+            "@id": `${siteConfig.url}/podcast/speakers#${personSlug(g)}`,
+            name: g,
+          })),
+        }
       : {}),
     ...(hosts.length
       ? { author: hosts.map((h) => person(h, `${siteConfig.url}/podcast/hosts`)) }
+      : {}),
+    ...(transcript
+      ? {
+          transcript: {
+            "@type": "MediaObject",
+            encodingFormat: "text/markdown",
+            url: `${siteConfig.url}/podcast/episodes/${ep.slug}/transcript.md`,
+          },
+        }
       : {}),
     partOfSeries: { "@id": PODCAST_SERIES_ID },
   };

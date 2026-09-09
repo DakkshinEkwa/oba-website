@@ -3,6 +3,7 @@ import { Section } from "@/components/ui/Section";
 import { Prose } from "@/components/ui/Prose";
 import { siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/og/metadata";
+import { pageJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Privacy Policy",
@@ -14,6 +15,20 @@ export const metadata = pageMetadata({
 export default function PrivacyPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            pageJsonLd({
+              type: "WebPage",
+              name: "Privacy Policy",
+              description:
+                "How the Ophthalmology Business Academy collects, uses, and protects your information.",
+              path: "/privacy",
+            }),
+          ),
+        }}
+      />
       <PageHero
         eyebrow="Privacy"
         title="Privacy Policy"

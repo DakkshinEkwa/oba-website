@@ -5,8 +5,10 @@ import {
   getAllFreeResources,
   getAllHosts,
   getEpisodeStats,
+  getTranscriptBySlug,
 } from "@/lib/content";
 import { metaDescription } from "@/lib/utils";
+import type { Event } from "@/lib/schemas";
 import { siteConfig } from "@/lib/site";
 
 /**
@@ -17,6 +19,11 @@ import { siteConfig } from "@/lib/site";
  * surfaces can never drift from the pages they describe.
  */
 
+/**
+ * The shape every machine surface is built from. Crawlers cache and diff these
+ * files, so this is a public contract: **extend it, never reshape it.** Every
+ * field added since v1 is optional for that reason.
+ */
 export type AgentItem = {
   kind: "episode" | "article" | "panel" | "resource";
   slug: string;
@@ -27,15 +34,80 @@ export type AgentItem = {
   people: string[];
   tags: string[];
   body?: string;
+  /** Episodes: the direct MP3, so an agent has an audio pointer without the RSS feed. */
+  audioUrl?: string;
+  durationSec?: number;
+  episodeNumber?: number;
+  /**
+   * Full transcript text, when one has been generated. Read lazily — a 40-minute
+   * episode is far longer than the show notes, so surfaces that list the whole
+   * catalogue link to it rather than inlining it.
+   */
+  transcript?: string;
+  /** Alternate representations of this item, as site-absolute paths. */
+  alternates?: { markdown?: string; transcript?: string };
+  /** Direct download, for items that are a file rather than a page. */
+  fileUrl?: string;
 };
 
 export const abs = (path: string) => `${siteConfig.url}${path}`;
 
+/**
+ * Transcript text as one plain-text block, speaker-labelled, timestamps dropped.
+ *
+ * Memoized because a full transcript is tens of KB and `episodeItems()` is
+ * rebuilt by every agent surface — including once per generated `/md` file — so
+ * an unmemoized join would rebuild the entire catalogue's transcripts hundreds
+ * of times during a build.
+ */
+const _transcriptText = new Map<string, string | undefined>();
+
+function transcriptText(slug: string): string | undefined {
+  if (_transcriptText.has(slug)) return _transcriptText.get(slug);
+  const t = getTranscriptBySlug(slug);
+  const text = t?.segments.length
+    ? t.segments
+        .map((seg) => `${t.speakers.find((s) => s.id === seg.speaker)?.name ?? seg.speaker}: ${seg.text.trim()}`)
+        .join("\n")
+    : undefined;
+  _transcriptText.set(slug, text);
+  return text;
+}
+
+/**
+ * A panel's body, assembled from the landing-page fields the event already
+ * carries. Six of seven events have none of them, and those keep the single
+ * templated sentence rather than gaining invented copy.
+ */
+function panelBody(event: Event): string | undefined {
+  const sections = [
+    event.lede,
+    event.about.length ? event.about.join("\n\n") : undefined,
+    event.topics.length
+      ? ["What this panel covers:", ...event.topics.map((t) => `- ${t}`)].join("\n")
+      : undefined,
+    event.audience.length
+      ? ["Who it is for:", ...event.audience.map((a) => `- ${a}`)].join("\n")
+      : undefined,
+    event.panelists.length
+      ? [
+          "Panelists:",
+          ...event.panelists.map((p) =>
+            `- ${p.name}${p.role ? ` — ${p.role}` : ""}${p.org ? `, ${p.org}` : ""}`,
+          ),
+        ].join("\n")
+      : undefined,
+  ].filter((s): s is string => Boolean(s));
+  return sections.length ? sections.join("\n\n") : undefined;
+}
+
 export function episodeItems(): AgentItem[] {
   const hosts = getAllHosts();
   const hostName = (slug: string) => hosts.find((h) => h.slug === slug)?.name;
-  return getAllEpisodes().map((ep) => ({
-    kind: "episode",
+  return getAllEpisodes().map((ep) => {
+    const transcript = transcriptText(ep.slug);
+    return {
+    kind: "episode" as const,
     slug: ep.slug,
     title: ep.title,
     description: metaDescription(ep),
@@ -47,7 +119,16 @@ export function episodeItems(): AgentItem[] {
     ],
     tags: ep.tags,
     body: ep.body,
-  }));
+    audioUrl: ep.audioUrl,
+    durationSec: ep.durationSec,
+    episodeNumber: ep.episodeNumber,
+    transcript,
+    alternates: {
+      markdown: `/podcast/episodes/${ep.slug}/md`,
+      ...(transcript ? { transcript: `/podcast/episodes/${ep.slug}/transcript.md` } : {}),
+    },
+    };
+  });
 }
 
 export function articleItems(): AgentItem[] {
@@ -61,6 +142,7 @@ export function articleItems(): AgentItem[] {
     people: [post.author],
     tags: post.tags,
     body: post.body,
+    alternates: { markdown: `/blog/${post.slug}/md` },
   }));
 }
 
@@ -74,8 +156,9 @@ export function panelItems(): AgentItem[] {
       `A live virtual OBA panel scheduled for ${event.startDate}. Candid, non-promotional discussion for ophthalmology practice leaders.`,
     path: `/resources/events/${event.slug}`,
     date: event.startDate,
-    people: [],
-    tags: [],
+    people: event.panelists.map((p) => p.name),
+    tags: event.topics,
+    body: panelBody(event),
   }));
 }
 
@@ -85,9 +168,13 @@ export function resourceItems(): AgentItem[] {
     slug: r.slug,
     title: r.title,
     description: r.description,
-    path: `/resources/free-resources`,
+    // Free resources have no detail page, so the fragment is what makes each one
+    // individually addressable. Without it all three shared a single URL and were
+    // indistinguishable to anything reading llms.txt or the OKF bundle.
+    path: `/resources/free-resources#${r.slug}`,
     people: [r.author],
     tags: r.tags,
+    fileUrl: r.pdfUrl,
   }));
 }
 
@@ -133,9 +220,26 @@ export function toMarkdownDocument(item: AgentItem): string {
     item.date ? `- Date: ${item.date}` : null,
     item.people.length ? `- People: ${item.people.join(", ")}` : null,
     item.tags.length ? `- Topics: ${item.tags.join(", ")}` : null,
+    item.episodeNumber ? `- Episode: ${item.episodeNumber}` : null,
+    item.audioUrl ? `- Audio: ${item.audioUrl}` : null,
+    item.fileUrl ? `- Download: ${abs(item.fileUrl)}` : null,
+    item.alternates?.transcript
+      ? `- Full transcript: ${abs(item.alternates.transcript)}`
+      : null,
     `- Canonical URL: ${abs(item.path)}`,
     `- Source: ${siteConfig.name}`,
   ].filter((l): l is string => l !== null);
+
+  /**
+   * Show notes are a teaser — the median episode body is ~250 words, while the
+   * conversation itself runs ~40 minutes. Where a transcript exists we open it
+   * here so this document carries real substance, and link the rest rather than
+   * inlining tens of thousands of words into every mirror.
+   */
+  const excerpt =
+    item.transcript && item.transcript.length > TRANSCRIPT_EXCERPT_CHARS
+      ? `${item.transcript.slice(0, TRANSCRIPT_EXCERPT_CHARS).trimEnd()}…`
+      : item.transcript;
 
   return [
     `# ${item.title}`,
@@ -145,6 +249,21 @@ export function toMarkdownDocument(item: AgentItem): string {
     "---",
     "",
     (item.body ?? item.description).trim(),
+    ...(excerpt
+      ? [
+          "",
+          "## Transcript",
+          "",
+          item.alternates?.transcript && excerpt !== item.transcript
+            ? `Opening of the conversation. Full transcript: ${abs(item.alternates.transcript)}`
+            : "Full transcript.",
+          "",
+          excerpt,
+        ]
+      : []),
     "",
   ].join("\n");
 }
+
+/** How much of a transcript a per-item mirror carries before linking the rest. */
+const TRANSCRIPT_EXCERPT_CHARS = 4000;

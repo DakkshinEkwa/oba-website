@@ -1,5 +1,14 @@
 # Frontend UI Engineering Audit — obacademy.org
 
+> **⚠ STALE — do not work this list without re-verifying.** Written before a wave of route
+> removals; roughly a third of its citations point at files that no longer exist
+> (`RegisterForm`, `LoginForm`, `podcast/page.tsx`, `membership/`, `partnerships/`,
+> `resources/webinars/`, `analyze/`). Its claim that the paginated archive has no meta
+> description is also false today. The still-valid findings are the accessibility ones —
+> form errors not announced, dropdown submenus mouse-only, `alt=""` on most images,
+> `text-ink-400` contrast. Re-run the sweep rather than working the list.
+> See `HANDOVER.md` for current state.
+
 Audited against the `frontend-ui-engineering` skill standards (accessibility / WCAG 2.1 AA, design-system adherence, responsive behavior, state handling, code quality). All findings are verifiable with the referenced `file:line`.
 
 ## Critical — Accessibility

@@ -5,6 +5,7 @@ import { BlogCard } from "@/components/content/BlogCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { getAllBlogPosts } from "@/lib/content";
 import { pageMetadata } from "@/lib/og/metadata";
+import { pageJsonLd } from "@/lib/jsonld";
 import { siteConfig } from "@/lib/site";
 
 export const metadata = pageMetadata({
@@ -29,6 +30,20 @@ export default function BlogPage() {
   };
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            pageJsonLd({
+              type: "CollectionPage",
+              name: "Blog",
+              description:
+                "Articles on marketing, operations, and leadership for the modern ophthalmology practice.",
+              path: "/blog",
+            }),
+          ),
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(listJsonLd) }}

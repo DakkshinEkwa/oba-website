@@ -10,6 +10,14 @@ type DarkHeroProps = {
   title: React.ReactNode;
   /** Trailing headline fragment rendered dim (Qoves two-tone pattern). */
   titleDim?: React.ReactNode;
+  /**
+   * Headline step. "h1" is the cinematic default; "h2" is for interior heroes
+   * whose copy column is narrowed by a wide aside, where the display step sets
+   * a long title at four lines.
+   */
+  titleSize?: "h1" | "h2";
+  /** Optional row directly under the h1, before the lede (e.g. an event's date/time/format chips). */
+  titleMeta?: React.ReactNode;
   lede?: React.ReactNode;
   breadcrumbs?: { label: string; href?: string }[];
   /** "full" = full-bleed cinematic hero (podcast home); "band" = compact interior hero. */
@@ -18,6 +26,8 @@ type DarkHeroProps = {
   aside?: React.ReactNode;
   /** Wider aside column for embeds that need horizontal room (e.g. booking calendars). */
   asideWidth?: "narrow" | "wide";
+  /** Vertical placement of the aside. "start" when the copy column is much taller. */
+  asideAlign?: "center" | "start";
   /** Optional content rendered directly under the lede, before children/CTA (e.g. waveform + stat row). */
   proof?: React.ReactNode;
   /** Optional bottom row (proof-by-numbers stat band). */
@@ -49,11 +59,14 @@ export function DarkHero({
   eyebrowDot,
   title,
   titleDim,
+  titleSize = "h1",
+  titleMeta,
   lede,
   breadcrumbs,
   size = "full",
   aside,
   asideWidth = "narrow",
+  asideAlign = "center",
   proof,
   footer,
   containerSize = "wide",
@@ -92,10 +105,12 @@ export function DarkHero({
         <div
           className={cn(
             "min-w-0",
+            aside && "grid gap-12",
+            aside && (asideAlign === "start" ? "items-start" : "items-center"),
             aside &&
               (asideWidth === "wide"
-                ? "grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)]"
-                : "grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]"),
+                ? "lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)]"
+                : "lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]"),
           )}
         >
           <div className="max-w-2xl min-w-0 animate-fade-up">
@@ -105,11 +120,17 @@ export function DarkHero({
                 {eyebrow}
               </Eyebrow>
             ) : null}
-            <h1 className="mt-8 text-h1 font-light tracking-tight text-white">
+            <h1
+              className={cn(
+                "mt-8 font-light tracking-tight text-white",
+                titleSize === "h2" ? "text-h2" : "text-h1",
+              )}
+            >
               {title}
               {titleDim ? <span className="text-white/45"> {titleDim}</span> : null}
             </h1>
-            {lede ? <p className="mt-6 max-w-xl text-body-lg text-white/70">{lede}</p> : null}
+            {titleMeta ? <div className="mt-8">{titleMeta}</div> : null}
+            {lede ? <p className="mt-8 max-w-xl text-body-lg text-white/70">{lede}</p> : null}
             {proof ? <div className="mt-8">{proof}</div> : null}
             {children ? (
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">{children}</div>

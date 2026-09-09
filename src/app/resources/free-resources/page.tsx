@@ -4,7 +4,7 @@ import { CTASection } from "@/components/marketing/CTASection";
 import { FreeResourceCard } from "@/components/content/FreeResourceCard";
 import { getAllFreeResources } from "@/lib/content";
 import { pageMetadata } from "@/lib/og/metadata";
-import { freeResourceListJsonLd } from "@/lib/jsonld";
+import { freeResourceListJsonLd, pageJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Free Resources",
@@ -22,6 +22,20 @@ export default function FreeResourcesPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            pageJsonLd({
+              type: "CollectionPage",
+              name: "Free Resources",
+              description:
+                "Free, downloadable articles and guides for ophthalmology practice leaders — website, marketing, and patient-conversion fundamentals.",
+              path: "/resources/free-resources",
+            }),
+          ),
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(freeResourceListJsonLd(resources)) }}

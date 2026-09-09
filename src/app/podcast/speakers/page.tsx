@@ -6,7 +6,7 @@ import { SpeakersGrid } from "@/components/content/SpeakersGrid";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { getAllSpeakers } from "@/lib/content";
 import { pageMetadata } from "@/lib/og/metadata";
-import { pageJsonLd } from "@/lib/jsonld";
+import { pageJsonLd, speakerListJsonLd } from "@/lib/jsonld";
 
 export const metadata = pageMetadata({
   title: "Speakers",
@@ -34,6 +34,12 @@ export default function SpeakersPage() {
           ),
         }}
       />
+      {speakers.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(speakerListJsonLd(speakers)) }}
+        />
+      )}
 
       <DarkHero
         size="band"

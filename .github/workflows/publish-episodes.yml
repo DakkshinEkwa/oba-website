@@ -10,48 +10,37 @@ permissions:
 
 jobs:
   publish:
-    if: ${{ secrets.EPISODE_SHEET_CSV_URL != '' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 30
     steps:
+      - name: Check sheet URL is configured
+        id: check
+        env:
+          EPISODE_SHEET_CSV_URL: ${{ secrets.EPISODE_SHEET_CSV_URL }}
+        run: |
+          if [ -n "$EPISODE_SHEET_CSV_URL" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@v4
+        if: steps.check.outputs.configured == 'true'
       - uses: actions/setup-node@v4
+        if: steps.check.outputs.configured == 'true'
         with:
           node-version: 20
           cache: npm
       - run: npm ci
-      - name: Import new rows from Google Sheet
+        if: steps.check.outputs.configured == 'true'
+      # Transcripts are authored by hand in the same sheet and written by this
+      # step, so there is no separate transcription job.
+      - name: Import new rows and transcripts from Google Sheet
+        if: steps.check.outputs.configured == 'true'
         env:
           EPISODE_SHEET_CSV_URL: ${{ secrets.EPISODE_SHEET_CSV_URL }}
         run: npx tsx scripts/publish/from-sheet.ts
-      - name: Count imported episodes
-        id: imported
-        run: |
-          file="scripts/publish/.cache/imported-slugs.json"
-          if [ -f "$file" ]; then
-            echo "count=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$file','utf8')).length)")" >> "$GITHUB_OUTPUT"
-          else
-            echo "count=0" >> "$GITHUB_OUTPUT"
-          fi
-      - uses: actions/setup-python@v5
-        if: steps.imported.outputs.count != '0'
-        with:
-          python-version: "3.11"
-      - name: Install WhisperX
-        if: steps.imported.outputs.count != '0'
-        continue-on-error: true
-        run: |
-          pip install -U torch torchaudio --index-url https://download.pytorch.org/whl/cpu
-          pip install -U whisperx
-      - name: Transcribe newly imported episodes
-        if: steps.imported.outputs.count != '0'
-        continue-on-error: true
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          WHISPER_MODEL: small
-          WHISPER_COMPUTE: int8
-        run: npx tsx scripts/publish/transcribe.ts
       - name: Commit published content
+        if: steps.check.outputs.configured == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

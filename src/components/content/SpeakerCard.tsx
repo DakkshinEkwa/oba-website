@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
  * hairline border, a frosted slate monogram, and episode rows that read like
  * the accordion's sub-rows.
  *
- * Guests with a headshot in `public/images/speakers` get the photograph;
+ * Guests with a headshot in `public/images/headshots` get the photograph;
  * the rest fall back to the monogram, which the brand guidelines already
  * sanction where no headshot exists. Every episode is a real link, so the card
  * is a route into the catalog rather than a dead directory entry.

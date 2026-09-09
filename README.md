@@ -1,5 +1,9 @@
 # Ophthalmology Business Academy — Website
 
+> **Start with [`HANDOVER.md`](HANDOVER.md).** It carries the current state of the project, what is
+> safe to change, what will bite you, and who owns the open items. This file covers conventions;
+> `HANDOVER.md` covers where things actually stand.
+
 A ground-up rebuild of [obacademy.org](https://www.obacademy.org) with a modern, Qoves-inspired
 UI/UX. Built with **Next.js (App Router) + TypeScript + Tailwind CSS v4**, fully statically
 generated (SSG).
@@ -81,8 +85,14 @@ Site-wide nav, CTA, and booking URL live in `src/lib/site.ts`.
 - **Marketing analysis** lives at `/msm` (header nav item "Marketing"). Legacy `/analyze` and
   `/marketing` 301 to it. The offer is an Ekwa service, labeled separately from OBA editorial.
 - **Events** have a Fall 2026 virtual panel series in `src/content/events.json` (`EventCard` /
-  `FeaturedEventCard`). **Webinars**, **webinar replays**, and **reviews** still render honest
-  empty states until real content is added.
+  `FeaturedEventCard`), rendered by a content-driven template at `/resources/events/[slug]`.
+  Webinars, replays and reviews were **removed** rather than shipped hollow, and 301 in
+  `next.config.ts` — do not re-add them.
+- **SEO / AI SEO** are complete in code: structured data, OG cards, `llms.txt`, an OKF bundle,
+  Markdown mirrors of every episode and post, and a transcript pipeline awaiting content. See
+  `docs/seo-audit.md`, `docs/ai-seo.md`, and `docs/deployment.md` before hosting this.
+- **Mobile layout** (hero, nav sheet, stat-bento stack, event fact chips, footer newsletter) was
+  polished 2026-09-09 on `seo-ai-seo-handover`. Load-bearing notes are in `HANDOVER.md`.
 - **Legal:** `/privacy` and `/terms` are linked from the footer.
 - **Redirects:** legacy WordPress URLs and live-site aliases are 301-redirected in
   `next.config.ts`.

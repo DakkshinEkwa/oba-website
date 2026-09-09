@@ -13,6 +13,7 @@ import { getAllBlogPosts, getBlogPostBySlug } from "@/lib/content";
 import { formatDate, metaDescription } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/og/metadata";
+import { ORG_ID } from "@/lib/jsonld";
 
 export function generateStaticParams() {
   return getAllBlogPosts().map((p) => ({ slug: p.slug }));
@@ -36,6 +37,7 @@ export async function generateMetadata({
     authors: [post.author],
     ...(post.tags.length ? { tags: post.tags } : {}),
     image: "route",
+    markdown: `/blog/${slug}/md`,
   });
 }
 
@@ -62,10 +64,18 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     datePublished: post.publishedAt,
     dateModified: post.updatedAt ?? post.publishedAt,
     description: metaDescription(post),
-    author: { "@type": "Organization", name: post.author },
+    // `author` defaults to the Academy itself, so the node is an Organization
+    // unless a post names a real byline — typing a person as an Organization
+    // would put the wrong entity behind the article.
+    author:
+      post.author === siteConfig.name
+        ? { "@id": ORG_ID }
+        : { "@type": "Person", name: post.author },
+    publisher: { "@id": ORG_ID },
     url: `${siteConfig.url}/blog/${post.slug}`,
     mainEntityOfPage: `${siteConfig.url}/blog/${post.slug}`,
     ...(post.coverImage ? { image: `${siteConfig.url}${post.coverImage}` } : {}),
+    ...(post.tags.length ? { keywords: post.tags.join(", ") } : {}),
   };
 
   return (

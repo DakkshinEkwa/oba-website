@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Host } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
+import { useCanHover } from "@/lib/use-can-hover";
 
 /**
  * Hosts tile: a rolling stack of credential chips. Three sit in the window at
@@ -85,14 +86,18 @@ export function HostsTile({
   const [index, setIndex] = useState(0);
   const [rolling, setRolling] = useState(false);
   const reduceMotion = useReducedMotion();
+  const canHover = useCanHover();
 
   const canRoll = hosts.length > SLOTS;
+  // A touch device never fires the hover/focus this normally gates on, so it
+  // falls back to running continuously rather than sitting static.
+  const running = active || !canHover;
 
   useEffect(() => {
-    if (!active || reduceMotion || !canRoll) return;
+    if (!running || reduceMotion || !canRoll) return;
     const id = setInterval(() => setRolling(true), STEP_MS);
     return () => clearInterval(id);
-  }, [active, reduceMotion, canRoll]);
+  }, [running, reduceMotion, canRoll]);
 
   // One more than the window, so there is always a chip queued to roll in.
   const window_ = Array.from(

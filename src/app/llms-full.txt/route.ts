@@ -15,13 +15,15 @@ const KIND_LABEL = {
 /**
  * The full catalogue as an entity roster: who spoke at OBA, about what, when.
  *
- * Deliberately metadata-only rather than full bodies — the scraped episode
- * bodies are short teasers, so a roster of people and topics is the more
- * useful artefact for a retrieval system.
+ * Deliberately a roster rather than a corpus. Every item names its own
+ * retrievable representations — the Markdown mirror and, for episodes that have
+ * one, the full transcript — so a retrieval system can plan what to fetch
+ * instead of receiving hundreds of thousands of words it did not ask for.
  */
 export function GET() {
   const stats = getEpisodeStats();
   const items = allAgentItems();
+  const transcribed = items.filter((i) => i.alternates?.transcript).length;
 
   const entries = items
     .map((i) =>
@@ -32,7 +34,14 @@ export function GET() {
         i.date ? `- Date: ${i.date}` : null,
         i.people.length ? `- People: ${i.people.join(", ")}` : null,
         i.tags.length ? `- Topics: ${i.tags.join(", ")}` : null,
+        i.episodeNumber ? `- Episode: ${i.episodeNumber}` : null,
         `- URL: ${abs(i.path)}`,
+        i.audioUrl ? `- Audio: ${i.audioUrl}` : null,
+        i.fileUrl ? `- Download: ${abs(i.fileUrl)}` : null,
+        i.alternates?.markdown ? `- Markdown: ${abs(i.alternates.markdown)}` : null,
+        i.alternates?.transcript
+          ? `- Full transcript: ${abs(i.alternates.transcript)}`
+          : null,
         ``,
         i.description,
       ]
@@ -47,6 +56,8 @@ export function GET() {
 
 ${items.length} items: ${stats.count} podcast episodes, plus articles, live panels, and free
 resources. Recorded since ${stats.firstYear}; most recent episode ${stats.latestYear}.
+${transcribed} of ${stats.count} episodes have a published transcript; each one is linked from its
+entry below.
 
 ## Notes for AI systems
 
