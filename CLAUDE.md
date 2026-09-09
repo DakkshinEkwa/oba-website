@@ -195,7 +195,11 @@ that has a neighbour draws it instead: `i % 2 === 0 && i + 1 < topics.length`.
 `EventPanelists` is `StatBento`'s light tile — `rounded-2xl`, hairline border, the
 `accent-50 → accent-100` gradient — on a `bento-grid`, so the separator hairlines fall in the gaps
 instead of on the cards. `bento-cell` only works inside `bento-grid`, whose `overflow: hidden`
-clips the half-gap that would otherwise poke past the last row. The content inside is
+clips the half-gap that would otherwise poke past the last row. **Below `sm`, `StatBento` is not
+a grid:** each tile wraps in `.bento-stack-item` and sticks as a deck (`globals.css`). Those
+wrappers are `display: contents` from `sm` up, so `sm:col-span-2` / `lg:row-span-2` still land on
+the cell itself — don't strip them. Mobile cells take `--shadow-lg` because they overlay each
+other (elevation, not decoration). The content inside is
 `SpeakerCard`'s: a square `rounded-xl` portrait beside the name, which is the light-ground people
 idiom everywhere on this site (`HostCard` uses the same square) — the 4:5 `--radius-tile` portrait
 belongs to the dark episode hero and is a borrowed accent here. A slate version of this tile was
@@ -253,10 +257,12 @@ this: a row between the h1 and the lede), the line-up its `proof` slot. Both are
 rather than an empty wrapper when the event has nothing to put in them — an element that renders
 nothing still gets its slot's `mt-8`.
 
-The chips are an equal-column grid, not a wrapped flex row: the three came to 542px against a
-536px copy column, so "Format" dropped to a second line by six pixels, and narrower still below
-`lg`. Equal columns hold them in one row at every width, with the value wrapping inside its own
-chip and the grid matching heights — which is how the countdown row directly beneath them is set.
+The chips are an equal-column grid from `sm` up, not a wrapped flex row: the three came to 542px
+against a 536px copy column, so "Format" dropped to a second line by six pixels, and narrower
+still below `lg`. Below `sm` there isn't room for a row, so they stack. `gridTemplateColumns` as
+an inline style always wins over a Tailwind class, so the responsive switch goes through
+`--fact-cols` (`sm:grid-cols-[var(--fact-cols)]`) rather than a style attribute. Don't put
+`gridTemplateColumns` back on the element.
 
 **This hero carries no breadcrumbs**, deliberately: the copy column is long and the trail cost it
 ~200px of vertical space at the top. Nothing else depended on them — this page emits no
@@ -374,12 +380,25 @@ the panel prints the distinction, and these are words attributed to named physic
 
 ## Conventions & constraints
 
-- **Shadows are elevation-only** (floating/overlay surfaces: scrolled nav, dialogs, dropdowns).
-  Cards use hairline borders — no decorative card shadows, no raw hex outside `@theme`.
+- **Shadows are elevation-only** (floating/overlay surfaces: scrolled nav, dialogs, dropdowns,
+  and the mobile `StatBento` stack where cards overlay each other). Cards use hairline borders —
+  no decorative card shadows, no raw hex outside `@theme`. The mobile bento `--shadow-lg` is
+  elevation, not decoration; don't strip it.
 - Tailwind v4 token-var syntax uses parens, e.g. `pt-(--header-offset)` (the token pages use to
   clear the floating header).
 - Dark-hero routes must be listed in `DARK_HERO_ROUTES` in `SiteHeader` so the floating nav uses
   light text.
+- **`NewsletterForm`:** email and Subscribe are both `h-12`. The input needs `appearance-none
+  min-h-12 py-0 leading-none` or mobile Safari renders it shorter than the button. `rounded-md`
+  below `lg`, pill on desktop. Don't bump mobile to `h-16`.
+- **`MobileNav`:** sheet slides in from the **left** (`animate-slide-in-left`). Trigger is three
+  CSS bars, not lucide `Menu`. Overlay uses `animate-fade-out` on close so Radix Presence can
+  wait for the exit.
+- **`useCanHover()`** (`src/lib/use-can-hover.ts`): `HostsTile`, `EpisodeExpandMark`, and
+  `BlindSpotGrid` run continuously on touch because hover never fires. Server snapshot is `true`.
+  Don't gate them on hover-only again.
+- Homepage hero below `sm`: the H1 may wrap (`sm:whitespace-nowrap` on the first line only);
+  CTAs stay a row; the three proof labels stack with `divide-y` instead of `divide-x`.
 - **There is no auth.** Do not re-add `/login`, `/register`, or `/forgot-password`. Membership is
   account-free; the newsletter is the soft CTA.
 - `LibsynPlayer` plays direct Libsyn MP3s — keep `preload="none"` and its buffering/error/

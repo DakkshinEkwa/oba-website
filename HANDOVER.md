@@ -1,7 +1,8 @@
 # HANDOVER — start here
 
-**Updated 2026-09-07.** Single source of truth for where this project stands, what is safe to
-change, and what will bite you. If you are picking this repo up, read this file before anything else.
+**Updated 2026-09-09.** Single source of truth for where this project stands, what is
+safe to change, and what will bite you. If you are picking this repo up, read this file before
+anything else. Current branch: **`seo-ai-seo-handover`**.
 
 ---
 
@@ -17,7 +18,8 @@ npm run dev          # http://localhost:3000
 npm run build        # SSG + zod content validation; invalid content fails the build
 ```
 
-**Gates — there is no test suite.** All four are green as of this handover:
+**Gates — there is no test suite.** All four were green as of 2026-09-07; lint + tsc still
+pass after the 2026-09-09 mobile commit:
 
 ```bash
 npm run lint && npx tsc --noEmit && npm run build
@@ -46,6 +48,7 @@ npx tsc --noUnusedLocals --noUnusedParameters --noEmit   # tsconfig omits these;
 | Track | State |
 |---|---|
 | Site build, design system, content pipeline | Complete |
+| Mobile layout (hero, nav, bento, facts, newsletter) | Complete as of 2026-09-09 |
 | OpenGraph, icons, manifest, favicon | Complete |
 | SEO — technical + structured data | Complete in code |
 | AI SEO — agent layer | Complete in code |
@@ -98,6 +101,21 @@ zero-config here and `vercel.json` is committed.
   nav renders white-on-white.
 - **`HeroGlobe`** — hollow dot shell with no depth writes; the per-layer fade *is* the depth cue.
   Don't add GSAP or OrbitControls.
+- **`NewsletterForm`** — email and Subscribe are both `h-12`. The input needs `appearance-none
+  min-h-12 py-0 leading-none` or mobile Safari renders it shorter than the button. `rounded-md`
+  below `lg`, pill on desktop. Don't bump mobile to `h-16` — that made the button tall and the
+  field still short.
+- **`StatBento` below `sm`** — tiles wrap in `.bento-stack-item` and stick as a deck. Wrappers are
+  `display: contents` from `sm` up so grid placement is unchanged. Mobile `.bento-cell` uses
+  `--shadow-lg` because the cards overlay each other (elevation, not decoration). Don't strip the
+  wrappers or the shadow.
+- **`useCanHover()`** (`src/lib/use-can-hover.ts`) — `HostsTile`, `EpisodeExpandMark`, and
+  `BlindSpotGrid` never get hover on touch, so they run continuously. Server snapshot is `true`
+  (desktop-like). Don't gate them on hover-only again.
+- **`EventFactsStrip`** — inline `gridTemplateColumns` always beats Tailwind, so the sm+ equal
+  columns go through `--fact-cols`. Below `sm` the chips stack. Don't put `gridTemplateColumns`
+  back on the style attribute.
+- **`MobileNav`** — sheet comes in from the **left**. Trigger is three CSS bars, not lucide `Menu`.
 
 **Don't re-add:** `/login`, `/register`, `/forgot-password`, `/podcast`, `/membership`,
 `/partnerships`, `/reviews`, `/resources/webinars`, `/resources/newsletter`, `/faq`. All are
@@ -183,7 +201,21 @@ npx tsx scripts/generate-landmask.ts        # HeroGlobe's continent mask
 
 ---
 
-## What changed in the last session
+## What changed recently
+
+### 2026-09-09 — mobile layout
+
+Commit `191ec21` on `seo-ai-seo-handover`. Conventions for the bits below also landed in
+`AGENTS.md` / `CLAUDE.md` so agents don't "fix" them.
+
+- Footer newsletter: email field and Subscribe matched at 48px (`h-12`) on mobile.
+- Mobile nav sheet slides in from the left; hamburger morphs to an X.
+- Hero CTAs stay a row; the three proof labels stack below `sm`.
+- Event fact chips stack below `sm` (via `--fact-cols`, not an inline `gridTemplateColumns`).
+- Stat bento becomes a sticky five-card deck below `sm`.
+- Host / episode / blind-spot tiles keep animating on touch (`useCanHover`).
+
+### 2026-09-07 — SEO / agent layer
 
 Detail in `docs/ai-seo.md` and `docs/seo-audit.md`. The parts worth knowing:
 

@@ -91,6 +91,8 @@ Site-wide nav, CTA, and booking URL live in `src/lib/site.ts`.
 - **SEO / AI SEO** are complete in code: structured data, OG cards, `llms.txt`, an OKF bundle,
   Markdown mirrors of every episode and post, and a transcript pipeline awaiting content. See
   `docs/seo-audit.md`, `docs/ai-seo.md`, and `docs/deployment.md` before hosting this.
+- **Mobile layout** (hero, nav sheet, stat-bento stack, event fact chips, footer newsletter) was
+  polished 2026-09-09 on `seo-ai-seo-handover`. Load-bearing notes are in `HANDOVER.md`.
 - **Legal:** `/privacy` and `/terms` are linked from the footer.
 - **Redirects:** legacy WordPress URLs and live-site aliases are 301-redirected in
   `next.config.ts`.
